@@ -1,0 +1,7 @@
+<a href='/admin/new/'>新規作成</a>
+<div>knowledges一覧</div>
+<ul>
+    {{ range . }}
+    <li><span>{{ .Id }}</span><a href="/admin/knowledges/{{ .Id |html| }}"></a>{{ .Title }}</li>
+    {{ end }}
+</ul>

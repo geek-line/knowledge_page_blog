@@ -1,1 +1,13 @@
-<h1>hi</h1>
+<div>knowledge作成</div>
+<form id="form" action="/admin/save/" method="POST">
+    <div><input type='text' name="title" id='form-title'></div>
+    <div><textarea name="content" rows="20" cols="80"></textarea><br></div>
+    <div><input type="submit" value="Save"></div>
+</form>
+
+<!-- <script type="text/javascript">
+    const form = document.getElementById('form')
+    document.getElementById('form-title').addEventListener('change', function (e) {
+        form.action = '/admin/save/' + e.target.value
+    })
+</script> -->

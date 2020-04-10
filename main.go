@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -20,34 +22,57 @@ type Knowledges struct {
 	Content string
 }
 
-var templates = make(map[string]*template.Template)
+const lenPath = len("/admin/knowledges/")
 
 func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
+
+	suffix := r.URL.Path[lenPath:]
 	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
-	rows, err := db.Query("SELECT id, title FROM knowledges")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer rows.Close()
-	var indexPages []IndexPage
 
-	for rows.Next() {
-		var indexPage IndexPage
-		err := rows.Scan(&indexPage.Id, &indexPage.Title)
+	if suffix != "" {
+		var editPage Knowledges
+		var id int
+		id, _ = strconv.Atoi(suffix)
+		err := db.QueryRow("SELECT id, title, content FROM knowledges WHERE id = ?", id).Scan(&editPage.Id, &editPage.Title, &editPage.Content)
+		switch {
+		case err == sql.ErrNoRows:
+			log.Println("レコードが存在しません")
+			http.NotFound(w, r)
+		case err != nil:
+			panic(err.Error())
+		default:
+			t := template.Must(template.ParseFiles("template/admin_edit.html"))
+			err = t.Execute(w, editPage)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
+	} else {
+		rows, err := db.Query("SELECT id, title FROM knowledges")
 		if err != nil {
 			panic(err.Error())
 		}
-		indexPages = append(indexPages, indexPage)
-	}
+		defer rows.Close()
+		var indexPages []IndexPage
 
-	t := template.Must(template.ParseFiles("template/admin_knowledges.html"))
-	err = t.Execute(w, indexPages)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		for rows.Next() {
+			var indexPage IndexPage
+			err := rows.Scan(&indexPage.Id, &indexPage.Title)
+			if err != nil {
+				panic(err.Error())
+			}
+			indexPages = append(indexPages, indexPage)
+		}
+
+		t := template.Must(template.ParseFiles("template/admin_knowledges.html"))
+		err = t.Execute(w, indexPages)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
 
@@ -63,11 +88,6 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	// lastInsertID, err := result.LastInsertId()
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// log.Println(lastInsertID)
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }
 

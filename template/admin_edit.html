@@ -1,0 +1,6 @@
+<div>id:{{ .Id }}:{{ .Title }}を編集</div>
+<form action="/admin/save/" method="POST">
+    <div><input type='text' name="title" value="{{ .Title }}" id='form-title'></div>
+    <div><textarea name="body" name="content" rows="20" cols="80">{{ .Content|html| }}</textarea><br></div>
+    <div><input type="submit" value="Save"></div>
+</form>

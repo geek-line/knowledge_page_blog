@@ -2,6 +2,6 @@
 <div>knowledges一覧</div>
 <ul>
     {{ range . }}
-    <li><span>{{ .Id }}</span><a href="/admin/knowledges/{{ .Id |html| }}"></a>{{ .Title }}</li>
+    <li><span>{{ .Id }}</span><a href="/admin/knowledges/{{ .Id |html| }}">{{ .Title }}</a></li>
     {{ end }}
 </ul>

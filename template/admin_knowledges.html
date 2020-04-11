@@ -2,6 +2,10 @@
 <div>knowledges一覧</div>
 <ul>
     {{ range . }}
-    <li><span>{{ .Id }}</span><a href="/admin/knowledges/{{ .Id |html| }}">{{ .Title }}</a></li>
+    <li>
+        <span>{{ .Id }}</span>
+        <a href="/admin/knowledges/{{ .Id |html| }}">{{ .Title }}</a>
+        <a href='/admin/delete/{{ .Id  }}'>削除</a>
+    </li>
     {{ end }}
 </ul>

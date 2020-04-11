@@ -22,12 +22,12 @@ type Knowledges struct {
 	Content string
 }
 
-const lenPath = len("/admin/knowledges/")
+const lenPathKnowledges = len("/admin/knowledges/")
+const lenPathDelete = len("/admin/delete/")
 
 func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 
-	suffix := r.URL.Path[lenPath:]
-	log.Println(suffix)
+	suffix := r.URL.Path[lenPathKnowledges:]
 	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
 	if err != nil {
 		panic(err.Error())
@@ -102,10 +102,27 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }
 
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+	suffix := r.URL.Path[lenPathDelete:]
+	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	var id int
+	id, _ = strconv.Atoi(suffix)
+	_, err = db.Query("DELETE FROM knowledges WHERE id = ?", id)
+	if err != nil {
+		panic(err.Error())
+	}
+	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
+}
+
 func main() {
 	dir, _ := os.Getwd()
 	http.HandleFunc("/admin/knowledges/", knowledgesHandler)
 	http.HandleFunc("/admin/save/", saveHandler)
+	http.HandleFunc("/admin/delete/", deleteHandler)
 	http.Handle("/admin/new/", http.StripPrefix("/admin/new/", http.FileServer(http.Dir(dir+"/static/"))))
 	http.ListenAndServe(":3000", nil)
 }

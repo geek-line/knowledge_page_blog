@@ -27,6 +27,7 @@ const lenPath = len("/admin/knowledges/")
 func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 
 	suffix := r.URL.Path[lenPath:]
+	log.Println(suffix)
 	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
 	if err != nil {
 		panic(err.Error())
@@ -84,9 +85,19 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 	defer db.Close()
-	_, err = db.Query("INSERT INTO knowledges(title, content) VALUES(?, ?)", title, content)
-	if err != nil {
-		panic(err.Error())
+	switch {
+	case r.Method == "POST":
+		_, err = db.Query("INSERT INTO knowledges(title, content) VALUES(?, ?)", title, content)
+		if err != nil {
+			panic(err.Error())
+		}
+	case r.Method == "PUT":
+		id := r.FormValue("id")
+		_, err = db.Query("UPDATE knowledges SET title = ?, content = ? WHERE id = ?", title, content, id)
+		if err != nil {
+			panic(err.Error())
+		}
+		return
 	}
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }

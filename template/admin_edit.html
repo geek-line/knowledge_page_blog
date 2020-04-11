@@ -1,6 +1,26 @@
-<div>id:{{ .Id }}:{{ .Title }}を編集</div>
-<form action="/admin/save/" method="POST">
-    <div><input type='text' name="title" value="{{ .Title }}" id='form-title'></div>
-    <div><textarea name="body" name="content" rows="20" cols="80">{{ .Content|html| }}</textarea><br></div>
-    <div><input type="submit" value="Save"></div>
+<div>{{ .Title }}を編集</div>
+<form id="form">
+    <div><input type='text' name="title" value="{{ .Title }}"></div>
+    <div><textarea name="content" rows="20" cols="80">{{ .Content|html| }}</textarea><br></div>
+    <div><input type='hidden' name="id" value="{{ .Id }}"></div>
+    <div><input onclick="sendData()" type="button" value="Save"></div>
 </form>
+
+<script type="text/javascript">
+const form = document.getElementById('form')
+function sendData(){
+    let formdata = new FormData(form)
+    const XHR = new XMLHttpRequest()
+    XHR.open('PUT', '/admin/save/')
+    XHR.send(formdata)
+    XHR.onreadystatechange = function(){
+        if (XHR.readyState === 4) {
+            if (XHR.status === 200) {
+                alert('データが更新されました')
+            }else{
+                alert('データが正常に送れませんでした')
+            }
+        }
+    }
+}
+</script>

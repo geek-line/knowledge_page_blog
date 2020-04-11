@@ -1,7 +1,7 @@
 # knowledge_page_blog
 
 ## 作業環境 
-Go(1.14 darwin/amd64)
+Go(1.14 darwin/amd64)  
 MySQL(8.0.19)
 
 ## 作業ルール  

@@ -32,7 +32,7 @@
  
 </head>
 <body>
-    <h1><textarea name="Title" rows = "10" cols = "200">Editing {{.Title|html|}}</textarea></h1>
+    <h1><textarea name="Title" rows = "10" cols = "200"><h2>.Editing {{.Title|html|}}</h2></textarea></h1>
     <form action="/save/{{.Title |html|}}" method="POST">
     <div ><textarea id="edit_body" name="body" rows = "20" cols = "80">{{printf "%s" .Body}}</textarea></div>
     <input type="submit" value="Save">

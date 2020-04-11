@@ -28,7 +28,6 @@ const lenPathKnowledges = len("/admin/knowledges/")
 const lenPathDelete = len("/admin/delete/")
 
 var env = make(map[string]string)
-var r rune
 
 func init() {
 

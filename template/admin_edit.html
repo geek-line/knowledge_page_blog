@@ -38,6 +38,7 @@
             if (XHR.readyState === 4) {
                 if (XHR.status === 200) {
                     alert('データが更新されました')
+                    location.href = "/admin/knowledges";
                 }else{
                     alert('データが正常に送れませんでした')
                 }

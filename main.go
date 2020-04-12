@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -32,7 +31,6 @@ var env = make(map[string]string)
 func init() {
 
 	sqlenv, err := ioutil.ReadFile("sql_env.txt")
-	fmt.Print(env)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -137,6 +135,7 @@ func main() {
 	http.HandleFunc("/admin/knowledges/", knowledgesHandler)
 	http.HandleFunc("/admin/save/", saveHandler)
 	http.HandleFunc("/admin/delete/", deleteHandler)
-	http.Handle("/admin/new/", http.StripPrefix("/admin/new/", http.FileServer(http.Dir(dir+"/static/"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
+	http.Handle("/admin/new/", http.StripPrefix("/admin/new/", http.FileServer(http.Dir(dir+"/static/admin_new/"))))
 	http.ListenAndServe(":3000", nil)
 }

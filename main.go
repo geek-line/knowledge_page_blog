@@ -2,7 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -25,10 +27,22 @@ type Knowledges struct {
 const lenPathKnowledges = len("/admin/knowledges/")
 const lenPathDelete = len("/admin/delete/")
 
+var env = make(map[string]string)
+
+func init() {
+
+	sqlenv, err := ioutil.ReadFile("sql_env.txt")
+	fmt.Print(env)
+	if err != nil {
+		panic(err.Error())
+	}
+	env["sqlEnv"] = string(sqlenv)
+}
+
 func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 
 	suffix := r.URL.Path[lenPathKnowledges:]
-	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
+	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -80,7 +94,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 func saveHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	content := r.FormValue("content")
-	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
+	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -104,7 +118,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
 	suffix := r.URL.Path[lenPathDelete:]
-	db, err := sql.Open("mysql", "root:Reibo1998@@/knowledge_blog")
+	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
 		panic(err.Error())
 	}

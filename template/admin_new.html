@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <!-- <script src='https://cdn.tiny.cloud/1/vyqjlo6vrywmw8iojyi3udym4duxpmf10uiqoe3vnu4f307k/tinymce/5/tinymce.min.js' referrerpolicy="origin"> -->
+        <script src="https://cdn.tiny.cloud/1/vyqjlo6vrywmw8iojyi3udym4duxpmf10uiqoe3vnu4f307k/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    
+        
+      
+        <script>
+            tinymce.init({
+              selector: '#edit_body',
+            
+              language: "ja", // 言語 = 日本語
+              branding: false, // クレジットの削除
+              plugins: ['print preview fullpage importcss searchreplace autolink \
+            autosave save directionality visualblocks visualchars fullscreen image link media template codesample \
+            table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount \
+            imagetools textpattern noneditable help charmap quickbars  emoticons'],
+              toolbar: [
+            'undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help table'
+            ],
+              toolbar_mode: 'floating',
+              tinycomments_mode: 'embedded',
+              tinycomments_author: 'Author name'
+            });
+          </script>
+     
+    </head>
+
+    <body>
+
+        <div>新規作成</div>
+        <form id="form">
+            <div><input type='text' name="title" value="{{ .Title }}"></div>
+            <div><textarea id="edit_body" rows = "20" cols = "80"></textarea><br></div>
+            <div><input type='hidden' name="id" value="{{ .Id }}"></div>
+            <div><input onclick="sendData()" type="button" value="Save"></div>
+        </form>
+    </body>  
+
+    <script type="text/javascript">
+    
+    const form = document.getElementById('form')
+    function sendData(){
+       
+        const content = document.getElementById('edit_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
+        let formdata = new FormData(form)
+        formdata.append('content',content)
+        const XHR = new XMLHttpRequest()
+        XHR.open('PUT', '/admin/save/')
+        XHR.send(formdata)
+        XHR.onreadystatechange = function(){
+            if (XHR.readyState === 4) {
+                if (XHR.status === 200) {
+                    alert('データが更新されました')
+                }else{
+                    alert('データが正常に送れませんでした')
+                }
+            }
+        }
+    }
+    </script>
+   
+</html>  

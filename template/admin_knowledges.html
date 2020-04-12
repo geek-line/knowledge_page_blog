@@ -12,9 +12,11 @@
         <li>
             <span>{{ .Id }}</span>
             <a href="/admin/knowledges/{{ .Id |html| }}">{{ .Title }}</a>
+            <a href="/knowledges/{{ .Id |html| }}">ユーザーページで表示</a>
             <a href='/admin/delete/{{ .Id  }}'>削除</a>
         </li>
         {{ end }}
     </ul>
+    <a href='/knowledges/'>ユーザーページで一覧を表示</a>
 </body>
 </html>

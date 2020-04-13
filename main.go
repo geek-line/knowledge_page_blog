@@ -49,7 +49,7 @@ func adminLoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		session, _ := store.Get(r, "cookie-name")
 		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-			t := template.Must(template.ParseFiles("template/admin_login.html"))
+			t := template.Must(template.ParseFiles("template/admin_login.html", "template/_header.html"))
 			err := t.Execute(w, nil)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -96,7 +96,7 @@ func adminNewHandler(w http.ResponseWriter, r *http.Request) {
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
 	}
-	t := template.Must(template.ParseFiles("template/admin_new.html"))
+	t := template.Must(template.ParseFiles("template/admin_new.html", "template/_header.html"))
 	err := t.Execute(w, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -128,7 +128,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		case err != nil:
 			panic(err.Error())
 		default:
-			t := template.Must(template.ParseFiles("template/admin_edit.html"))
+			t := template.Must(template.ParseFiles("template/admin_edit.html", "template/_header.html"))
 			err = t.Execute(w, editPage)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -151,7 +151,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			indexPages = append(indexPages, indexPage)
 		}
 
-		t := template.Must(template.ParseFiles("template/admin_knowledges.html"))
+		t := template.Must(template.ParseFiles("template/admin_knowledges.html", "template/_header.html"))
 		err = t.Execute(w, indexPages)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -232,7 +232,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		case err != nil:
 			panic(err.Error())
 		default:
-			t := template.Must(template.ParseFiles("template/user_details.html"))
+			t := template.Must(template.ParseFiles("template/user_details.html", "template/_header.html", "template/_footer.html"))
 			err = t.Execute(w, editPage)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -255,7 +255,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			indexPages = append(indexPages, indexPage)
 		}
 
-		t := template.Must(template.ParseFiles("template/user_knowledges.html"))
+		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
 		err = t.Execute(w, indexPages)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

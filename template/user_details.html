@@ -3,12 +3,13 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <link rel='stylesheet' href='/static/node_modules/tinymce/skins/content/writer/content.css'>
 </head>
 <body>
+    {{ template "header" }}
     <h2>{{ .Title }}</h2>
     <input id="input" type='hidden' value="{{ .Content }}">
     <div id="content"></div>
+    {{ template "footer" }}
 </body>
 <script type="text/javascript">
 const content = document.getElementById('content')

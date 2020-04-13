@@ -318,5 +318,6 @@ func main() {
 	http.HandleFunc("/admin/delete/", deleteHandler)
 	http.HandleFunc("/knowledges/", knowledgesHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
+	http.Handle("/node_modules/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/node_modules/"))))
 	http.ListenAndServe(":3000", nil)
 }

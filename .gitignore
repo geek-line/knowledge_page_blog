@@ -1,2 +1,3 @@
 sql_env.txt
 *.ddl
+node_modules

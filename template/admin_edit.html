@@ -16,13 +16,13 @@
     </head>
     <body>
         {{ template "header" .Header }}
-        <div><h2>{{ EditPage.Title }}を編集</h2></div>
+        <div><h2>{{ .EditPage.Title }}を編集</h2></div>
         <form id="form">
             <div><h3>タイトルの編集</h3></div>
-            <div><input type="text"  style="font-size:100%; width :100%;height : 50px;" name="title" value="{{ EditPage.Title }}"></div>
+            <div><input type="text"  style="font-size:100%; width :100%;height : 50px;" name="title" value="{{ .EditPage.Title }}"></div>
             <div><h3>内容の編集</h3></div>         
-            <div><textarea id="edit_body" rows = "200" cols = "80">{{ EditPage.Content }}</textarea><br></div>
-            <div><input type='hidden' name="id" value="{{ EditPage.Id }}"></div>
+            <div><textarea id="edit_body" rows = "200" cols = "80">{{ .EditPage.Content }}</textarea><br></div>
+            <div><input type='hidden' name="id" value="{{ .EditPage.Id }}"></div>
             <div><input onclick="sendData()" type="button" value="Save"></div>
         </form>
     </body>  

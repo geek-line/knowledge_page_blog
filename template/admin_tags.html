@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+</head>
+<body>
+    {{ template "header" .Header}}
+    <form action='/admin/tags/' method="POST">
+        <span>タグ名</span><input type='text' name="name">
+        <input type='submit' value="タグを追加">
+    </form>
+    <ul>
+        {{ range .Tags }}
+        <li>
+            <form id="form">
+                <input type='hidden' name="id" value="{{ .Id }}">
+                <span>タグ名</span><input type='text' name="name" value="{{ .Name }}">
+                <input id="button" type='button' value="タグを更新">
+            </form>
+        </li>
+        {{ end }}
+    </ul>
+    
+</body>
+<script type="text/javascript">
+    const forms = document.querySelectorAll('#form')
+    const buttons = document.querySelectorAll('#button')
+    for (let i=0;i < form.length; i++){
+        buttons[i].addEventListener('click', function(){
+            const formdata = new FormData(forms[i])
+            const XHR = new XMLHttpRequest()
+            XHR.open('PUT', '/admin/tags/')
+            XHR.send(formdata)
+            XHR.onreadystatechange = function () {
+                if (XHR.readyState === 4) {
+                    if (XHR.status === 200) {
+                        alert('データが更新されました')
+                        location.href = "/admin/tags/";
+                    } else {
+                        alert('データが正常に送れませんでした')
+                    }
+                }
+            }
+        })
+    }
+</script>
+</html>

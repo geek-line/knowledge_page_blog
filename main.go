@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
@@ -26,6 +27,11 @@ type Knowledges struct {
 
 type Header struct {
 	IsLogin bool
+}
+
+type Tag struct {
+	Id   int
+	Name string
 }
 
 const (
@@ -187,7 +193,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func saveHandler(w http.ResponseWriter, r *http.Request) {
+func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
@@ -219,7 +225,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }
 
-func deleteHandler(w http.ResponseWriter, r *http.Request) {
+func adminDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
@@ -238,6 +244,65 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
+}
+
+func adminTagsHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	header := newHeader(false)
+	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
+		header.IsLogin = true
+	}
+	db, err := sql.Open("mysql", env["sqlEnv"])
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	switch {
+	case r.Method == "GET":
+		rows, err := db.Query("SELECT id, name FROM tags")
+		if err != nil {
+			panic(err.Error())
+		}
+		defer rows.Close()
+		var tags []Tag
+
+		for rows.Next() {
+			var tag Tag
+			err := rows.Scan(&tag.Id, &tag.Name)
+			if err != nil {
+				panic(err.Error())
+			}
+			tags = append(tags, tag)
+		}
+		t := template.Must(template.ParseFiles("template/admin_tags.html", "template/_header.html"))
+		if err := t.Execute(w, struct {
+			Header Header
+			Tags   []Tag
+		}{
+			Header: header,
+			Tags:   tags,
+		}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	case r.Method == "POST":
+		name := r.FormValue("name")
+		createdAt := time.Now()
+		updatedAt := time.Now()
+		_, err = db.Query("INSERT INTO tags(name, created_at, updated_at) VALUES(?, ?, ?)", name, createdAt, updatedAt)
+		if err != nil {
+			panic(err.Error())
+		}
+		http.Redirect(w, r, "/admin/tags/", http.StatusFound)
+	case r.Method == "PUT":
+		var id int
+		id, _ = strconv.Atoi(r.FormValue("id"))
+		name := r.FormValue("name")
+		updatedAt := time.Now()
+		_, err = db.Query("UPDATE tags SET name = ?, updated_at = ? WHERE id = ?", name, updatedAt, id)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
 }
 
 func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
@@ -313,9 +378,10 @@ func main() {
 	http.HandleFunc("/admin/login/", adminLoginHandler)
 	http.HandleFunc("/admin/logout/", adminLogoutHandler)
 	http.HandleFunc("/admin/knowledges/", adminKnowledgesHandler)
+	http.HandleFunc("/admin/tags/", adminTagsHandler)
 	http.HandleFunc("/admin/new/", adminNewHandler)
-	http.HandleFunc("/admin/save/", saveHandler)
-	http.HandleFunc("/admin/delete/", deleteHandler)
+	http.HandleFunc("/admin/save/", adminSaveHandler)
+	http.HandleFunc("/admin/delete/", adminDeleteHandler)
 	http.HandleFunc("/knowledges/", knowledgesHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
 	http.Handle("/node_modules/", http.StripPrefix("/node_modules/", http.FileServer(http.Dir(dir+"/node_modules/"))))

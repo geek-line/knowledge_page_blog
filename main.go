@@ -24,6 +24,10 @@ type Knowledges struct {
 	Content string
 }
 
+type Header struct {
+	IsLogin bool
+}
+
 const (
 	lenPathAdminKnowledges = len("/admin/knowledges/")
 	lenPathDelete          = len("/admin/delete/")
@@ -45,13 +49,21 @@ func init() {
 	env["sqlEnv"] = string(sqlenv)
 }
 
+func newHeader(isLogin bool) Header {
+	return Header{IsLogin: isLogin}
+}
+
 func adminLoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		session, _ := store.Get(r, "cookie-name")
 		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 			t := template.Must(template.ParseFiles("template/admin_login.html", "template/_header.html"))
-			err := t.Execute(w, nil)
-			if err != nil {
+			header := newHeader(false)
+			if err := t.Execute(w, struct {
+				Header Header
+			}{
+				Header: header,
+			}); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
@@ -97,8 +109,12 @@ func adminNewHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
 	}
 	t := template.Must(template.ParseFiles("template/admin_new.html", "template/_header.html"))
-	err := t.Execute(w, nil)
-	if err != nil {
+	header := newHeader(true)
+	if err := t.Execute(w, struct {
+		Header Header
+	}{
+		Header: header,
+	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -129,8 +145,14 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		default:
 			t := template.Must(template.ParseFiles("template/admin_edit.html", "template/_header.html"))
-			err = t.Execute(w, editPage)
-			if err != nil {
+			header := newHeader(true)
+			if err := t.Execute(w, struct {
+				Header   Header
+				EditPage Knowledges
+			}{
+				Header:   header,
+				EditPage: editPage,
+			}); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
@@ -152,8 +174,14 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		t := template.Must(template.ParseFiles("template/admin_knowledges.html", "template/_header.html"))
-		err = t.Execute(w, indexPages)
-		if err != nil {
+		header := newHeader(true)
+		if err = t.Execute(w, struct {
+			Header     Header
+			IndexPages []IndexPage
+		}{
+			Header:     header,
+			IndexPages: indexPages,
+		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -213,6 +241,12 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	header := newHeader(false)
+	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
+		header.IsLogin = true
+	}
+
 	suffix := r.URL.Path[lenPathKnowledges:]
 	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
@@ -233,8 +267,13 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		default:
 			t := template.Must(template.ParseFiles("template/user_details.html", "template/_header.html", "template/_footer.html"))
-			err = t.Execute(w, editPage)
-			if err != nil {
+			if err := t.Execute(w, struct {
+				Header   Header
+				EditPage Knowledges
+			}{
+				Header:   header,
+				EditPage: editPage,
+			}); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
@@ -256,8 +295,13 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
-		err = t.Execute(w, indexPages)
-		if err != nil {
+		if err = t.Execute(w, struct {
+			Header     Header
+			IndexPages []IndexPage
+		}{
+			Header:     header,
+			IndexPages: indexPages,
+		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}

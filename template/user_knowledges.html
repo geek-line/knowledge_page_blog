@@ -5,10 +5,10 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
 </head>
 <body>
-    {{ template "header" }}
+    {{ template "header" .Header }}
     <div>knowledges一覧</div>
     <ul>
-        {{ range . }}
+        {{ range .IndexPages }}
         <li>
             <span>{{ .Id }}</span>
             <a href="/knowledges/{{ .Id |html| }}">{{ .Title }}</a>

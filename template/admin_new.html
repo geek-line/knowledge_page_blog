@@ -15,7 +15,7 @@
         </script>
     </head>
     <body>
-        
+        {{ template "header" .Header }}
         <div><h2>knowledge作成</h2></div>
         <form id="form" action="/admin/save/" method="POST">
             <div><h3>タイトルの編集</h3></div>
@@ -24,7 +24,6 @@
             <div><textarea id="create_body" rows = "200" cols = "80"></textarea><br></div>
             <div><input onclick="sendData()" type="button" value="Save"></div>
         </form>
-           
     </body>  
     <script type="text/javascript">
     const form = document.getElementById('form')

@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/sessions"
 )
 
 type IndexPage struct {
@@ -23,11 +24,17 @@ type Knowledges struct {
 	Content string
 }
 
-const lenPathAdminKnowledges = len("/admin/knowledges/")
-const lenPathDelete = len("/admin/delete/")
-const lenPathKnowledges = len("/knowledges/")
+const (
+	lenPathAdminKnowledges = len("/admin/knowledges/")
+	lenPathDelete          = len("/admin/delete/")
+	lenPathKnowledges      = len("/knowledges/")
+)
 
-var env = make(map[string]string)
+var (
+	env   = make(map[string]string)
+	key   = []byte("super-secret-key")
+	store = sessions.NewCookieStore(key)
+)
 
 func init() {
 
@@ -38,7 +45,70 @@ func init() {
 	env["sqlEnv"] = string(sqlenv)
 }
 
+func adminLoginHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		session, _ := store.Get(r, "cookie-name")
+		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+			t := template.Must(template.ParseFiles("template/admin_login.html"))
+			err := t.Execute(w, nil)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		} else {
+			session.Values["authenticated"] = true
+			session.Save(r, w)
+			http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
+		}
+	} else {
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+		db, err := sql.Open("mysql", env["sqlEnv"])
+		if err != nil {
+			panic(err.Error())
+		}
+		defer db.Close()
+		var correctPassword string
+		if err = db.QueryRow("SELECT password FROM admin_user WHERE email = ?", email).Scan(&correctPassword); err != nil {
+			http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		}
+		if correctPassword == password {
+			session, _ := store.Get(r, "cookie-name")
+			session.Values["authenticated"] = true
+			session.Save(r, w)
+			http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
+
+		} else {
+			http.Redirect(w, r, "/admin/login/", http.StatusFound)
+			return
+		}
+	}
+}
+
+func adminLogoutHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	session.Values["authenticated"] = false
+	session.Save(r, w)
+	http.Redirect(w, r, "/admin/login/", http.StatusFound)
+}
+
+func adminNewHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+	}
+	t := template.Must(template.ParseFiles("template/admin_new.html"))
+	err := t.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+	}
+
 	suffix := r.URL.Path[lenPathAdminKnowledges:]
 	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
@@ -90,6 +160,11 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+	}
+
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 	db, err := sql.Open("mysql", env["sqlEnv"])
@@ -110,11 +185,18 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		return
+	default:
+		break
 	}
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+	}
+
 	suffix := r.URL.Path[lenPathDelete:]
 	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
@@ -184,8 +266,10 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	dir, _ := os.Getwd()
+	http.HandleFunc("/admin/login/", adminLoginHandler)
+	http.HandleFunc("/admin/logout/", adminLogoutHandler)
 	http.HandleFunc("/admin/knowledges/", adminKnowledgesHandler)
-	http.Handle("/admin/new/", http.StripPrefix("/admin/new/", http.FileServer(http.Dir(dir+"/static/admin_new/"))))
+	http.HandleFunc("/admin/new/", adminNewHandler)
 	http.HandleFunc("/admin/save/", saveHandler)
 	http.HandleFunc("/admin/delete/", deleteHandler)
 	http.HandleFunc("/knowledges/", knowledgesHandler)

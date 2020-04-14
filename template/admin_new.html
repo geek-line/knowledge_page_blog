@@ -20,26 +20,53 @@
         <form id="form" action="/admin/save/" method="POST">
             <div><h3>タイトルの編集</h3></div>
             <div><input type="text"  style="font-size:100%; width :100%;height : 50px;" name="title" id='form-title'></div>
+            <div><h3>タグの追加</h3></div>
+            <div id="select_display">
+            </div>
+            <button 
+            type="button" 
+            id="add_tag_button" 
+            value="<select class='elem_tag'>{{range .Tags}}<option value='{{.Id}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>"
+            >タグを追加</button>
             <div><h3>内容の編集</h3></div>         
             <div><textarea id="create_body" rows = "200" cols = "80"></textarea><br></div>
-            <div><input onclick="sendData()" type="button" value="Save"></div>
+            <div><input id="submit_button" onclick="sendData()" type="button" value="Save"></div>
         </form>
-    </body>  
+    </body>
     <script type="text/javascript">
     const form = document.getElementById('form')
+    const add_tag_button = document.getElementById('add_tag_button')
+    window.addEventListener('DOMContentLoaded', function(){
+        select_display.textContent = null;
+    })
+    add_tag_button.addEventListener('click', function(){
+        const selectElement = document.createElement('div')
+        selectElement.innerHTML = add_tag_button.value
+        document.getElementById('select_display').appendChild(selectElement)
+        selectElement.childNodes[1].addEventListener('click', function () {
+            selectElement.parentNode.removeChild(selectElement);
+        })
+    })
     function sendData(){
         const content = document.getElementById('create_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
-        console.log(content)
+        const elem_tags = document.getElementsByClassName('elem_tag')
+        let tags = ''
+        for(let i=0;i < elem_tags.length;i++){
+            tags += elem_tags[i].value
+            tags += ','
+        }
+        tags = tags.slice(0, -1)
         let formdata = new FormData(form)
         formdata.append('content', content)
+        formdata.append('tags', tags)
         const XHR = new XMLHttpRequest()
         XHR.open('POST', '/admin/save/')
         XHR.send(formdata)
-        XHR.onreadystatechange = function(){
+        XHR.onreadystatechange = function () {
             if (XHR.readyState === 4) {
                 if (XHR.status === 200) {
                     location.href = "/admin/knowledges";
-                }else{
+                } else {
                     alert('データが正常に送れませんでした')
                 }
             }

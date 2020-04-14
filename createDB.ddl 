@@ -1,5 +1,0 @@
-use knowledge_blog;
-create table admin_user(id int not null auto_increment primary key, email varchar(30) not null, password varchar(16) not null);
-insert into admin_user(email, password) values('admin@knowledge.com', 'passwprd');
-show tables;
-select * from admin_user;

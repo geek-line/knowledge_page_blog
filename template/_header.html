@@ -1,45 +1,22 @@
-<!DOCTYPE html>
 {{ define "header" }}
-<html lang="en">
-<head>
-   
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Blog</title>
-    <link rel="stylesheet" href="/node_modules/materialize-css/dist/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="/node_modules/materialize-css/dist/js/materialize.js"></script>       
-   
-</head>
-<body>
-    <header class = "header">
-        <ul id="dropdown1" class="dropdown-content">
-            <li><a href="/admin/logout/">ログアウト</a></li>
-            <li><a href="/admin/new/">新規作成</a></li>
-            <!-- <li class="divider"></li>
-            <li><a href="#!">three</a></li> -->
-          </ul>
-        <nav>
-            <div class="nav-wrapper header cyan darken-1">
-                <a class="header-anker white-text brand-logo left" href="/knowledges" > Knowledge Blog</a>
-                <ul id="nav-mobile" class="right ">
-                    {{ if .IsLogin  }}
-                        <li><a class="header-anker white-text hide-on-small-only" href="/admin/logout/">ログアウト</a></li>
-                        <li><a class="header-anker white-text hide-on-small-only" href="/admin/new/">新規作成</a></li>
-                        <li><a class="dropdown-trigger  hide-on-large-only" href="#!" data-target="dropdown1"><i class="material-icons ">arrow_drop_down</i></a></li>
-                    {{else}}
-                    <a href="/admin/login/">ログイン</a>
-                    {{ end }}
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <script>
-        $(".dropdown-trigger").dropdown();   
-       </script>
-</body>
+<header class = "header">
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="/admin/logout/">ログアウト</a></li>
+        <li><a href="/admin/new/">新規作成</a></li>
+    </ul>
+    <nav>
+        <div class="nav-wrapper header cyan darken-1">
+            <a class="header-anker white-text brand-logo left" href="/knowledges" > Knowledge Blog</a>
+            <ul id="nav-mobile" class="right ">
+                {{ if .IsLogin  }}
+                    <li><a class="header-anker white-text hide-on-small-only" href="/admin/logout/">ログアウト</a></li>
+                    <li><a class="header-anker white-text hide-on-small-only" href="/admin/new/">新規作成</a></li>
+                {{else}}
+                <a href="/admin/login/">ログイン</a>
+                {{ end }}
+            </ul>
+        </div>
+    </nav>
+</header>
 {{ end }}
-</html>
 

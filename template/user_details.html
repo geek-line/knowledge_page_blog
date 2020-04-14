@@ -7,8 +7,14 @@
 </head>
 <body>
     {{ template "header" .Header }}
-    <h2>{{ .EditPage.Title }}</h2>
-    <input id="input" type='hidden' value="{{ .EditPage.Content }}">
+    <h2>{{ .DetailPage.Title }}</h2>
+    <div>タグ</div>
+    {{ range .DetailPage.SelectedTagNames }}
+    <a href=''>{{ . }}</a>
+    {{ end }}
+    <div>最終更新日時</div>
+    {{ .DetailPage.UpdatedAt }}
+    <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
     <div id="content"></div>
     {{ template "footer" }}
 </body>

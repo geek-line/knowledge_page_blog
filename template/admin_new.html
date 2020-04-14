@@ -56,7 +56,6 @@
             tags += ','
         }
         tags = tags.slice(0, -1)
-        console.log(tags)
         let formdata = new FormData(form)
         formdata.append('content', content)
         formdata.append('tags', tags)

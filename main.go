@@ -164,9 +164,8 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 
 	if suffix != "" {
 		var editPage Knowledges
-		var id int
-		id, _ = strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content FROM knowledges WHERE id = ?", id).Scan(&editPage.Id, &editPage.Title, &editPage.Content)
+		knowledgeID, _ := strconv.Atoi(suffix)
+		err := db.QueryRow("SELECT id, title, content FROM knowledges WHERE id = ?", knowledgeID).Scan(&editPage.Id, &editPage.Title, &editPage.Content)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
@@ -174,14 +173,45 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		case err != nil:
 			panic(err.Error())
 		default:
+			rows, err := db.Query("SELECT id, name FROM tags")
+			if err != nil {
+				panic(err.Error())
+			}
+			defer rows.Close()
+			var tags []Tag
+
+			for rows.Next() {
+				var tag Tag
+				err := rows.Scan(&tag.Id, &tag.Name)
+				if err != nil {
+					panic(err.Error())
+				}
+				tags = append(tags, tag)
+			}
+			var selectedTagsID []int
+
+			rows, _ = db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", knowledgeID)
+			for rows.Next() {
+				var selectedTagID int
+				err := rows.Scan(&selectedTagID)
+				if err != nil {
+					panic(err.Error())
+				}
+				selectedTagsID = append(selectedTagsID, selectedTagID)
+			}
+
 			t := template.Must(template.ParseFiles("template/admin_edit.html", "template/_header.html"))
 			header := newHeader(true)
 			if err := t.Execute(w, struct {
-				Header   Header
-				EditPage Knowledges
+				Header         Header
+				EditPage       Knowledges
+				Tags           []Tag
+				SelectedTagsID []int
 			}{
-				Header:   header,
-				EditPage: editPage,
+				Header:         header,
+				EditPage:       editPage,
+				Tags:           tags,
+				SelectedTagsID: selectedTagsID,
 			}); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
@@ -255,10 +285,24 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	case r.Method == "PUT":
-		id := r.FormValue("id")
-		_, err = db.Query("UPDATE knowledges SET title = ?, content = ? WHERE id = ?", title, content, id)
+		knowledgeID, _ := strconv.Atoi(r.FormValue("id"))
+		updatedAt := time.Now()
+		_, err = db.Query("UPDATE knowledges SET title = ?, content = ?, updated_at = ? WHERE id = ?", title, content, updatedAt, knowledgeID)
 		if err != nil {
 			panic(err.Error())
+		}
+		_, err := db.Query("DELETE FROM knowledges_tags WHERE knowledge_id = ?", knowledgeID)
+		if err != nil {
+			panic(err.Error())
+		}
+		tags := strings.Split(r.FormValue("tags"), ",")
+		createdAt := time.Now()
+		for _, tag := range tags {
+			tagID, _ := strconv.Atoi(tag)
+			_, err = db.Query("INSERT INTO knowledges_tags(knowledge_id, tag_id, created_at, updated_at) VALUES(?, ?, ?, ?)", knowledgeID, tagID, createdAt, updatedAt)
+			if err != nil {
+				panic(err.Error())
+			}
 		}
 		return
 	default:

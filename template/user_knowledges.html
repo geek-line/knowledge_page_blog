@@ -35,6 +35,12 @@
                     <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
                     
                     </div>
+                    <div>最終更新日</div>
+                    {{ .UpdatedAt }}
+                    <!-- 以下タグ -->
+                    {{ range .SelectedTagNames }}
+                    <a>{{ . }}</a>
+                    {{ end }}
                 </div>
                 {{ end }}
             </ul>

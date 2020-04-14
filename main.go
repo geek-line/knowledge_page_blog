@@ -20,6 +20,7 @@ type IndexPage struct {
 	Title            string //タイトルの中身
 	SelectedTagNames []string
 	UpdatedAt        string
+	Likes            int
 }
 
 type DetailPage struct {
@@ -28,6 +29,7 @@ type DetailPage struct {
 	Content          string
 	SelectedTagNames []string
 	UpdatedAt        string
+	Likes            int
 }
 
 type Knowledges struct {
@@ -432,7 +434,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		var detailPage DetailPage
 		var id int
 		id, _ = strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content, updated_at FROM knowledges WHERE id = ?", id).Scan(&detailPage.Id, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt)
+		err := db.QueryRow("SELECT id, title, content, updated_at, likes FROM knowledges WHERE id = ?", id).Scan(&detailPage.Id, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
@@ -471,7 +473,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		rows, err := db.Query("SELECT id, title, updated_at FROM knowledges")
+		rows, err := db.Query("SELECT id, title, updated_at, likes FROM knowledges")
 		if err != nil {
 			panic(err.Error())
 		}
@@ -479,7 +481,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		var indexPages []IndexPage
 		for rows.Next() {
 			var indexPage IndexPage
-			err := rows.Scan(&indexPage.Id, &indexPage.Title, &indexPage.UpdatedAt)
+			err := rows.Scan(&indexPage.Id, &indexPage.Title, &indexPage.UpdatedAt, &indexPage.Likes)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -513,7 +515,20 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
+}
 
+func knowledgeLikeHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.FormValue("id"))
+	if err != nil {
+		panic(err.Error())
+	}
+	db, err := sql.Open("mysql", env["sqlEnv"])
+	if err != nil {
+		panic(err.Error())
+	}
+	if _, err := db.Query("UPDATE knowledges SET likes = likes + 1 WHERE id = ?", id); err != nil {
+		panic(err.Error())
+	}
 }
 
 func main() {
@@ -526,6 +541,7 @@ func main() {
 	http.HandleFunc("/admin/save/", adminSaveHandler)
 	http.HandleFunc("/admin/delete/", adminDeleteHandler)
 	http.HandleFunc("/knowledges/", knowledgesHandler)
+	http.HandleFunc("/knowledges/like", knowledgeLikeHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
 	http.Handle("/node_modules/", http.StripPrefix("/node_modules/", http.FileServer(http.Dir(dir+"/node_modules/"))))
 	http.ListenAndServe(":3000", nil)

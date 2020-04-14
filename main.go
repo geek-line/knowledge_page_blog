@@ -329,6 +329,10 @@ func adminDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
+	_, err = db.Query("DELETE FROM knowledges_tags WHERE knowledge_id = ?", id)
+	if err != nil {
+		panic(err.Error())
+	}
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }
 
@@ -380,11 +384,20 @@ func adminTagsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		http.Redirect(w, r, "/admin/tags/", http.StatusFound)
 	case r.Method == "PUT":
-		var id int
-		id, _ = strconv.Atoi(r.FormValue("id"))
+		id, _ := strconv.Atoi(r.FormValue("id"))
 		name := r.FormValue("name")
 		updatedAt := time.Now()
 		_, err = db.Query("UPDATE tags SET name = ?, updated_at = ? WHERE id = ?", name, updatedAt, id)
+		if err != nil {
+			panic(err.Error())
+		}
+	case r.Method == "DELETE":
+		id, _ := strconv.Atoi(r.FormValue("id"))
+		_, err = db.Query("DELETE FROM tags WHERE id = ?", id)
+		if err != nil {
+			panic(err.Error())
+		}
+		_, err = db.Query("DELETE FROM knowledges_tags WHERE tag_id = ?", id)
 		if err != nil {
 			panic(err.Error())
 		}

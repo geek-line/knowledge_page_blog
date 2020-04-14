@@ -164,7 +164,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
 	}
-
+	header := newHeader(true)
 	suffix := r.URL.Path[lenPathAdminKnowledges:]
 	db, err := sql.Open("mysql", env["sqlEnv"])
 	if err != nil {
@@ -179,9 +179,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
-			http.NotFound(w, r)
-		case err != nil:
-			panic(err.Error())
+			statusNotFoundHandler(w, r)
 		default:
 			rows, err := db.Query("SELECT id, name FROM tags")
 			if err != nil {
@@ -211,7 +209,6 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			t := template.Must(template.ParseFiles("template/admin_edit.html", "template/_header.html"))
-			header := newHeader(true)
 			if err := t.Execute(w, struct {
 				Header         Header
 				EditPage       Knowledges
@@ -436,7 +433,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
-			http.NotFound(w, r)
+			statusNotFoundHandler(w, r)
 		case err != nil:
 			panic(err.Error())
 		default:
@@ -513,11 +510,27 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
+}
 
+func statusNotFoundHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+	header := newHeader(false)
+	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
+		header.IsLogin = true
+	}
+	t := template.Must(template.ParseFiles("template/404.html", "template/_header.html"))
+	if err := t.Execute(w, struct {
+		Header Header
+	}{
+		Header: header,
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func main() {
 	dir, _ := os.Getwd()
+	http.HandleFunc("/", statusNotFoundHandler)
 	http.HandleFunc("/admin/login/", adminLoginHandler)
 	http.HandleFunc("/admin/logout/", adminLogoutHandler)
 	http.HandleFunc("/admin/knowledges/", adminKnowledgesHandler)

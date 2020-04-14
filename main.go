@@ -285,12 +285,14 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		tags := strings.Split(r.FormValue("tags"), ",")
-		for _, tag := range tags {
-			tagID, _ := strconv.Atoi(tag)
-			_, err = db.Query("INSERT INTO knowledges_tags(knowledge_id, tag_id, created_at, updated_at) VALUES(?, ?, ?, ?)", knowledgeID, tagID, createdAt, updatedAt)
-			if err != nil {
-				panic(err.Error())
+		if r.FormValue("tags") != "" {
+			tags := strings.Split(r.FormValue("tags"), ",")
+			for _, tag := range tags {
+				tagID, _ := strconv.Atoi(tag)
+				_, err = db.Query("INSERT INTO knowledges_tags(knowledge_id, tag_id, created_at, updated_at) VALUES(?, ?, ?, ?)", knowledgeID, tagID, createdAt, updatedAt)
+				if err != nil {
+					panic(err.Error())
+				}
 			}
 		}
 	case r.Method == "PUT":
@@ -304,13 +306,15 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		tags := strings.Split(r.FormValue("tags"), ",")
-		createdAt := time.Now()
-		for _, tag := range tags {
-			tagID, _ := strconv.Atoi(tag)
-			_, err = db.Query("INSERT INTO knowledges_tags(knowledge_id, tag_id, created_at, updated_at) VALUES(?, ?, ?, ?)", knowledgeID, tagID, createdAt, updatedAt)
-			if err != nil {
-				panic(err.Error())
+		if r.FormValue("tags") != "" {
+			tags := strings.Split(r.FormValue("tags"), ",")
+			createdAt := time.Now()
+			for _, tag := range tags {
+				tagID, _ := strconv.Atoi(tag)
+				_, err = db.Query("INSERT INTO knowledges_tags(knowledge_id, tag_id, created_at, updated_at) VALUES(?, ?, ?, ?)", knowledgeID, tagID, createdAt, updatedAt)
+				if err != nil {
+					panic(err.Error())
+				}
 			}
 		}
 		return
@@ -527,7 +531,7 @@ func statusNotFoundHandler(w http.ResponseWriter, r *http.Request) {
 		Header: header,
 	}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
+	}
 }
 
 func knowledgeLikeHandler(w http.ResponseWriter, r *http.Request) {

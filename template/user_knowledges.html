@@ -4,6 +4,7 @@
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+    <link rel='stylesheet' href='/static/css/user_knoeledges.css/'>
 </head>
 <body>
     {{ template "header" .Header }}
@@ -16,39 +17,52 @@
         
         <div class="col s12 m9">
              <h4>記事一覧</h4>
-             <ul>
-                {{ range .IndexPages }}
+            
+            {{ range .IndexPages }}
                 <!-- <li>
                   <span>{{ .Id }}</span>
                     <a href="/knowledges/{{ .Id |html| }}">{{ .Title }}</a>
                  </li>  -->
-
-                <div class="card col s12 m3">
-                    <div class="card-image waves-effect waves-block waves-light">
-                    <img class="activator" src="https://materializecss.com/images/office.jpg">
-                    </div>
-                    <div class="card-content">
-                    <a href="/knowledges/{{ .Id |html| }}" class="card-title activator grey-text text-darken-4">{{ .Title }}</a>
+                
                    
-                    </div>
-                    <div class="card-reveal">
-                    <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+                <div   class="cp_card02 col s12 m6">
+                    
+                    <img class="photo photo1" src='https://materializecss.com/images/office.jpg' ></img>
+                    <ul class="details">
+                       
+                        <li class="date">最終更新日:<br/>{{ .UpdatedAt }}</li>
+                 
+                    </ul>
+                   
+                    <div class="description">
+                        <h1>{{ .Title }}</h1>
+                   
+                       
+                        <ul>
+                        {{ range .SelectedTagNames }}
+                        {{if (ne . "")}}
+                        <li><a href="/knowledges/{{.}}" class="tag ">{{ . }}</a></li>
+                        {{ end }}
+                        {{ end }}
+                       </ul>
+                      
+                       
+                       <div class="like">いいね:{{ .Likes }}</div>
                     
                     </div>
-                    <div>いいね:{{ .Likes }}</div>
-                    <div>最終更新日:{{ .UpdatedAt }}</div>
-                    <!-- 以下タグ -->
-                    {{ range .SelectedTagNames }}
-                    <a>{{ . }}</a>
-                    {{ end }}
+                    <a href="/knowledges/{{ .Id |html| }}" class="knowledge_link"></a>
+    
                 </div>
-                {{ end }}
-            </ul>
+           
+                    
+               
+            {{ end }}
+        
         </div>
   
         
   
-      </div>
+    </div>
   
 
     {{ template "footer" }}

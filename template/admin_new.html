@@ -21,12 +21,10 @@
         tinymce.init({
             selector: '#create_body',
             branding: false, // クレジットの削除
-            toolbar_mode: 'floating',
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
             plugins: 'image code',
-            toolbar: 'undo redo | image code',
-            images_upload_url: '',
+            toolbar: 'undo redo | styleselect | bold italic | image code',
             images_upload_handler: function (blobInfo, success, failure) {
                 setTimeout(function () {
                     const file = blobInfo.blob()

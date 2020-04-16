@@ -3,9 +3,24 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
         <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>  
         <link rel="stylesheet" type="text/css" href="/static/css/admin_new.css">
         <script type="text/javascript">
+        require('dotenv').config();
+        const albumBucketName = process.env.ALBUMBUCKETNAME
+        const bucketRegion = process.env.BUCKETREGION
+        const IdentityPoolId = process.env.IDENTITYPOOLID
+        AWS.config.update({
+            region: bucketRegion,
+            credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: IdentityPoolId
+            })
+        });
+        const s3 = new AWS.S3({
+            apiVersion: "2006-03-01",
+            params: { Bucket: albumBucketName }
+        });
         tinymce.init({
             selector: '#create_body',
             branding: false, // クレジットの削除
@@ -17,8 +32,18 @@
             images_upload_url: '',
             images_upload_handler: function (blobInfo, success, failure) {
                 setTimeout(function () {
-                    /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-                    success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
+                    const file = blobInfo.blob()
+                    const timestamp = new Date().getTime();
+                    const filename = "file" + timestamp + file.name;
+                    s3.putObject({ Key: 'uploads/' + filename, ContentType: blobInfo.blob().type, Body: blobInfo.blob(), ACL: "public-read" },
+                        function (err, data) {
+                            if (data !== null) {
+                                const srcHTML = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'uploads/'  + filename
+                                success(srcHTML);
+                            } else {
+                                alert("アップロード失敗.");
+                            }
+                        });  
                 }, 2000);
             }
         });

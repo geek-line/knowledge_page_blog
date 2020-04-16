@@ -38,7 +38,8 @@
                             } else {
                                 alert("アップロード失敗.");
                             }
-                        });  
+                        }
+                    );  
                 }, 2000);
             }
         });
@@ -58,6 +59,9 @@
             id="add_tag_button" 
             value="<select class='elem_tag'>{{range .Tags}}<option value='{{.Id}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>"
             >タグを追加</button>
+            <div>アイキャッチ</div>
+            <input id="file_uploader" type='file'>
+            <input id="file_src" type='hidden' name="eyecatch_src">
             <div><h3>内容の編集</h3></div>         
             <div><textarea id="create_body" rows = "200" cols = "80"></textarea><br></div>
             <div><input id="submit_button" onclick="sendData()" type="button" value="Save"></div>
@@ -80,27 +84,42 @@
     function sendData(){
         const content = document.getElementById('create_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
         const elem_tags = document.getElementsByClassName('elem_tag')
-        let tags = ''
-        for(let i=0;i < elem_tags.length;i++){
-            tags += elem_tags[i].value
-            tags += ','
-        }
-        tags = tags.slice(0, -1)
-        let formdata = new FormData(form)
-        formdata.append('content', content)
-        formdata.append('tags', tags)
-        const XHR = new XMLHttpRequest()
-        XHR.open('POST', '/admin/save/')
-        XHR.send(formdata)
-        XHR.onreadystatechange = function () {
-            if (XHR.readyState === 4) {
-                if (XHR.status === 200) {
-                    location.href = "/admin/knowledges";
+        const file_uploader = document.getElementById('file_uploader')
+
+        const timestamp = new Date().getTime();
+        const filename = "file" + timestamp + file_uploader.files[0].name;
+
+        s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
+            function (err, data) {
+                if (data !== null) {
+                    document.getElementById('file_src').value = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
+                    let tags = ''
+                    for (let i = 0; i < elem_tags.length; i++) {
+                        tags += elem_tags[i].value
+                        tags += ','
+                    }
+                    tags = tags.slice(0, -1)
+                    let formdata = new FormData(form)
+                    formdata.append('content', content)
+                    formdata.append('tags', tags)
+                    const XHR = new XMLHttpRequest()
+                    XHR.open('POST', '/admin/save/')
+                    XHR.send(formdata)
+                    XHR.onreadystatechange = function () {
+                        if (XHR.readyState === 4) {
+                            if (XHR.status === 200) {
+                                location.href = "/admin/knowledges";
+                            } else {
+                                alert('データが正常に送れませんでした')
+                            }
+                        }
+                    }
                 } else {
-                    alert('データが正常に送れませんでした')
+                    alert("アップロード失敗.");
                 }
             }
-        }
+        );
+
     }
     </script>
 </html>  

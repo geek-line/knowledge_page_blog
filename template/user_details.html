@@ -4,24 +4,41 @@
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+    <link rel='stylesheet' href='/static/css/user_details.css/'>
 </head>
 <body>
     {{ template "header" .Header }}
-    <h2>{{ .DetailPage.Title }}</h2>
-    <div>タグ</div>
-    {{ range .DetailPage.SelectedTagNames }}
-    <a href=''>{{ . }}</a>
-    {{ end }}
-    <div>最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
-    <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
-    <form id="like_form">
-        <input type='hidden' name="id" value="{{ .DetailPage.Id }}">
-        <input type='button' value="いいね" onclick="sendLike()">
-    </form>
-    <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
-    <div id="content"></div>
+
+
+    <div class= "content_page">
+        <h2>{{ .DetailPage.Title }}</h2>
+        <div>タグ</div>
+        {{ range .DetailPage.SelectedTagNames }}
+        <a href=''>{{ . }}</a>
+        {{ end }}
+        <div>最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
+        <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
+        <form id="like_form">
+            <input type='hidden' name="id" value="{{ .DetailPage.Id }}">
+            <input type='button' value="いいね" onclick="sendLike()">
+        </form>
+        <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+        <div id="content"></div>
+    </div>
+
+
     {{ template "footer" }}
+
 </body>
+
+
+
+
+
+
+
+
+
 <script type="text/javascript">
 const content = document.getElementById('content')
 const input = document.getElementById('input')

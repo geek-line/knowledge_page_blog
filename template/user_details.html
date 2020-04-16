@@ -8,6 +8,7 @@
 <body>
     {{ template "header" .Header }}
     <h2>{{ .DetailPage.Title }}</h2>
+    <img src="{{ .DetailPage.EyeCatchSrc }}" alt=''>
     <div>タグ</div>
     {{ range .DetailPage.SelectedTagNames }}
     <a href=''>{{ . }}</a>

@@ -11,12 +11,16 @@
 
 
     <div class= "content_page">
-        <h2>{{ .DetailPage.Title }}</h2>
-        <div>タグ</div>
-        {{ range .DetailPage.SelectedTagNames }}
-        <a href=''>{{ . }}</a>
-        {{ end }}
-        <div>最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
+        <ul class="tags">   
+            {{ range .DetailPage.SelectedTagNames }}
+             <li><a href='#'>{{ . }}</a></li>
+            {{ end }}
+        </ul>
+        <div class= "title"><h2>{{ .DetailPage.Title }}</h2></div>
+        <div class= "update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
+        <p></p>
+      
+       
         <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
         <form id="like_form">
             <input type='hidden' name="id" value="{{ .DetailPage.Id }}">
@@ -47,6 +51,21 @@ window.addEventListener('DOMContentLoaded', function(){
     content.innerHTML = input.value
 })
 function sendLike(){
+    
+    console.log(localStorage.getItem('like'))
+    var like = localStorage.getItem('like');
+    
+    
+   
+    let num=0;
+    if(localStorage.getItem(like) == null){
+        localStorage.setItem('like', 'true');
+        num= 1;
+    }else{
+       
+        num= 0;
+    }
+    console.log(localStorage.getItem('like'))
     const like_form = document.getElementById('like_form')
     const XHR = new XMLHttpRequest()
     let formdata = new FormData(like_form)
@@ -54,7 +73,7 @@ function sendLike(){
     XHR.onreadystatechange = function () {
         if (XHR.readyState === 4) {
             if (XHR.status === 200) {
-                likes.textContent = Number(likes.textContent) + 1
+                likes.textContent = Number(likes.textContent) + num
             } else {
                 alert('データが正常に送れませんでした')
             }

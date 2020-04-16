@@ -2,7 +2,41 @@ body{
     background-color: #e8f5f7;
 }
 .content_page{
-    margin:0px 5px ;
+    padding: 1rem 1rem 1rem 1rem;
+    position: relative;
+    margin:5px 5px ;
     background-color:white;
     border-radius: 4px;
 }
+.content_page .title h2{
+    
+}
+.content_page .update_time{
+    position: absolute;
+    right:5px;
+}
+
+.content_page .tags {
+    position: absolute;
+  
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+   
+    margin: 0;
+    
+}
+
+.content_page .tags li  a {
+  
+    font-size: 0.8em;
+    margin-right: 4px;
+    padding: 0.2em 0.6em;
+    cursor: pointer;
+    border-radius: 10px;
+    color:white;
+    background-color: #827b7b;
+    line-height: 1.45em;
+    position: left;
+}
+

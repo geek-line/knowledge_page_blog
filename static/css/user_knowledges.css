@@ -94,6 +94,25 @@
 .cp_card02 .details a:hover {
     color:#827b7b;
 }
+
+.cp_card02 .description a {
+   
+  
+    margin-bottom: 10px;
+    text-decoration: none;
+    color:#827b7b;
+}
+
+.cp_card02 .description a::after {
+    font-family: FontAwesome;
+    margin-left: -10px;
+    content: '\f061';
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    vertical-align: middle;
+    opacity: 0;
+}
+
 .cp_card02 .description {
     position: relative;
     z-index: 0;
@@ -114,17 +133,37 @@
     transform: skewX(-8deg);
     background: #ffffff;
 }
-.cp_card02 .description h1 {
+
+.cp_card02 .description .knowledge_title {
+
+}
+
+.cp_card02 .description .knowledge_title h1 {
+    position: relative;
+    width: auto;
+    float:left;
+    height: 20%;
     font-size: 1.5em;
     line-height: 1em;
     margin: 0 0 0px 0;
+
+}
+.cp_card02 .description .knowledge_title h1 {
+    position: relative;
+    width: auto;
+    float:left;
+    height: 20%;
+    font-size: 1.5em;
+    line-height: 1em;
+    margin: 0 0 0px 0;
+
 }
 
 
 .cp_card02 .description p {
-    position: relative;
+    position: absolute;
     margin: 0;
-    padding-top: 20px;
+    top:20%;
 }
 .cp_card02 .description p::after {
     position: absolute;
@@ -135,36 +174,33 @@
     content: '';
     background: #ff5722;
 }
-.cp_card02 .description a {
+.cp_card02 .description .tag_list {
+    position: absolute;
+    bottom:4em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
    
-    float: right;
-    margin-bottom: 10px;
-    text-decoration: none;
-    color:#827b7b;
+    margin: 0;
+    padding-top: 20px;
 }
-
 .cp_card02 .description .like {
     position: absolute;
+    right:0px;
     bottom: 3px;
-    float: right;
+    font-size: 0.9em;
+    line-height: 1.45em;
     margin-bottom: 10px;
     text-decoration: none;
     color:#827b7b;
+  
 }
-.cp_card02 .description a::after {
-    font-family: FontAwesome;
-    margin-left: -10px;
-    content: '\f061';
-    -webkit-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-    vertical-align: middle;
-    opacity: 0;
-}
+
 .cp_card02 .description ul li .tag   {
   
     font-size: 0.8em;
     margin-right: 4px;
-    padding: 0.1em 0.5em;
+    padding: 0.2em 0.6em;
     cursor: pointer;
     border-radius: 10px;
     color:white;

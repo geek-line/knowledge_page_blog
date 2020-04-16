@@ -4,7 +4,7 @@
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
-    <link rel='stylesheet' href='/static/css/user_knoeledges.css/'>
+    <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
 </head>
 <body>
     {{ template "header" .Header }}
@@ -35,10 +35,11 @@
                     </ul>
                    
                     <div class="description">
+                        <a href="/knowledges/{{ .Id |html| }}" class="knowledge_title">
                         <h1>{{ .Title }}</h1>
-                   
-                       
-                        <ul>
+                    </a>                   
+                      <p></p> 
+                        <ul class="tag_list">
                         {{ range .SelectedTagNames }}
                         {{if (ne . "")}}
                         <li><a href="/knowledges/{{.}}" class="tag ">{{ . }}</a></li>
@@ -50,7 +51,7 @@
                        <div class="like">いいね:{{ .Likes }}</div>
                     
                     </div>
-                    <a href="/knowledges/{{ .Id |html| }}" class="knowledge_link"></a>
+                    
     
                 </div>
            

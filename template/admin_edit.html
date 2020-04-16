@@ -64,7 +64,7 @@
             <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
             <img src="{{ .EditPage.EyeCatchSrc }}">
             <div><h3>内容の編集</h3></div>         
-            <div><textarea id="edit_body" rows = "200" cols = "80">{{ .EditPage.Content }}</textarea><br></div>
+            <div><textarea id="edit_body" rows = "50">{{ .EditPage.Content }}</textarea><br></div>
             <div><input type='hidden' name="id" value="{{ .EditPage.Id }}"></div>
             <div><input type='hidden' name='selectedTagsID' value="{{range .SelectedTagsID}}{{.}},{{end}}"></div>
             <div><input onclick="sendData()" type="button" value="Save"></div>

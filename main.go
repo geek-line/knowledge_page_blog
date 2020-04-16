@@ -21,6 +21,7 @@ type IndexPage struct {
 	SelectedTagNames []string
 	UpdatedAt        string
 	Likes            int
+	EyeCatchSrc      string
 }
 
 type DetailPage struct {
@@ -30,12 +31,14 @@ type DetailPage struct {
 	SelectedTagNames []string
 	UpdatedAt        string
 	Likes            int
+	EyeCatchSrc      string
 }
 
 type Knowledges struct {
-	Id      int
-	Title   string
-	Content string
+	Id          int
+	Title       string
+	Content     string
+	EyeCatchSrc string
 }
 
 type Header struct {
@@ -180,7 +183,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 	if suffix != "" {
 		var editPage Knowledges
 		knowledgeID, _ := strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content FROM knowledges WHERE id = ?", knowledgeID).Scan(&editPage.Id, &editPage.Title, &editPage.Content)
+		err := db.QueryRow("SELECT id, title, content, eyecatch_src FROM knowledges WHERE id = ?", knowledgeID).Scan(&editPage.Id, &editPage.Title, &editPage.Content, &editPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
@@ -266,6 +269,7 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	title := r.FormValue("title")
 	content := r.FormValue("content")
+	eyecatchSrc := r.FormValue("eyecatch_src")
 	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
@@ -275,12 +279,12 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 	case r.Method == "POST":
 		createdAt := time.Now()
 		updatedAt := time.Now()
-		stmtInsert, err := db.Prepare("INSERT INTO knowledges(title, content, created_at, updated_at) VALUES(?, ?, ?, ?)")
+		stmtInsert, err := db.Prepare("INSERT INTO knowledges(title, content, created_at, updated_at, eyecatch_src) VALUES(?, ?, ?, ?, ?)")
 		if err != nil {
 			panic(err.Error())
 		}
 		defer stmtInsert.Close()
-		result, err := stmtInsert.Exec(title, content, createdAt, updatedAt)
+		result, err := stmtInsert.Exec(title, content, createdAt, updatedAt, eyecatchSrc)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -301,7 +305,7 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 	case r.Method == "PUT":
 		knowledgeID, _ := strconv.Atoi(r.FormValue("id"))
 		updatedAt := time.Now()
-		_, err = db.Query("UPDATE knowledges SET title = ?, content = ?, updated_at = ? WHERE id = ?", title, content, updatedAt, knowledgeID)
+		_, err = db.Query("UPDATE knowledges SET title = ?, content = ?, updated_at = ?, eyecatch_src = ? WHERE id = ?", title, content, updatedAt, eyecatchSrc, knowledgeID)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -438,7 +442,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		var detailPage DetailPage
 		var id int
 		id, _ = strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content, updated_at, likes FROM knowledges WHERE id = ?", id).Scan(&detailPage.Id, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes)
+		err := db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.Id, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
@@ -477,7 +481,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		rows, err := db.Query("SELECT id, title, updated_at, likes FROM knowledges")
+		rows, err := db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges")
 		if err != nil {
 			panic(err.Error())
 		}
@@ -485,7 +489,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 		var indexPages []IndexPage
 		for rows.Next() {
 			var indexPage IndexPage
-			err := rows.Scan(&indexPage.Id, &indexPage.Title, &indexPage.UpdatedAt, &indexPage.Likes)
+			err := rows.Scan(&indexPage.Id, &indexPage.Title, &indexPage.UpdatedAt, &indexPage.Likes, &indexPage.EyeCatchSrc)
 			if err != nil {
 				panic(err.Error())
 			}

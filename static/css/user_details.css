@@ -1,33 +1,64 @@
 body{
     background-color: #e8f5f7;
 }
-.content_page{
-    padding: 1rem 1rem 1rem 1rem;
-    position: relative;
-    margin:5px 5px ;
-    background-color:white;
-    border-radius: 4px;
-}
-.content_page .title h2{
-    
-}
-.content_page .update_time{
-    position: absolute;
-    right:5px;
+
+.p_items_wrapper{
+    background-color: #e8f5f7;
 }
 
-.content_page .tags {
-    position: absolute;
-  
+.p_items_wrapper .p_action_item{
+    position: sticky;
+    top: 30vh;
+    will-change: transform;
+}
+
+.p_items_wrapper .p_main_item{
+    padding: 1rem 1rem 1rem 1rem;
+    position: relative;
+    margin:2rem 0rem;
+    background-color:white;
+    border-radius: 10px;
+}
+
+.p_items_wrapper .p_main_item .tags {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-   
-    margin: 0;
+    margin: 0rem 0rem 1rem 0rem;
+}
+
+.p_items_wrapper .p_main_item .title {
+    font-size: 2.0rem;
+    margin-bottom: 1vh;
+    font-weight: bold;
+}
+
+.p_items_wrapper .p_main_item .update_time{
+    position: absolute;
+    right:3vw;
+  
+}
+
+.p_items_wrapper .p_main_item #content{
+    margin: 1rem;
     
 }
 
-.content_page .tags li  a {
+.p_items_wrapper .p_table_item{
+    position: sticky;
+    top:50vh;
+    max-height: 70vh;
+    will-change: transform;
+
+}
+
+.p_items_wrapper .p_table_item ul li a{
+    color: #827b7b;
+    
+}
+
+
+.p_items_wrapper .p_main_item .tags li  a {
   
     font-size: 0.8em;
     margin-right: 4px;

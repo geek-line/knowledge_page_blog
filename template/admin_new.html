@@ -6,11 +6,8 @@
         <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
         <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>  
         <link rel="stylesheet" type="text/css" href="/static/css/admin_new.css">
+        <script src="/static/aws_config.js"></script>
         <script type="text/javascript">
-        require('dotenv').config();
-        const albumBucketName = process.env.ALBUMBUCKETNAME
-        const bucketRegion = process.env.BUCKETREGION
-        const IdentityPoolId = process.env.IDENTITYPOOLID
         AWS.config.update({
             region: bucketRegion,
             credentials: new AWS.CognitoIdentityCredentials({

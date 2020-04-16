@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +12,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
+	"github.com/joho/godotenv"
 )
 
 type IndexPage struct {
@@ -59,13 +59,16 @@ var (
 	store = sessions.NewCookieStore(key)
 )
 
-func init() {
-
-	sqlenv, err := ioutil.ReadFile("sql_env.txt")
+func envLoad() {
+	err := godotenv.Load()
 	if err != nil {
-		panic(err.Error())
+		log.Fatal("Error loading .env file")
 	}
-	env["sqlEnv"] = string(sqlenv)
+}
+
+func init() {
+	envLoad()
+	env["SQL_ENV"] = os.Getenv("SQL_ENV")
 }
 
 func newHeader(isLogin bool) Header {
@@ -93,7 +96,7 @@ func adminLoginHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
-		db, err := sql.Open("mysql", env["sqlEnv"])
+		db, err := sql.Open("mysql", env["SQL_ENV"])
 		if err != nil {
 			panic(err.Error())
 		}
@@ -128,7 +131,7 @@ func adminNewHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
 	}
 
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -168,7 +171,7 @@ func adminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	header := newHeader(true)
 	suffix := r.URL.Path[lenPathAdminKnowledges:]
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -263,7 +266,7 @@ func adminSaveHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	title := r.FormValue("title")
 	content := r.FormValue("content")
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -331,7 +334,7 @@ func adminDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	suffix := r.URL.Path[lenPathDelete:]
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -355,7 +358,7 @@ func adminTagsHandler(w http.ResponseWriter, r *http.Request) {
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
 	}
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -425,7 +428,7 @@ func knowledgesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	suffix := r.URL.Path[lenPathKnowledges:]
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
@@ -539,7 +542,7 @@ func knowledgeLikeHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	db, err := sql.Open("mysql", env["sqlEnv"])
+	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}

@@ -1,36 +1,6 @@
-html{
-    font-size: 16px;
-}
 
-html h4{
-    font-size: 2rem;
-}
 
-html h5{
-    font-size: 1.5rem;
-}
 
-html p{
-    font-size: 0.9375rem;
-}
-
-.header{
-    font-size: 1.125rem;
-    color: white;
-    text-align: center;
-}
-
-.page-footer{
-    margin-top: 100px;
-}
-
-.footer-copyright p{
-    display: inline;
-}
-
-.footer-text{
-    margin: 0px 5%;
-}
 
 .btn.comment-btn{
     font-size: 1rem;

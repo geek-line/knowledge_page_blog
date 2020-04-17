@@ -8,64 +8,33 @@
 </head>
 <body>
     {{ template "header" .Header }}
-   
     <div class="row">
-
         <div class="col m3">
             <h4>検索画面</h4>
         </div>
-        
         <div class="col s12 m9">
-             <h4>記事一覧</h4>
-            
+            <h4>記事一覧</h4>
             {{ range .IndexPages }}
-                <!-- <li>
-                  <span>{{ .Id }}</span>
-                    <a href="/knowledges/{{ .Id |html| }}">{{ .Title }}</a>
-                 </li>  -->
-                
-                   
-                <div   class="cp_card02 col s12 m6">
-                    
+                <div class="cp_card02 col s12 m6">
                     <img class="photo photo1" src="{{ .EyeCatchSrc }}" ></img>
                     <ul class="details">
-                       
                         <li class="date">最終更新日:<br/>{{ .UpdatedAt }}</li>
-                 
                     </ul>
-                   
                     <div class="description">
                         <a href="/knowledges/{{ .Id |html| }}" class="knowledge_title">
-                        <h1>{{ .Title }}</h1>
-                    </a>                   
-                      <p></p> 
+                            <h1>{{ .Title }}</h1>
+                        </a>                   
                         <ul class="tag_list">
                         {{ range .SelectedTagNames }}
-                        {{if (ne . "")}}
                         <li><a href="/knowledges/{{.}}" class="tag ">{{ . }}</a></li>
                         {{ end }}
-                        {{ end }}
                        </ul>
-                      
-                       
                        <div class="like">いいね:{{ .Likes }}</div>
-                    
                     </div>
-                    
-    
                 </div>
-           
-                    
-               
             {{ end }}
-        
         </div>
-  
-        
-  
     </div>
-  
-
     {{ template "footer" }}
 </body>
 </html>

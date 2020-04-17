@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/geek-line/knowledge_page_blog#readme",
   "dependencies": {
+    "aws-sdk": "^2.657.0",
     "dotenv": "^8.2.0",
     "materialize-css": "^1.0.0-rc.2",
     "tinymce": "^5.2.1"

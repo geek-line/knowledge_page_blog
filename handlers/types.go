@@ -2,7 +2,7 @@ package handlers
 
 //DetailPage userのナレッジ詳細ページの要素
 type DetailPage struct {
-	Id               int
+	ID               int
 	Title            string
 	Content          string
 	SelectedTagNames []string
@@ -18,7 +18,7 @@ type Header struct {
 
 //Knowledges 各ナレッジの要素
 type Knowledges struct {
-	Id          int
+	ID          int
 	Title       string
 	Content     string
 	EyeCatchSrc string
@@ -26,16 +26,16 @@ type Knowledges struct {
 
 //Tag 各タグの要素
 type Tag struct {
-	Id   int
+	ID   int
 	Name string
 }
 
-//IndexPage ナレッジ一覧ページの要素
-type IndexPage struct {
-	Id               int    //タイトル
-	Title            string //タイトルの中身
-	SelectedTagNames []string
-	UpdatedAt        string
-	Likes            int
-	EyeCatchSrc      string
+//IndexElem ナレッジ一覧ページの要素
+type IndexElem struct {
+	ID           int    //タイトル
+	Title        string //タイトルの中身
+	SelectedTags []Tag
+	UpdatedAt    string
+	Likes        int
+	EyeCatchSrc  string
 }

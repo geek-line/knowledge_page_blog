@@ -13,14 +13,16 @@
             
             <h4>検索画面</h4>
             <div class="tag_container">
-                 
-          
-            
+                <ul class="tag_list">
+                    {{ range .Tags }}
+                    <li><a href="/tags/{{.Id}}" class="tag ">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
             </div>
         </div>
         <div class="col s12 m9">
             <h4>記事一覧</h4>
-            {{ range .IndexPages }}
+            {{ range .IndexPage }}
                 <div class="cp_card02 col s12 m6">
                     <img class="photo photo1" src="{{ .EyeCatchSrc }}" ></img>
                     <ul class="details">
@@ -31,8 +33,8 @@
                             <h1>{{ .Title }}</h1>
                         </a>                   
                         <ul class="tag_list">
-                        {{ range .SelectedTagNames }}
-                        <li><a href="/knowledges/{{.}}" class="tag ">{{ . }}</a></li>
+                        {{ range .SelectedTags }}
+                        <li><a href="/tags/{{.Id}}" class="tag ">{{ .Name }}</a></li>
                         {{ end }}
                        </ul>
                        <div class="like">いいね:{{ .Likes }}</div>

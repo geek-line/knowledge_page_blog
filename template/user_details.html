@@ -17,7 +17,7 @@
         <div class= "p_action_item col s0 m0 l1">
             <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
             <form id="like_form">
-                <input type='hidden' name="id" value="{{ .DetailPage.Id }}">
+                <input type='hidden' name="id" value="{{ .DetailPage.ID }}">
                 <input type='button' value="いいね" onclick="sendLike()">
             </form>
             <input id="input" type='hidden' value="{{ .DetailPage.Content }}">

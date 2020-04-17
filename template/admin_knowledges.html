@@ -25,12 +25,12 @@
     </header>
     <div>knowledges一覧</div>
     <ul>
-        {{ range .IndexPages }}
+        {{ range .IndexPage }}
         <li>
-            <span>{{ .Id }}</span>
-            <a href="/admin/knowledges/{{ .Id |html| }}">{{ .Title }}</a>
-            <a href="/knowledges/{{ .Id |html| }}">ユーザーページで表示</a>
-            <a href="/admin/delete/{{ .Id  }}">削除</a>
+            <span>{{ .ID }}</span>
+            <a href="/admin/knowledges/{{ .ID |html| }}">{{ .Title }}</a>
+            <a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a>
+            <a href="/admin/delete/{{ .ID  }}">削除</a>
         </li>
         {{ end }}
     </ul>

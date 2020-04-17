@@ -15,7 +15,7 @@
         {{ range .Tags }}
         <li>
             <form id="form">
-                <input type='hidden' name="id" value="{{ .Id }}">
+                <input type='hidden' name="id" value="{{ .ID }}">
                 <span>タグ名</span><input type='text' name="name" value="{{ .Name }}">
                 <input id="update_button" type='button' value="タグを更新">
                 <input id="delete_button" type='button' value="タグを削除">

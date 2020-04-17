@@ -29,7 +29,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		var detailPage DetailPage
 		var id int
 		id, _ = strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.Id, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
+		err := db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.ID, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
@@ -38,7 +38,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			panic(err.Error())
 		default:
 			var selectedTagNames []string
-			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", detailPage.Id)
+			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", detailPage.ID)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -68,44 +68,59 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			}
 		}
 	} else {
-		rows, err := db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges")
+		rows, err := db.Query("SELECT id, name FROM tags")
 		if err != nil {
 			panic(err.Error())
 		}
 		defer rows.Close()
-		var indexPages []IndexPage
+		var tags []Tag
 		for rows.Next() {
-			var indexPage IndexPage
-			err := rows.Scan(&indexPage.Id, &indexPage.Title, &indexPage.UpdatedAt, &indexPage.Likes, &indexPage.EyeCatchSrc)
+			var tag Tag
+			err := rows.Scan(&tag.ID, &tag.Name)
 			if err != nil {
 				panic(err.Error())
 			}
-			var selectedTagNames []string
-			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexPage.Id)
+			tags = append(tags, tag)
+		}
+		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges")
+		if err != nil {
+			panic(err.Error())
+		}
+		defer rows.Close()
+		var indexPage []IndexElem
+		for rows.Next() {
+			var indexElem IndexElem
+			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
+			if err != nil {
+				panic(err.Error())
+			}
+			var selectedTags []Tag
+			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexElem.ID)
 			if err != nil {
 				panic(err.Error())
 			}
 			defer tagsRows.Close()
 			for tagsRows.Next() {
-				var selectedTagID int
-				var selectedTagName string
-				err := tagsRows.Scan(&selectedTagID)
+				var selectedTag Tag
+				err := tagsRows.Scan(&selectedTag.ID)
 				if err != nil {
 					panic(err.Error())
 				}
-				err = db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTagID).Scan(&selectedTagName)
-				selectedTagNames = append(selectedTagNames, selectedTagName)
+				db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
+				selectedTags = append(selectedTags, selectedTag)
 			}
-			indexPage.SelectedTagNames = selectedTagNames
-			indexPages = append(indexPages, indexPage)
+			indexElem.SelectedTags = selectedTags
+			indexPage = append(indexPage, indexElem)
 		}
 		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
-			Header     Header
-			IndexPages []IndexPage
+			Header    Header
+			Tags      []Tag
+			IndexPage []IndexElem
 		}{
-			Header:     header,
-			IndexPages: indexPages,
+			Header:    header,
+			Tags:      tags,
+			IndexPage: indexPage,
 		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

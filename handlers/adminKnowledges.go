@@ -27,7 +27,7 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 	if suffix != "" {
 		var editPage Knowledges
 		knowledgeID, _ := strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content, eyecatch_src FROM knowledges WHERE id = ?", knowledgeID).Scan(&editPage.Id, &editPage.Title, &editPage.Content, &editPage.EyeCatchSrc)
+		err := db.QueryRow("SELECT id, title, content, eyecatch_src FROM knowledges WHERE id = ?", knowledgeID).Scan(&editPage.ID, &editPage.Title, &editPage.Content, &editPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
@@ -42,7 +42,7 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 
 			for rows.Next() {
 				var tag Tag
-				err := rows.Scan(&tag.Id, &tag.Name)
+				err := rows.Scan(&tag.ID, &tag.Name)
 				if err != nil {
 					panic(err.Error())
 				}
@@ -81,25 +81,25 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 			panic(err.Error())
 		}
 		defer rows.Close()
-		var indexPages []IndexPage
+		var indexPage []IndexElem
 
 		for rows.Next() {
-			var indexPage IndexPage
-			err := rows.Scan(&indexPage.Id, &indexPage.Title)
+			var indexElem IndexElem
+			err := rows.Scan(&indexElem.ID, &indexElem.Title)
 			if err != nil {
 				panic(err.Error())
 			}
-			indexPages = append(indexPages, indexPage)
+			indexPage = append(indexPage, indexElem)
 		}
 
 		t := template.Must(template.ParseFiles("template/admin_knowledges.html", "template/_header.html"))
 		header := newHeader(true)
 		if err = t.Execute(w, struct {
-			Header     Header
-			IndexPages []IndexPage
+			Header    Header
+			IndexPage []IndexElem
 		}{
-			Header:     header,
-			IndexPages: indexPages,
+			Header:    header,
+			IndexPage: indexPage,
 		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

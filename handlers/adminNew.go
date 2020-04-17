@@ -31,7 +31,7 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 
 	for rows.Next() {
 		var tag Tag
-		err := rows.Scan(&tag.Id, &tag.Name)
+		err := rows.Scan(&tag.ID, &tag.Name)
 		if err != nil {
 			panic(err.Error())
 		}

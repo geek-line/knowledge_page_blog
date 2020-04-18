@@ -62,6 +62,7 @@
             <div>アイキャッチ</div>
             <input id="file_uploader" type='file'>
             <input id="file_src" type='hidden' name="eyecatch_src">
+            <img id="file_preview" class="responsive-img" width="200px">
             <div><h3>内容の編集</h3></div>         
             <div><textarea id="create_body" rows = "50"></textarea><br></div>
             <div><input id="submit_button" onclick="sendData()" type="button" value="Save"></div>
@@ -70,6 +71,8 @@
     <script type="text/javascript">
     const form = document.getElementById('form')
     const add_tag_button = document.getElementById('add_tag_button')
+    const file_uploader = document.getElementById('file_uploader')
+    const file_preview = document.getElementById('file_preview')
     window.addEventListener('DOMContentLoaded', function(){
         select_display.textContent = null;
     })
@@ -80,6 +83,12 @@
         selectElement.childNodes[1].addEventListener('click', function () {
             selectElement.parentNode.removeChild(selectElement);
         })
+    })
+    file_uploader.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        // ファイルのブラウザ上でのURLを取得する
+        const blobUrl = window.URL.createObjectURL(file);
+        file_preview.src = blobUrl
     })
     function sendData(){
         const content = document.getElementById('create_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML

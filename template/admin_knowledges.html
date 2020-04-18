@@ -24,16 +24,29 @@
         </div>
     </header>
     <div>knowledges一覧</div>
-    <ul>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>created_at</th>
+            <th>updated_at</th>
+            <th>編集</th>
+            <th>削除</th>
+            <th>ユーザー画面</th>
+        </tr>
         {{ range .IndexPage }}
-        <li>
-            <span>{{ .ID }}</span>
-            <a href="/admin/knowledges/{{ .ID |html| }}">{{ .Title }}</a>
-            <a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a>
-            <a href="/admin/delete/{{ .ID  }}">削除</a>
-        </li>
+        <tr>
+            <td>{{ .ID }}</td>
+            <td>{{ .Title }}</td>
+            <td>{{ .CreatedAt }}</td>
+            <td>{{ .UpdatedAt }}</td>
+            <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
+            <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
+            <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
+        </tr>
         {{ end }}
-    </ul>
+    </table>
+        
     <a href="/knowledges/">ユーザーページで一覧を表示</a>
 </body>
 </html>

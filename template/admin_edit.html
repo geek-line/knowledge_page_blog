@@ -62,7 +62,7 @@
             <div>アイキャッチ</div>
             <input id="file_uploader" type='file'>
             <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
-            <img src="{{ .EditPage.EyeCatchSrc }}">
+            <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="200px">
             <div><h3>内容の編集</h3></div>         
             <div><textarea id="edit_body" rows = "50">{{ .EditPage.Content }}</textarea><br></div>
             <div><input type='hidden' name="id" value="{{ .EditPage.ID }}"></div>
@@ -72,35 +72,43 @@
     </body>  
     <script type="text/javascript">
     const form = document.getElementById('form')
+    const file_uploader = document.getElementById('file_uploader')
+    const file_preview = document.getElementById('file_preview')
     const add_tag_button = document.getElementById('add_tag_button')
-        window.addEventListener('DOMContentLoaded', function () {
-            select_display.textContent = null;
-            let selectedTags = document.getElementsByName('selectedTagsID')[0].value
-            selectedTags = selectedTags.split(',')
-            selectedTags.pop()
-            for(let i=0;i < selectedTags.length;i++){
-                const selectElement = document.createElement('div')
-                selectElement.innerHTML = add_tag_button.value
-                document.getElementById('select_display').appendChild(selectElement)
-                selectElement.childNodes[1].addEventListener('click', function () {
-                    selectElement.parentNode.removeChild(selectElement);
-                })
-                for(let j=0;j< selectElement.childNodes[0].length;j++){
-                    if (selectElement.childNodes[0][j].value === selectedTags[i]){
-                        selectElement.childNodes[0][j].selected = true
-                        break
-                    }
-                }
-            }
-        })
-        add_tag_button.addEventListener('click', function () {
+    window.addEventListener('DOMContentLoaded', function () {
+        select_display.textContent = null;
+        let selectedTags = document.getElementsByName('selectedTagsID')[0].value
+        selectedTags = selectedTags.split(',')
+        selectedTags.pop()
+        for(let i=0;i < selectedTags.length;i++){
             const selectElement = document.createElement('div')
             selectElement.innerHTML = add_tag_button.value
             document.getElementById('select_display').appendChild(selectElement)
             selectElement.childNodes[1].addEventListener('click', function () {
                 selectElement.parentNode.removeChild(selectElement);
             })
+            for(let j=0;j< selectElement.childNodes[0].length;j++){
+                if (selectElement.childNodes[0][j].value === selectedTags[i]){
+                    selectElement.childNodes[0][j].selected = true
+                    break
+                }
+            }
+        }
+    })
+    add_tag_button.addEventListener('click', function () {
+        const selectElement = document.createElement('div')
+        selectElement.innerHTML = add_tag_button.value
+        document.getElementById('select_display').appendChild(selectElement)
+        selectElement.childNodes[1].addEventListener('click', function () {
+            selectElement.parentNode.removeChild(selectElement);
         })
+    })
+    file_uploader.addEventListener('change', function(e){
+        const file = e.target.files[0];
+        // ファイルのブラウザ上でのURLを取得する
+        const blobUrl = window.URL.createObjectURL(file);
+        file_preview.src = blobUrl
+    })
     function sendData(){
         const content = document.getElementById('edit_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
         const elem_tags = document.getElementsByClassName('elem_tag')

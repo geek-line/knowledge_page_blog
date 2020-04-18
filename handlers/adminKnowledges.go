@@ -76,7 +76,7 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 			}
 		}
 	} else {
-		rows, err := db.Query("SELECT id, title FROM knowledges")
+		rows, err := db.Query("SELECT id, title, created_at, updated_at FROM knowledges")
 		if err != nil {
 			panic(err.Error())
 		}
@@ -85,7 +85,7 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 
 		for rows.Next() {
 			var indexElem IndexElem
-			err := rows.Scan(&indexElem.ID, &indexElem.Title)
+			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.CreatedAt, &indexElem.UpdatedAt)
 			if err != nil {
 				panic(err.Error())
 			}

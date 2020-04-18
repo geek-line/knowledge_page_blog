@@ -1,0 +1,25 @@
+{
+  "name": "knowledge-blog",
+  "version": "1.0.0",
+  "description": "## 作業環境  Go(1.14 darwin/amd64)   MySQL(8.0.19)",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geek-line/knowledge_page_blog.git"
+  },
+  "author": "Rei Sugiura",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/geek-line/knowledge_page_blog/issues"
+  },
+  "homepage": "https://github.com/geek-line/knowledge_page_blog#readme",
+  "dependencies": {
+    "aws-sdk": "^2.657.0",
+    "dotenv": "^8.2.0",
+    "materialize-css": "^1.0.0-rc.2",
+    "tinymce": "^5.2.1"
+  }
+}

@@ -1,0 +1,5 @@
+sql_env.txt
+*.ddl
+node_modules
+aws_config.js
+.env

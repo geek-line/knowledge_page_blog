@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/node_modules/aws-sdk/dist/aws-sdk.min.js"></script>
+        <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>  
+        <script src="/static/aws_config.js"></script>
+        <script type="text/javascript">
+        AWS.config.update({
+            region: bucketRegion,
+            credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: IdentityPoolId
+            })
+        });
+        const s3 = new AWS.S3({
+            apiVersion: "2006-03-01",
+            params: { Bucket: albumBucketName }
+        });
+        tinymce.init({
+            selector: '#edit_body',
+            branding: false, // クレジットの削除
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            plugins: 'image lists table codesample',
+            toolbar: 'undo redo | styleselect | bold italic | image codesample | numlist bullist | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+            images_upload_handler: function (blobInfo, success, failure) {
+                setTimeout(function () {
+                    const file = blobInfo.blob()
+                    const timestamp = new Date().getTime();
+                    const filename = "file" + timestamp + file.name;
+                    s3.putObject({ Key: 'uploads/' + filename, ContentType: blobInfo.blob().type, Body: blobInfo.blob(), ACL: "public-read" },
+                        function (err, data) {
+                            if (data !== null) {
+                                const srcHTML = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'uploads/' + filename
+                                success(srcHTML);
+                            } else {
+                                alert("アップロード失敗.");
+                            }
+                        });
+                }, 2000);
+            }
+        });
+        </script>
+    </head>
+    <body>
+        {{ template "header" .Header }}
+        <div><h2>{{ .EditPage.Title }}を編集</h2></div>
+        <form id="form">
+            <div><h3>タイトルの編集</h3></div>
+            <div><input type="text"  style="font-size:100%; width :100%;height : 50px;" name="title" value="{{ .EditPage.Title }}" id='form-title'></div>
+            <div>
+                <h3>タグの追加</h3>
+            </div>
+            <div id="select_display">
+            </div>
+            <button 
+              type="button"
+              id="add_tag_button"
+              value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>"
+            >タグを追加</button>
+            <div>アイキャッチ</div>
+            <input id="file_uploader" type='file'>
+            <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
+            <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="200px">
+            <div><h3>内容の編集</h3></div>         
+            <div><textarea id="edit_body" rows = "50">{{ .EditPage.Content }}</textarea><br></div>
+            <div><input type='hidden' name="id" value="{{ .EditPage.ID }}"></div>
+            <div><input type='hidden' name='selectedTagsID' value="{{range .SelectedTagsID}}{{.}},{{end}}"></div>
+            <div><input onclick="sendData()" type="button" value="Save"></div>
+        </form>
+    </body>  
+    <script type="text/javascript">
+    const form = document.getElementById('form')
+    const file_uploader = document.getElementById('file_uploader')
+    const file_preview = document.getElementById('file_preview')
+    const add_tag_button = document.getElementById('add_tag_button')
+    window.addEventListener('DOMContentLoaded', function () {
+        select_display.textContent = null;
+        let selectedTags = document.getElementsByName('selectedTagsID')[0].value
+        selectedTags = selectedTags.split(',')
+        selectedTags.pop()
+        for(let i=0;i < selectedTags.length;i++){
+            const selectElement = document.createElement('div')
+            selectElement.innerHTML = add_tag_button.value
+            document.getElementById('select_display').appendChild(selectElement)
+            selectElement.childNodes[1].addEventListener('click', function () {
+                selectElement.parentNode.removeChild(selectElement);
+            })
+            for(let j=0;j< selectElement.childNodes[0].length;j++){
+                if (selectElement.childNodes[0][j].value === selectedTags[i]){
+                    selectElement.childNodes[0][j].selected = true
+                    break
+                }
+            }
+        }
+    })
+    add_tag_button.addEventListener('click', function () {
+        const selectElement = document.createElement('div')
+        selectElement.innerHTML = add_tag_button.value
+        document.getElementById('select_display').appendChild(selectElement)
+        selectElement.childNodes[1].addEventListener('click', function () {
+            selectElement.parentNode.removeChild(selectElement);
+        })
+    })
+    file_uploader.addEventListener('change', function(e){
+        const file = e.target.files[0];
+        // ファイルのブラウザ上でのURLを取得する
+        const blobUrl = window.URL.createObjectURL(file);
+        file_preview.src = blobUrl
+    })
+    function sendData(){
+        const content = document.getElementById('edit_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
+        const elem_tags = document.getElementsByClassName('elem_tag')
+        if (document.getElementById('form-title').value == '') {
+            alert('タイトルを入力してください')
+            e.preventDefault()
+            return
+        }
+        let arr = {}
+        let tags = ''
+        for (let i = 0; i < elem_tags.length; i++) {
+            if (arr[elem_tags[i].value]) {
+                alert('タグが重複しています')
+                e.preventDefault()
+                return
+            }
+            arr[elem_tags[i].value] = true
+            tags += elem_tags[i].value
+            tags += ','
+        }
+        tags = tags.slice(0, -1)
+        if (file_uploader.files[0] != null){
+            const timestamp = new Date().getTime();
+            const filename = "file" + timestamp + file_uploader.files[0].name;
+
+            s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
+                function (err, data) {
+                    if (data !== null) {
+                        document.getElementById('file_src').value = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
+                        let formdata = new FormData(form)
+                        formdata.append('content', content)
+                        formdata.append('tags', tags)
+                        const XHR = new XMLHttpRequest()
+                        XHR.open('PUT', '/admin/save/')
+                        XHR.send(formdata)
+                        XHR.onreadystatechange = function () {
+                            if (XHR.readyState === 4) {
+                                if (XHR.status === 200) {
+                                    alert('データが更新されました')
+                                    location.href = "/admin/knowledges";
+                                } else {
+                                    alert('データが正常に送れませんでした')
+                                }
+                            }
+                        }
+                    } else {
+                        alert("アップロード失敗.");
+                    }
+                }
+            );
+        }else{
+            let formdata = new FormData(form)
+            formdata.append('content', content)
+            formdata.append('tags', tags)
+            const XHR = new XMLHttpRequest()
+            XHR.open('PUT', '/admin/save/')
+            XHR.send(formdata)
+            XHR.onreadystatechange = function () {
+                if (XHR.readyState === 4) {
+                    if (XHR.status === 200) {
+                        alert('データが更新されました')
+                        location.href = "/admin/knowledges";
+                    } else {
+                        alert('データが正常に送れませんでした')
+                    }
+                }
+            }
+        }
+    }
+    </script>
+</html>  

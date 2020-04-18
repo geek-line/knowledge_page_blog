@@ -65,12 +65,13 @@
             <img id="file_preview" class="responsive-img" width="200px">
             <div><h3>内容の編集</h3></div>         
             <div><textarea id="create_body" rows = "50"></textarea><br></div>
-            <div><input id="submit_button" onclick="sendData()" type="button" value="Save"></div>
+            <div><input id="submit_button" type="button" value="Save"></div>
         </form>
     </body>
     <script type="text/javascript">
     const form = document.getElementById('form')
     const add_tag_button = document.getElementById('add_tag_button')
+    const submit_button = document.getElementById('submit_button')
     const file_uploader = document.getElementById('file_uploader')
     const file_preview = document.getElementById('file_preview')
     window.addEventListener('DOMContentLoaded', function(){
@@ -90,24 +91,39 @@
         const blobUrl = window.URL.createObjectURL(file);
         file_preview.src = blobUrl
     })
-    function sendData(){
+    submit_button.addEventListener('click', function(e){
         const content = document.getElementById('create_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
         const elem_tags = document.getElementsByClassName('elem_tag')
         const file_uploader = document.getElementById('file_uploader')
-
+        if (document.getElementById('form-title').value == '') {
+            alert('タイトルを入力してください')
+            e.preventDefault()
+            return
+        }
+        if(file_uploader.files[0] == null){
+            alert('アイキャッチをアップロードしてください')
+            e.preventDefault()
+            return
+        }
+        let arr = {}
+        let tags = ''
+        for (let i = 0; i < elem_tags.length; i++) {
+            if (arr[elem_tags[i].value]) {
+                alert('タグが重複しています')
+                e.preventDefault()
+                return
+            }
+            arr[elem_tags[i].value] = true
+            tags += elem_tags[i].value
+            tags += ','
+        }
+        tags = tags.slice(0, -1)
         const timestamp = new Date().getTime();
         const filename = "file" + timestamp + file_uploader.files[0].name;
-
         s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
             function (err, data) {
                 if (data !== null) {
                     document.getElementById('file_src').value = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
-                    let tags = ''
-                    for (let i = 0; i < elem_tags.length; i++) {
-                        tags += elem_tags[i].value
-                        tags += ','
-                    }
-                    tags = tags.slice(0, -1)
                     let formdata = new FormData(form)
                     formdata.append('content', content)
                     formdata.append('tags', tags)
@@ -128,7 +144,6 @@
                 }
             }
         );
-
-    }
+    })
     </script>
 </html>  

@@ -6,7 +6,7 @@ body{
 
 .p_items_wrapper .p_action_item{
     position: sticky;
-    top: 30vh;
+    top: 35vh;
     will-change: transform;
 }
 
@@ -29,6 +29,7 @@ body{
     font-size: 2.0rem;
     margin-bottom: 1vh;
     font-weight: bold;
+    margin: 1rem;
 }
 
 .p_items_wrapper .p_main_item .update_time{
@@ -42,15 +43,36 @@ body{
     
 }
 
-.p_items_wrapper .p_table_item{
-    position: sticky;
-    top:50vh;
-    max-height: 70vh;
-    will-change: transform;
-
+.p_items_wrapper .p_main_item #content ol li h1 span{
+    font-size: 4.2rem;
+    font-weight: bold;
 }
 
-.p_items_wrapper .p_table_item ul li a{
+.p_items_wrapper .p_main_item #content ol li h2 span{
+    font-size: 3.56rem;
+    font-weight: bold;
+}
+
+.p_items_wrapper .p_main_item #content ol li h3 span { 
+    font-size: 3.56rem;
+    font-weight: bold;
+    
+}
+.p_items_wrapper .p_table_items {
+    position: sticky;
+    top:34vh;
+    will-change: transform;
+    padding:1rem;
+    
+}
+
+.p_items_wrapper .p_table_items .item{
+    background-color: antiquewhite;
+    padding:1rem;
+    border-radius: 10px;
+}
+
+.p_items_wrapper .p_table_items .item ul li a{
     color: #827b7b;
     
 }

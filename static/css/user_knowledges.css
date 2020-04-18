@@ -1,6 +1,42 @@
 body{
     background-color: #e8f5f7;
 }
+
+.content_header{
+    padding: 2.5rem 0;
+    height: 8rem;
+}
+
+.content_header .content_title{
+    margin: 0rem;
+}
+
+.tag_container{
+    margin-top: 8rem;
+    padding: 1rem 2rem;
+    border-radius: 3px;
+    background-color: white;
+}
+
+.tag_container .tag_list li{
+    display: inline-block;
+}
+
+.tag_container .tag_list .tag{
+    font-size: 0.8em;
+    margin-right: 4px;
+    padding: 0.2em 0.6em;
+    cursor: pointer;
+    border-radius: 10px;
+    color: white;
+    background-color: #827b7b;
+    line-height: 1.45em;
+} 
+
+.row .col.card_wrapper{
+    padding: 0 1.5rem 0 0;
+}
+
 .cp_card02 {
     font-size: 14px;
     line-height: 1.45em;
@@ -189,8 +225,8 @@ body{
 }
 .cp_card02 .description .like {
     position: absolute;
-    right:0px;
-    bottom: 3px;
+    right: 0.5rem;
+    bottom: 0.5rem;
     font-size: 0.9em;
     line-height: 1.45em;
     margin-bottom: 10px;

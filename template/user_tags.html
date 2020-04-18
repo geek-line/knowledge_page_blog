@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+    <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
+</head>
+
+<body>
+    {{ template "header" .Header }}
+    <div class="row">
+        <div class="col m3">
+
+            <h4>検索画面</h4>
+            <div class="tag_container">
+                <ul class="tag_list">
+                    {{ range .Tags }}
+                    <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+        <div class="col s12 m9">
+            <h4>"{{ .FilteredTagName }}"に関する記事一覧</h4>
+            {{ range .IndexPage }}
+            <div class="cp_card02 col s12 m6">
+                <img class="photo photo1" src="{{ .EyeCatchSrc }}"></img>
+                <ul class="details">
+                    <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
+                </ul>
+                <div class="description">
+                    <a href="/knowledges/{{ .ID |html| }}" class="knowledge_title">
+                        <h1>{{ .Title }}</h1>
+                    </a>
+                    <ul class="tag_list">
+                        {{ range .SelectedTags }}
+                        <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
+                        {{ end }}
+                    </ul>
+                    <div class="like">いいね:{{ .Likes }}</div>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+    {{ template "footer" }}
+</body>
+
+</html>

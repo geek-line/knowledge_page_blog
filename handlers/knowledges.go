@@ -37,25 +37,21 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		case err != nil:
 			panic(err.Error())
 		default:
-			var selectedTagNames []string
-			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", detailPage.ID)
+			var selectedTags []Tag
+			tagsRows, err := db.Query("SELECT tags.id, tags.name FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id WHERE knowledge_id = ?", detailPage.ID)
 			if err != nil {
 				panic(err.Error())
 			}
 			defer tagsRows.Close()
 			for tagsRows.Next() {
-				var selectedTagID int
-				var selectedTagName string
-				err := tagsRows.Scan(&selectedTagID)
+				var selectedTag Tag
+				err := tagsRows.Scan(&selectedTag.ID, &selectedTag.Name)
 				if err != nil {
 					panic(err.Error())
 				}
-				if err = db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTagID).Scan(&selectedTagName); err != nil {
-					panic(err.Error())
-				}
-				selectedTagNames = append(selectedTagNames, selectedTagName)
+				selectedTags = append(selectedTags, selectedTag)
 			}
-			detailPage.SelectedTagNames = selectedTagNames
+			detailPage.SelectedTags = selectedTags
 			t := template.Must(template.ParseFiles("template/user_details.html", "template/_header.html", "template/_footer.html"))
 			if err := t.Execute(w, struct {
 				Header     Header

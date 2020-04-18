@@ -35,6 +35,7 @@ type IndexElem struct {
 	ID           int    //タイトル
 	Title        string //タイトルの中身
 	SelectedTags []Tag
+	CreatedAt    string
 	UpdatedAt    string
 	Likes        int
 	EyeCatchSrc  string

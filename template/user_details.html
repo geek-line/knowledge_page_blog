@@ -23,23 +23,25 @@
             </form>
             <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
         </div>
+        
+            <div class= "p_main_item col s12 m12 l8">
+                <ul class="tags">   
+                    {{ range .DetailPage.SelectedTags }}
+                    <li><a href='/tags/{{ .ID }}'>{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+                <div class= "title">{{ .DetailPage.Title }}</div>
+                <div class= "update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
 
-        <div class= "p_main_item col s12 m12 l8">
-            <ul class="tags">   
-                {{ range .DetailPage.SelectedTags }}
-                <li><a href='/tags/{{ .ID }}'>{{ .Name }}</a></li>
-                {{ end }}
-            </ul>
-            <div class= "title">{{ .DetailPage.Title }}</div>
-            <div class= "update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
-
-            <br/>
-            <div id="content" class="content"></div>
-            <p></p>
+                <br/>
+                <div id="content" class="content"></div>
+                <p></p>
+            </div>
+            <div class= "p_table_items col s0 m0 l3">
+                
+                <div id="p_table_items" class= "item"><h5>目次</h5></div>
+            </div>
         </div>
-        <div id="p_table_item" class= "p_table_item col s0 m3 l3"></div>
-    </div>
-
 
     {{ template "footer" }}
 
@@ -67,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
 
 
-        var contentsList = document.getElementById("p_table_item"); // 目次を追加する先(table of contents)
+        var contentsList = document.getElementById("p_table_items"); // 目次を追加する先(table of contents)
         var div = document.createElement('div'); // 作成する目次のコンテナ要素
 
         // .entry-content配下のh2、h3要素を全て取得する

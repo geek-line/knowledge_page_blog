@@ -30,9 +30,9 @@
             <th>title</th>
             <th>created_at</th>
             <th>updated_at</th>
-            <th>ユーザー画面</th>
             <th>編集</th>
             <th>削除</th>
+            <th>ユーザー画面</th>
         </tr>
         {{ range .IndexPage }}
         <tr>
@@ -40,9 +40,9 @@
             <td>{{ .Title }}</td>
             <td>{{ .CreatedAt }}</td>
             <td>{{ .UpdatedAt }}</td>
-            <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
             <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
             <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
+            <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
         </tr>
         {{ end }}
     </table>

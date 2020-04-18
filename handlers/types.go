@@ -2,13 +2,13 @@ package handlers
 
 //DetailPage userのナレッジ詳細ページの要素
 type DetailPage struct {
-	ID               int
-	Title            string
-	Content          string
-	SelectedTagNames []string
-	UpdatedAt        string
-	Likes            int
-	EyeCatchSrc      string
+	ID           int
+	Title        string
+	Content      string
+	SelectedTags []Tag
+	UpdatedAt    string
+	Likes        int
+	EyeCatchSrc  string
 }
 
 //Header headerの要素

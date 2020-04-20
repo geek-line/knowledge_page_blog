@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"html/template"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 )
 
-// const lenPathKnowledges = len("/knowledges/")
+const lenPathKnowledges = len("/knowledges/")
 
 //KnowledgesHandler /knowledgesに対するハンドラ
 func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
@@ -18,14 +19,14 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		header.IsLogin = true
 	}
 
-	// suffix := r.URL.Path[lenPathKnowledges:]
+	suffix := r.URL.Path[lenPathKnowledges:]
 	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	if r.URL.Path == "" || r.URL.Path == "/search" {
+	if suffix == "" || suffix == "search" {
 		pageNum := 1
 
 		query := r.URL.Query()
@@ -47,12 +48,16 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			}
 			tags = append(tags, tag)
 		}
-		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", pageNum-1, 20)
+		var indexPage IndexPage
+		var knowledgeNums float64
+		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
+		pageNums := math.Ceil(knowledgeNums / 20)
+
+		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*6, 6)
 		if err != nil {
 			panic(err.Error())
 		}
 		defer rows.Close()
-		var indexPage []IndexElem
 		for rows.Next() {
 			var indexElem IndexElem
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
@@ -75,13 +80,13 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				selectedTags = append(selectedTags, selectedTag)
 			}
 			indexElem.SelectedTags = selectedTags
-			indexPage = append(indexPage, indexElem)
+			indexPage.IndexElems = append(indexPage.IndexElems, indexElem)
 		}
 		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
 			Header    Header
 			Tags      []Tag
-			IndexPage []IndexElem
+			IndexPage IndexPage
 		}{
 			Header:    header,
 			Tags:      tags,
@@ -93,7 +98,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 	} else {
 		var detailPage DetailPage
 		var id int
-		id, _ = strconv.Atoi(r.URL.Path)
+		id, _ = strconv.Atoi(suffix)
 		err := db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.ID, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:

@@ -5,6 +5,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     {{ template "header" .Header }}
@@ -24,7 +25,7 @@
             <div class='content_header'>
                 <h4 class="content_title">記事一覧</h4>
             </div>
-            {{ range .IndexPage }}
+            {{ range .IndexPage.IndexElems }}
             <div class='col m6 card_wrapper'>
                 <div class="cp_card02">
                     <img class="photo photo1" src="{{ .EyeCatchSrc }}"></img>
@@ -45,6 +46,16 @@
                 </div>
             </div>
             {{ end }}
+            {{ range .PageNationElems }}
+            <ul class="pagination">
+                <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                <li class="active"><a href="#!">1</a></li>
+                <li class="waves-effect"><a href="#!">2</a></li>
+                <li class="waves-effect"><a href="#!">3</a></li>
+                <li class="waves-effect"><a href="#!">4</a></li>
+                <li class="waves-effect"><a href="#!">5</a></li>
+                <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+            </ul>
         </div>
     </div>
     {{ template "footer" }}

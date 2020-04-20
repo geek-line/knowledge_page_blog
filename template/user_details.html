@@ -20,6 +20,7 @@
             <form id="like_form">
                 <input type='hidden' name="id" value="{{ .DetailPage.ID }}">
                 <input type='button' value="いいね" onclick="sendLike()">
+                <input id = "like_button" type='button' value="いいね" onclick="sendLike({{.DetailPage.ID}})">
             </form>
             <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
         </div>
@@ -59,26 +60,25 @@
 
 
    
-const content = document.getElementById('content')
-const input = document.getElementById('input')
-const like_form = document.getElementById('like_form')
-const likes = document.getElementById('likes')
-window.addEventListener('DOMContentLoaded', function(){
-console.log(localStorage.getItem('like_{{ .DetailPage.ID }}') )
-    if(localStorage.getItem('like_{{ .DetailPage.ID }}') == 'true'){
-        like_form.innerHTML = "<div>いいね済み</div>"
-        
-    }
-    
+    const content = document.getElementById('content')
+    const input = document.getElementById('input')
+    const like_button = document.getElementById('like_button')
+    const likes = document.getElementById('likes')
 
-    content.innerHTML = input.value
+    window.addEventListener('DOMContentLoaded', function(){
+        console.log(localStorage.getItem('like_{{ .DetailPage.ID }}') ) 
+        if(localStorage.getItem('like_{{ .DetailPage.ID }}')==null){
+            localStorage.setItem(`like_${id}`, 'いいね');
+        }
+        like_button.value = localStorage.getItem('like_{{ .DetailPage.ID }}')
+        content.innerHTML = input.value
 
         var contentsList = document.getElementById("p_table_items"); // 目次を追加する先(table of contents)
         var div = document.createElement('div'); // 作成する目次のコンテナ要素
 
         // .entry-content配下のh2、h3要素を全て取得する
         var matches = document.querySelectorAll('.content h2');
-       
+        
         // 取得した見出しタグ要素の数だけ以下の操作を繰り返す
         matches.forEach(function (value, i) {
             // 見出しタグ要素のidを取得し空の場合は内容をidにする
@@ -102,46 +102,47 @@ console.log(localStorage.getItem('like_{{ .DetailPage.ID }}') )
                 // コンテナ要素である<div>の中に要素を追加する
                 
         })
-      
+        
         contentsList.appendChild(div);
     });
 
 
-function sendLike(id){
-    
-    console.log(localStorage.getItem(`like_${id}`))
-    var like = localStorage.getItem(`like_${id}`);
-    
-    
-   
-    let num=0;
-    if(localStorage.getItem(`like_${id}`) == null){
+    function sendLike(id){
         
-        num= 1;
-       
-    }else{
-       
-        num= 0;
-    }
-  
-    console.log(localStorage.getItem(`like_${id}`))
-   
-    const XHR = new XMLHttpRequest()
-    let formdata = new FormData(like_form)
-    XHR.open('POST', '/knowledges/like')
-    XHR.onreadystatechange = function () {
-        if (XHR.readyState === 4) {
-            if (XHR.status === 200) {
-                likes.textContent = Number(likes.textContent) + num
-                localStorage.setItem(`like_${id}`, 'true');
-                like_form.innerHTML = "<div>いいね済み</div>"
-            } else {
-                alert('データが正常に送れませんでした')
+        console.log(localStorage.getItem(`like_${id}`))
+    
+        var like_judge = 'いいね'
+        
+    
+        let num=0;
+        if(localStorage.getItem(`like_${id}`) == null || localStorage.getItem(`like_${id}`) == 'いいね'){
+            like_judge = '取り消す'
+            num= 1;
+        
+        }else{
+            like_judge = 'いいね'
+            num= -1;
+        }
+    
+        console.log(localStorage.getItem(`like_${id}`))
+    
+        const XHR = new XMLHttpRequest()
+        let formdata = new FormData(like_form)
+        XHR.open('POST', '/knowledges/like')
+        XHR.onreadystatechange = function () {
+            if (XHR.readyState === 4) {
+                if (XHR.status === 200) {
+                    likes.textContent = Number(likes.textContent) + num
+                    localStorage.setItem(`like_${id}`, like_judge);
+                    like_button.value = like_judge;
+                
+                } else {
+                    alert('データが正常に送れませんでした')
+                }
             }
         }
+        XHR.send(formdata)
+        
     }
-    XHR.send(formdata)
-    
-}
 </script>
 </html>

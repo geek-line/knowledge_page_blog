@@ -23,30 +23,32 @@
             </div>
         </div>
     </header>
-    <div>knowledges一覧</div>
-    <table>
-        <tr>
-            <th>id</th>
-            <th>title</th>
-            <th>created_at</th>
-            <th>updated_at</th>
-            <th>編集</th>
-            <th>削除</th>
-            <th>ユーザー画面</th>
-        </tr>
-        {{ range .IndexPage }}
-        <tr>
-            <td>{{ .ID }}</td>
-            <td>{{ .Title }}</td>
-            <td>{{ .CreatedAt }}</td>
-            <td>{{ .UpdatedAt }}</td>
-            <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
-            <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
-            <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
-        </tr>
-        {{ end }}
-    </table>
+    <div class='container'>
+        <h4>knowledges一覧</h4>
+        <table>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>created_at</th>
+                <th>updated_at</th>
+                <th>編集</th>
+                <th>削除</th>
+                <th>ユーザー画面</th>
+            </tr>
+            {{ range .IndexPage }}
+            <tr>
+                <td>{{ .ID }}</td>
+                <td>{{ .Title }}</td>
+                <td>{{ .CreatedAt }}</td>
+                <td>{{ .UpdatedAt }}</td>
+                <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
+                <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
+                <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
+            </tr>
+            {{ end }}
+        </table>
         
-    <a href="/knowledges/">ユーザーページで一覧を表示</a>
+        <a href="/knowledges/">ユーザーページで一覧を表示</a>
+    </div>
 </body>
 </html>

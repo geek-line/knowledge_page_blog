@@ -33,7 +33,7 @@
                     s3.putObject({ Key: 'uploads/' + filename, ContentType: blobInfo.blob().type, Body: blobInfo.blob(), ACL: "public-read" },
                         function (err, data) {
                             if (data !== null) {
-                                const srcHTML = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'uploads/'  + filename
+                                const srcHTML = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'uploads/'  + filename
                                 success(srcHTML);
                             } else {
                                 alert("アップロード失敗.");
@@ -123,7 +123,7 @@
         s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
             function (err, data) {
                 if (data !== null) {
-                    document.getElementById('file_src').value = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
+                    document.getElementById('file_src').value = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
                     let formdata = new FormData(form)
                     formdata.append('content', content)
                     formdata.append('tags', tags)

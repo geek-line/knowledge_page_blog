@@ -46,15 +46,24 @@
                 </div>
             </div>
             {{ end }}
-            {{ range .PageNationElems }}
+            
             <ul class="pagination">
-                <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                <li class="active"><a href="#!">1</a></li>
-                <li class="waves-effect"><a href="#!">2</a></li>
-                <li class="waves-effect"><a href="#!">3</a></li>
-                <li class="waves-effect"><a href="#!">4</a></li>
-                <li class="waves-effect"><a href="#!">5</a></li>
-                <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                {{ if ne .IndexPage.PageNation.PageNum 1 }}
+                <li class="disabled"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>
+                </li>
+                {{ end }}
+                {{ range .IndexPage.PageNation.PageElems }}
+                {{ if .IsSelect }}
+                <li class="active"><a href="">{{ .PageNum }}</a></li>
+                {{ else }}
+                <li class="waves-effect"><a href="/knowledges/search?page={{ .PageNum }}">{{ .PageNum }}</a></li>
+                {{ end }}
+                {{ end }}
+                {{ $length := len .IndexPage.PageNation.PageElems }}
+                {{ if ne .IndexPage.PageNation.PageNum $length  }}
+                <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.NextPageNum }}"><i
+                            class="material-icons">chevron_right</i></a></li>
+                {{ end }}
             </ul>
         </div>
     </div>

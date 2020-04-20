@@ -51,9 +51,18 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		var indexPage IndexPage
 		var knowledgeNums float64
 		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
-		pageNums := math.Ceil(knowledgeNums / 20)
-
-		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*6, 6)
+		pageNums := int(math.Ceil(knowledgeNums / 20))
+		var pageNationElems = make([]Page, pageNums)
+		for i := 0; i < pageNums; i++ {
+			pageNationElems[i].PageNum = i + 1
+			pageNationElems[i].IsSelect = false
+		}
+		pageNationElems[pageNum-1].IsSelect = true
+		indexPage.PageNation.PageElems = pageNationElems
+		indexPage.PageNation.PageNum = pageNum
+		indexPage.PageNation.NextPageNum = pageNum + 1
+		indexPage.PageNation.PrevPageNum = pageNum - 1
+		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*20, 20)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -82,6 +91,9 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			indexElem.SelectedTags = selectedTags
 			indexPage.IndexElems = append(indexPage.IndexElems, indexElem)
 		}
+		// funcMap := template.FuncMap{
+		// 	"addOne": func(x int) int { return x + 1 },
+		// }
 		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
 			Header    Header

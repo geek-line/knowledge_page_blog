@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-const lenPathKnowledges = len("/knowledges/")
+// const lenPathKnowledges = len("/knowledges/")
 
 //KnowledgesHandler /knowledgesに対するハンドラ
 func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
@@ -18,52 +18,21 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		header.IsLogin = true
 	}
 
-	suffix := r.URL.Path[lenPathKnowledges:]
+	// suffix := r.URL.Path[lenPathKnowledges:]
 	db, err := sql.Open("mysql", env["SQL_ENV"])
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	if suffix != "" {
-		var detailPage DetailPage
-		var id int
-		id, _ = strconv.Atoi(suffix)
-		err := db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.ID, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
-		switch {
-		case err == sql.ErrNoRows:
-			log.Println("レコードが存在しません")
-			StatusNotFoundHandler(w, r)
-		case err != nil:
-			panic(err.Error())
-		default:
-			var selectedTags []Tag
-			tagsRows, err := db.Query("SELECT tags.id, tags.name FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id WHERE knowledge_id = ?", detailPage.ID)
-			if err != nil {
-				panic(err.Error())
-			}
-			defer tagsRows.Close()
-			for tagsRows.Next() {
-				var selectedTag Tag
-				err := tagsRows.Scan(&selectedTag.ID, &selectedTag.Name)
-				if err != nil {
-					panic(err.Error())
-				}
-				selectedTags = append(selectedTags, selectedTag)
-			}
-			detailPage.SelectedTags = selectedTags
-			t := template.Must(template.ParseFiles("template/user_details.html", "template/_header.html", "template/_footer.html"))
-			if err := t.Execute(w, struct {
-				Header     Header
-				DetailPage DetailPage
-			}{
-				Header:     header,
-				DetailPage: detailPage,
-			}); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+	if r.URL.Path == "" || r.URL.Path == "/search" {
+		pageNum := 1
+
+		query := r.URL.Query()
+		if query["page"] != nil {
+			pageNum, _ = strconv.Atoi(query.Get("page"))
 		}
-	} else {
+
 		rows, err := db.Query("SELECT id, name FROM tags")
 		if err != nil {
 			panic(err.Error())
@@ -78,7 +47,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			}
 			tags = append(tags, tag)
 		}
-		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges")
+		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", pageNum-1, 20)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -119,6 +88,45 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			IndexPage: indexPage,
 		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+	} else {
+		var detailPage DetailPage
+		var id int
+		id, _ = strconv.Atoi(r.URL.Path)
+		err := db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.ID, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
+		switch {
+		case err == sql.ErrNoRows:
+			log.Println("レコードが存在しません")
+			StatusNotFoundHandler(w, r)
+		case err != nil:
+			panic(err.Error())
+		default:
+			var selectedTags []Tag
+			tagsRows, err := db.Query("SELECT tags.id, tags.name FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id WHERE knowledge_id = ?", detailPage.ID)
+			if err != nil {
+				panic(err.Error())
+			}
+			defer tagsRows.Close()
+			for tagsRows.Next() {
+				var selectedTag Tag
+				err := tagsRows.Scan(&selectedTag.ID, &selectedTag.Name)
+				if err != nil {
+					panic(err.Error())
+				}
+				selectedTags = append(selectedTags, selectedTag)
+			}
+			detailPage.SelectedTags = selectedTags
+			t := template.Must(template.ParseFiles("template/user_details.html", "template/_header.html", "template/_footer.html"))
+			if err := t.Execute(w, struct {
+				Header     Header
+				DetailPage DetailPage
+			}{
+				Header:     header,
+				DetailPage: detailPage,
+			}); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 	}
 }

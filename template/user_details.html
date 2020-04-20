@@ -19,7 +19,7 @@
             <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
             <form id="like_form">
                 <input type='hidden' name="id" value="{{ .DetailPage.ID }}">
-                <input type='button' value="いいね" onclick="sendLike()">
+                <input type='button' value="いいね" onclick="sendLike({{ .DetailPage.ID}})">
             </form>
             <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
         </div>
@@ -61,13 +61,17 @@
    
 const content = document.getElementById('content')
 const input = document.getElementById('input')
+const like_form = document.getElementById('like_form')
 const likes = document.getElementById('likes')
 window.addEventListener('DOMContentLoaded', function(){
+console.log(localStorage.getItem('like_{{ .DetailPage.ID }}') )
+    if(localStorage.getItem('like_{{ .DetailPage.ID }}') == 'true'){
+        like_form.innerHTML = "<div>いいね済み</div>"
+        
+    }
+    
+
     content.innerHTML = input.value
-
-
-
-
 
         var contentsList = document.getElementById("p_table_items"); // 目次を追加する先(table of contents)
         var div = document.createElement('div'); // 作成する目次のコンテナ要素
@@ -103,23 +107,25 @@ window.addEventListener('DOMContentLoaded', function(){
     });
 
 
-function sendLike(){
+function sendLike(id){
     
-    console.log(localStorage.getItem('like'))
-    var like = localStorage.getItem('like');
+    console.log(localStorage.getItem(`like_${id}`))
+    var like = localStorage.getItem(`like_${id}`);
     
     
    
     let num=0;
-    if(localStorage.getItem(like) == null){
-        localStorage.setItem('like', 'true');
+    if(localStorage.getItem(`like_${id}`) == null){
+        
         num= 1;
+       
     }else{
        
         num= 0;
     }
-    console.log(localStorage.getItem('like'))
-    const like_form = document.getElementById('like_form')
+  
+    console.log(localStorage.getItem(`like_${id}`))
+   
     const XHR = new XMLHttpRequest()
     let formdata = new FormData(like_form)
     XHR.open('POST', '/knowledges/like')
@@ -127,12 +133,15 @@ function sendLike(){
         if (XHR.readyState === 4) {
             if (XHR.status === 200) {
                 likes.textContent = Number(likes.textContent) + num
+                localStorage.setItem(`like_${id}`, 'true');
+                like_form.innerHTML = "<div>いいね済み</div>"
             } else {
                 alert('データが正常に送れませんでした')
             }
         }
     }
     XHR.send(formdata)
+    
 }
 </script>
 </html>

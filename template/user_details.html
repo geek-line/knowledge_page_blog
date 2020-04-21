@@ -7,7 +7,6 @@
     <link rel='stylesheet' href='/node_modules/tinymce/skins/ui/oxide/content.min.css'>
     <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
-   
     <link rel='stylesheet' href='/static/css/user_details.css/'>
 </head>
 
@@ -18,8 +17,8 @@
         <div class= "p_action_item col s0 m0 l1">
             <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
             <form id="like_form">
-                <input type='hidden' name="id" value="{{ .DetailPage.ID }}">
-                <input type='button' value="いいね" onclick="sendLike()">
+                <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                <input id = "like_button" type='button' value="いいね" onclick="sendLike()">
             </form>
             <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
         </div>
@@ -32,49 +31,42 @@
                 </ul>
                 <div class= "title">{{ .DetailPage.Title }}</div>
                 <div class= "update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
-
                 <br/>
                 <div id="content" class="content"></div>
                 <p></p>
             </div>
             <div class= "p_table_items col s0 m0 l3">
-                
                 <div id="p_table_items" class= "item"><h5>目次</h5></div>
             </div>
         </div>
 
     {{ template "footer" }}
-
 </body>
-
-
-
-
-
-
-
-
-
 <script type="text/javascript">
-
-
-   
-const content = document.getElementById('content')
-const input = document.getElementById('input')
-const likes = document.getElementById('likes')
-window.addEventListener('DOMContentLoaded', function(){
-    content.innerHTML = input.value
-
-
-
-
+    const content = document.getElementById('content')
+    const input = document.getElementById('input')
+    const like_button = document.getElementById('like_button')
+    const likes = document.getElementById('likes')
+    const knowledge_id = document.getElementById('knowledge_id').value
+    window.addEventListener('DOMContentLoaded', function(){
+        if (localStorage.getItem('noLoginLike')) {
+            let value = localStorage.getItem('noLoginLike')
+            let values = value.split(',')
+            for (let i = 0; i < values.length; i++) {
+                if (values[i] == knowledge_id) {
+                    like_button.value = 'いいね済み'
+                    break
+                }
+            }
+        }
+        content.innerHTML = input.value
 
         var contentsList = document.getElementById("p_table_items"); // 目次を追加する先(table of contents)
         var div = document.createElement('div'); // 作成する目次のコンテナ要素
 
         // .entry-content配下のh2、h3要素を全て取得する
         var matches = document.querySelectorAll('.content h2');
-       
+        
         // 取得した見出しタグ要素の数だけ以下の操作を繰り返す
         matches.forEach(function (value, i) {
             // 見出しタグ要素のidを取得し空の場合は内容をidにする
@@ -83,12 +75,9 @@ window.addEventListener('DOMContentLoaded', function(){
                 id = value.textContent;
                 value.id = id;
             }
-
-            
                 var ul = document.createElement('ul');
                 var li = document.createElement('li');
                 var a = document.createElement('a');
-
                 // 追加する<ul><li><a>タイトル</a></li></ul>を準備する
                 a.innerHTML = value.textContent;
                 a.href = '#' + value.id;
@@ -96,43 +85,56 @@ window.addEventListener('DOMContentLoaded', function(){
                 ul.appendChild(li);
                 div.appendChild(ul);
                 // コンテナ要素である<div>の中に要素を追加する
-                
         })
-      
         contentsList.appendChild(div);
     });
-
-
-function sendLike(){
-    
-    console.log(localStorage.getItem('like'))
-    var like = localStorage.getItem('like');
-    
-    
-   
-    let num=0;
-    if(localStorage.getItem(like) == null){
-        localStorage.setItem('like', 'true');
-        num= 1;
-    }else{
-       
-        num= 0;
-    }
-    console.log(localStorage.getItem('like'))
-    const like_form = document.getElementById('like_form')
-    const XHR = new XMLHttpRequest()
-    let formdata = new FormData(like_form)
-    XHR.open('POST', '/knowledges/like')
-    XHR.onreadystatechange = function () {
-        if (XHR.readyState === 4) {
-            if (XHR.status === 200) {
-                likes.textContent = Number(likes.textContent) + num
-            } else {
-                alert('データが正常に送れませんでした')
+    function sendLike(){
+        let values = []
+        let value = ''
+        if (localStorage.getItem('noLoginLike')){
+            value = localStorage.getItem('noLoginLike')
+            values = value.split(',')
+        }
+        console.log(values)
+        let isFound = false
+        for (let i = 0; i < values.length; i++){
+            if(values[i] == knowledge_id){
+                console.log('hi')
+                values.splice(i, 1)
+                value = values.join()
+                isFound = true
+                break
             }
         }
+        if (!isFound){
+            values.push(knowledge_id)
+            value = values.join()
+        }
+        console.log(value)
+        const XHR = new XMLHttpRequest()
+        let formdata = new FormData(like_form)
+        if (isFound) {
+            XHR.open('PUT', '/knowledges/like')
+        }else{
+            XHR.open('POST', '/knowledges/like')
+        }
+        XHR.onreadystatechange = function () {
+            if (XHR.readyState === 4) {
+                if (XHR.status === 200) {
+                    if(isFound){
+                        likes.textContent = Number(likes.textContent) - 1
+                        like_button.value = 'いいね'
+                    }else{
+                        likes.textContent = Number(likes.textContent) + 1
+                        like_button.value = 'いいね済み'
+                    }
+                    localStorage.setItem('noLoginLike', value)
+                } else {
+                    alert('データが正常に送れませんでした')
+                }
+            }
+        }
+        XHR.send(formdata)
     }
-    XHR.send(formdata)
-}
 </script>
 </html>

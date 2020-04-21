@@ -3,13 +3,15 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     {{ template "header" .Header }}
     <div class="row">
-        <div class="col m3">
+        <div class="col s12 m3 ">
             
             <div class="tag_container">
                 <h6 class='tag_title'>タグ一覧</h6>
@@ -24,17 +26,18 @@
             <div class='content_header'>
                 <h4 class="content_title">記事一覧</h4>
             </div>
-            {{ range .IndexPage }}
-            <div class='col m6 card_wrapper'>
-                <div class="cp_card02">
-                    <img class="photo photo1" src="{{ .EyeCatchSrc }}"></img>
+            {{ range .IndexPage.IndexElems }}
+            <div class="col s12 m6 card_wrapper">
+                <div  class="cp_card02">
+                    <a href="/knowledges/{{ .ID |html| }}" class="link_box"></a>
+                    <img class="photo photo1" src="{{ .EyeCatchSrc }}">
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
                     </ul>
                     <div class="description">
-                        <a href="/knowledges/{{ .ID |html| }}" class="knowledge_title">
+                       <div class="knowledge_title">
                             <h1>{{ .Title }}</h1>
-                        </a>
+                       </div>
                         <ul class="tag_list">
                             {{ range .SelectedTags }}
                             <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
@@ -45,6 +48,25 @@
                 </div>
             </div>
             {{ end }}
+            
+            <ul class="pagination col s12 center">
+                {{ if ne .IndexPage.PageNation.PageNum 1 }}
+                <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>
+                </li>
+                {{ end }}
+                {{ range .IndexPage.PageNation.PageElems }}
+                {{ if .IsSelect }}
+                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
+                {{ else }}
+                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges/search?page={{ .PageNum }}">{{ .PageNum }}</a></li>
+                {{ end }}
+                {{ end }}
+                {{ $length := len .IndexPage.PageNation.PageElems }}
+                {{ if ne .IndexPage.PageNation.PageNum $length  }}
+                <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.NextPageNum }}"><i
+                            class="material-icons">chevron_right</i></a></li>
+                {{ end }}
+            </ul>
         </div>
     </div>
     {{ template "footer" }}

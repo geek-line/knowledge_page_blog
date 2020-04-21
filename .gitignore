@@ -4,6 +4,5 @@ sql_env.txt
 node_modules
 aws_config.js
 .env
-.pem
 knowledge-blog
 main

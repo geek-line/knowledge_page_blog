@@ -27,6 +27,10 @@ func makeHandlerUsingMySQL(fn func(w http.ResponseWriter, r *http.Request, env m
 	}
 }
 
+func redirectHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/knowledges/", http.StatusFound)
+}
+
 func init() {
 	envLoad()
 	env["SQL_ENV"] = os.Getenv("SQL_ENV")
@@ -34,7 +38,7 @@ func init() {
 
 func main() {
 	dir, _ := os.Getwd()
-	http.HandleFunc("/", handlers.StatusNotFoundHandler)
+	http.HandleFunc("/", redirectHandler)
 	http.HandleFunc("/admin/login/", makeHandlerUsingMySQL(handlers.AdminLoginHandler))
 	http.HandleFunc("/admin/logout/", handlers.AdminLogoutHandler)
 	http.HandleFunc("/admin/knowledges/", makeHandlerUsingMySQL(handlers.AdminKnowledgesHandler))

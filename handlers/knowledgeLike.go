@@ -16,7 +16,15 @@ func KnowledgeLikeHandler(w http.ResponseWriter, r *http.Request, env map[string
 	if err != nil {
 		panic(err.Error())
 	}
-	if _, err := db.Query("UPDATE knowledges SET likes = likes + 1 WHERE id = ?", id); err != nil {
-		panic(err.Error())
+	defer db.Close()
+	if r.Method == "POST" {
+		if _, err := db.Query("UPDATE knowledges SET likes = likes + 1 WHERE id = ?", id); err != nil {
+			panic(err.Error())
+		}
+	} else {
+		if _, err := db.Query("UPDATE knowledges SET likes = likes - 1 WHERE id = ?", id); err != nil {
+			panic(err.Error())
+		}
 	}
+
 }

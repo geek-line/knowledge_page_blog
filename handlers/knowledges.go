@@ -28,12 +28,13 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 
 	if suffix == "" || suffix == "search" {
 		pageNum := 1
-
 		query := r.URL.Query()
 		if query["page"] != nil {
-			pageNum, _ = strconv.Atoi(query.Get("page"))
+			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
+				StatusNotFoundHandler(w, r)
+				return
+			}
 		}
-
 		rows, err := db.Query("SELECT id, name FROM tags")
 		if err != nil {
 			panic(err.Error())
@@ -52,6 +53,10 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		var knowledgeNums float64
 		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
+		if pageNums < pageNum {
+			StatusNotFoundHandler(w, r)
+			return
+		}
 		var pageNationElems = make([]Page, pageNums)
 		for i := 0; i < pageNums; i++ {
 			pageNationElems[i].PageNum = i + 1
@@ -64,26 +69,33 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		indexPage.PageNation.PrevPageNum = pageNum - 1
 		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*20, 20)
 		if err != nil {
-			panic(err.Error())
+			// panic(err.Error())
+			StatusNotFoundHandler(w, r)
+			return
 		}
 		defer rows.Close()
 		for rows.Next() {
 			var indexElem IndexElem
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
 			if err != nil {
-				panic(err.Error())
+				StatusNotFoundHandler(w, r)
+				return
 			}
 			var selectedTags []Tag
 			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexElem.ID)
 			if err != nil {
-				panic(err.Error())
+				// panic(err.Error())
+				StatusNotFoundHandler(w, r)
+				return
 			}
 			defer tagsRows.Close()
 			for tagsRows.Next() {
 				var selectedTag Tag
 				err := tagsRows.Scan(&selectedTag.ID)
 				if err != nil {
-					panic(err.Error())
+					// panic(err.Error())
+					StatusNotFoundHandler(w, r)
+					return
 				}
 				db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
 				selectedTags = append(selectedTags, selectedTag)

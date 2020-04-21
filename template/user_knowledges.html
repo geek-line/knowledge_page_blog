@@ -47,16 +47,16 @@
             </div>
             {{ end }}
             
-            <ul class="pagination">
+            <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
-                <li class="disabled"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>
+                <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>
                 </li>
                 {{ end }}
                 {{ range .IndexPage.PageNation.PageElems }}
                 {{ if .IsSelect }}
-                <li class="active"><a href="">{{ .PageNum }}</a></li>
+                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
                 {{ else }}
-                <li class="waves-effect"><a href="/knowledges/search?page={{ .PageNum }}">{{ .PageNum }}</a></li>
+                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges/search?page={{ .PageNum }}">{{ .PageNum }}</a></li>
                 {{ end }}
                 {{ end }}
                 {{ $length := len .IndexPage.PageNation.PageElems }}

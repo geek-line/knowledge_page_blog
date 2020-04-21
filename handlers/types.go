@@ -30,7 +30,7 @@ type Tag struct {
 	Name string
 }
 
-//IndexElem ナレッジ一覧ページの要素
+//IndexElem ナレッジ一覧ページの各リストの要素
 type IndexElem struct {
 	ID           int    //タイトル
 	Title        string //タイトルの中身
@@ -39,4 +39,24 @@ type IndexElem struct {
 	UpdatedAt    string
 	Likes        int
 	EyeCatchSrc  string
+}
+
+//Page ページネーションの際に用いるページの要素
+type Page struct {
+	PageNum  int
+	IsSelect bool
+}
+
+//PageNation ページネーションの全体の要素
+type PageNation struct {
+	PageElems   []Page
+	PageNum     int
+	NextPageNum int
+	PrevPageNum int
+}
+
+//IndexPage ナレッジ一覧ページの全体の要素
+type IndexPage struct {
+	PageNation PageNation
+	IndexElems []IndexElem
 }

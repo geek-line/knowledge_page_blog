@@ -2,6 +2,30 @@ select {
     display: block;
 }
 
+body {
+    background-color: #e8f5f7;
+}
+
 #select-display select {
     display: block;
+}
+
+.elem_tag {
+    margin-right: 0.7rem;
+    display: inline-block;
+    width: 20rem;
+}
+
+input[type=text].title-input {
+    padding-left: 1rem;
+    width: 40rem;
+}
+
+.edit-block-container {
+    padding: 1rem;
+    background-color: white;
+}
+
+.tag-select-container {
+    display: inline-block;
 }

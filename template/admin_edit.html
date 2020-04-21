@@ -22,10 +22,11 @@
         tinymce.init({
             selector: '#edit_body',
             branding: false, // クレジットの削除
+            height:"640",
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
             plugins: 'image lists table codesample',
-            toolbar: 'undo redo | styleselect | bold italic | image codesample | numlist bullist | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+            toolbar: 'undo redo | styleselect | bold italic | image codesample | numlist bullist | table tabledelete',
             images_upload_handler: function (blobInfo, success, failure) {
                 setTimeout(function () {
                     const file = blobInfo.blob()
@@ -47,30 +48,30 @@
     </head>
     <body>
         {{ template "header" .Header }}
-        <div class='container'>
-            <h4>{{ .EditPage.Title }}を編集</h4>
+        <div class="container">
+            <h4>"{{ .EditPage.Title }}"を編集</h4>
             <form id="form">
-                <div>
+                <div class="row edit-block-container">
                     <h5>タイトルの編集</h5>
-                    <input type="text" style="font-size:100%; width :100%;height : 50px;" name="title" value="{{ .EditPage.Title }}"
+                    <input type="text" class="title-input" name="title" value="{{ .EditPage.Title }}"
                         id='form-title'>
                 </div>
-                <div>
+                <div class="row edit-block-container">
                     <h5>タグの編集</h5>
                     <div id="select_display">
                     </div>
                     <button type="button" id="add_tag_button"
                         value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>">タグを追加</button>
                 </div>
-                <div>
+                <div class="row edit-block-container">
                     <h5>アイキャッチの編集</h5>
                     <input id="file_uploader" type='file'>
                     <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
                     <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="200px">
                 </div>
-                <div>
+                <div class="row edit-block-container">
                     <h5>内容の編集</h5>
-                    <textarea id="edit_body" rows="50">{{ .EditPage.Content }}</textarea><br>
+                    <textarea id="edit_body" rows="30">{{ .EditPage.Content }}</textarea><br>
                 </div>
                 <input type='hidden' name="id" value="{{ .EditPage.ID }}">
                 <input type='hidden' name='selectedTagsID' value="{{range .SelectedTagsID}}{{.}},{{end}}">

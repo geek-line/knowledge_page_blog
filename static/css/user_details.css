@@ -30,11 +30,83 @@ h3 {
     list-style-type: disc;
 }
 
-.p_items_wrapper .p_action_item {
+.p_items_wrapper .p_action_item  {
     position: sticky;
     top: 35vh;
+    text-align:center;
     will-change: transform;
 }
+
+.p_items_wrapper .p_action_item .display_like{
+    margin:0px auto;
+}
+.p_items_wrapper .p_action_item .display_like .like   {
+    display:block;
+    vertical-align:middle
+}
+ 
+.p_items_wrapper .p_action_item .display_like .like #like_button {
+    color:black;
+   
+    font-size:90%;
+    line-height:2em;
+    padding:5px 10px;
+    text-decoration:none;
+    border:1px solid #ccc;
+    border-radius:4px;
+    background:-webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+    background-color:#55c500;
+    
+    }
+ 
+.p_items_wrapper .p_action_item .display_like .like #like_button:focus,
+.p_items_wrapper .p_action_item .display_like .like #like_button:hover   {
+    opacity:0.75;
+    color:#55c500;
+    border-color:#55c500;
+    }
+ 
+/*吹き出し*/
+.display_like .balloon    {
+    display:block;
+    vertical-align:middle;
+    margin-bottom:5px;
+    width:100%;
+   
+    }
+ 
+.display_like  .balloon span.like_number    {
+    color:red;
+    font-size:90%;
+    line-height:2em;
+    padding:5px 12px;
+ 
+    position: relative;
+    background:white;
+    border: 1px solid #ccc;
+    border-radius:4px;
+    }
+ 
+.display_like .balloon span.like_number:after,
+.display_like .balloon span.like_number:before {
+    left:50%;
+    top:100%;
+    border: solid transparent;
+    content: "";
+    position: absolute;
+    }
+ 
+.display_like .balloon span.like_number:after  {
+    border-top-color: #fff;
+    border-width: 4px;
+    margin-left: -4px
+    }
+ 
+.display_like .balloon span.like_number:before {
+    border-top-color: #ccc;
+    border-width: 5px;
+    margin-left: -5px;
+    }
 
 .p_items_wrapper .p_main_item {
     padding: 1rem 1rem 1rem 1rem;

@@ -6,6 +6,16 @@ body {
     color: rgba(0, 0, 0, 0.87);
 }
 
+.content ul {
+    padding-left: 30px;
+}
+
+.content ul li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    list-style-type: disc;
+}
+
 .p_items_wrapper .p_action_item {
     position: sticky;
     top: 35vh;

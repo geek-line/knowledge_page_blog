@@ -1,5 +1,11 @@
 package handlers
 
+//Tag 各タグの要素
+type Tag struct {
+	ID   int
+	Name string
+}
+
 //DetailPage userのナレッジ詳細ページの要素
 type DetailPage struct {
 	ID           int
@@ -24,6 +30,7 @@ type Knowledges struct {
 	EyeCatchSrc string
 }
 
+<<<<<<< HEAD
 //Tag 各タグの要素
 type Tag struct {
 	ID   int
@@ -31,6 +38,9 @@ type Tag struct {
 }
 
 //IndexElem ナレッジ一覧ページの各リストの要素
+=======
+//IndexElem ナレッジ一覧ページの要素
+>>>>>>> product
 type IndexElem struct {
 	ID           int    //タイトル
 	Title        string //タイトルの中身

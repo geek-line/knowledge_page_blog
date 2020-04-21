@@ -1,26 +1,32 @@
-body{
+html {
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-weight: normal;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+body {
     background-color: #e8f5f7;
 }
 
-.content_header{
+.content_header {
     padding: 2.5rem 0;
     height: 8rem;
 }
 
-.content_header .content_title{
+.content_header .content_title {
     margin: 0rem;
 }
 
-
-
-.tag_container{
+.tag_container {
     margin-top: 8rem;
     padding: 1rem 2rem;
     border-radius: 3px;
     background-color: white;
 }
+
 @media screen and (max-width: 480px) {
-    .tag_container{
+    .tag_container {
         margin-top: 1rem;
         padding: 1rem 2rem;
         border-radius: 3px;
@@ -28,12 +34,11 @@ body{
     }
 }
 
-
-.tag_container .tag_list li{
+.tag_container .tag_list li {
     display: inline-block;
 }
 
-.tag_container .tag_list .tag{
+.tag_container .tag_list .tag {
     font-size: 0.8em;
     margin-right: 4px;
     padding: 0.2em 0.6em;
@@ -42,8 +47,9 @@ body{
     color: white;
     background-color: #827b7b;
     line-height: 1.45em;
-} 
-.row .col .card_wrapper{
+}
+
+.row .col .card_wrapper {
     padding: 0rem 1.5rem 0rem 0rem;
 }
 
@@ -62,12 +68,11 @@ body{
     box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
 }
 
-
 .cp_card02 .link_box {
     position: absolute;
     top: 0;
     left: 0;
-    height:100%;
+    height: 100%;
     width: 100%;
     z-index: 1;
 }
@@ -79,18 +84,21 @@ body{
 .cp_card02:hover.alt .details {
     right: 0;
 }
+
 .cp_card02.alt .details {
     right: -100%;
     left: inherit;
 }
+
 .cp_card02 .knowledge_link {
     display: block;
     position: absolute;
     top: 0;
     left: 0;
-    height:100%; 
+    height: 100%;
     width: 100%;
 }
+
 .cp_card02 .photo {
     position: relative;
     float: left;
@@ -99,14 +107,16 @@ body{
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
+
 .cp_card02:hover .photo {
     -webkit-transform: rotate(5deg) scale(1.3);
     transform: rotate(5deg) scale(1.3);
 }
+
 .cp_card02 .photo.photo1 {
-   
     background-size: cover;
 }
+
 .cp_card02 .details {
     position: absolute;
     top: 0;
@@ -119,53 +129,60 @@ body{
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
     color: #ffffff;
-    background: rgba(255,87,34, 0.4);
+    background: rgba(255, 87, 34, 0.4);
 }
-.cp_card02 .details > li {
+
+.cp_card02 .details>li {
     padding: 3px 0;
 }
-.cp_card02 .details li::before,
-.cp_card02 .details .tags ul::before {
+
+.cp_card02 .details li::before, .cp_card02 .details .tags ul::before {
     font-family: FontAwesome;
     margin-right: 10px;
     vertical-align: middle;
 }
+
 /* .cp_card02 .details .author::before {
     content: '\f007';
 } */
+
 /* .cp_card02 .details .date::before {
     content: '\f133';
 } */
+
 .cp_card02 .details .tags ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
+
 .cp_card02 .details .tags ul::before {
     content: '\f02b';
 }
+
 .cp_card02 .details .tags li {
     display: inline-block;
     margin-right: 3px;
 }
+
 .cp_card02 .details a {
     color: inherit;
 }
+
 .cp_card02 .details a:hover {
-    color:#827b7b;
+    color: #827b7b;
 }
-
-
 
 .cp_card02 .description {
     position: relative;
     z-index: 0;
     float: left;
     width: 60%;
-    height:100%;
+    height: 100%;
     padding: 10px;
     min-height: 10em;
 }
+
 .cp_card02 .description::before {
     position: absolute;
     z-index: -1;
@@ -178,12 +195,11 @@ body{
     transform: skewX(-8deg);
     background: #ffffff;
 }
+
 .cp_card02 .description a {
-   
-  
     margin-bottom: 10px;
     text-decoration: none;
-    color:#827b7b;
+    color: #827b7b;
 }
 
 .cp_card02 .description a::after {
@@ -195,28 +211,24 @@ body{
     vertical-align: middle;
     opacity: 0;
 }
-.cp_card02 .description .knowledge_title {
 
-}
 
 .cp_card02 .description .knowledge_title h1 {
     position: relative;
     width: auto;
-    float:left;
+    float: left;
     height: 20%;
     font-size: 1.2rem;
     line-height: 1em;
     margin: 0 0 0px 0;
-
 }
-
-
 
 .cp_card02 .description p {
     position: absolute;
     margin: 0;
-    top:20%;
+    top: 20%;
 }
+
 .cp_card02 .description p::after {
     position: absolute;
     top: 3px;
@@ -226,16 +238,17 @@ body{
     content: '';
     background: #ff5722;
 }
+
 .cp_card02 .description .tag_list {
     position: absolute;
-    bottom:4em;
+    bottom: 4em;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-   
     margin: 0;
     padding-top: 20px;
 }
+
 .cp_card02 .description .like {
     position: absolute;
     right: 0.5rem;
@@ -244,23 +257,20 @@ body{
     line-height: 1.45em;
     margin-bottom: 10px;
     text-decoration: none;
-    color:#827b7b;
-  
+    color: #827b7b;
 }
 
-.cp_card02 .description ul li .tag   {
-  
+.cp_card02 .description ul li .tag {
     font-size: 0.8em;
     margin-right: 4px;
     padding: 0.2em 0.6em;
     cursor: pointer;
     border-radius: 10px;
-    color:white;
+    color: white;
     background-color: #827b7b;
     line-height: 1.45em;
     position: left;
-    }
-    
+}
 
 @media screen and (max-width: 480px) {
     .cp_card02 .description h1 {

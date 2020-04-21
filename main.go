@@ -52,8 +52,13 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
 	http.Handle("/node_modules/", http.StripPrefix("/node_modules/", http.FileServer(http.Dir(dir+"/node_modules/"))))
 	l, err := net.Listen("tcp", "127.0.0.1:9000")
+<<<<<<< HEAD
 	if err != nil {
 		return
+=======
+    if err != nil {
+        return
+>>>>>>> 0057f1059323115114aa448f4fe6d1e4217c5abd
 	}
 	fcgi.Serve(l, nil)
 }

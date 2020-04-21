@@ -6,8 +6,22 @@ body {
     color: rgba(0, 0, 0, 0.87);
 }
 
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
 .content ul {
-    padding-left: 30px;
+    padding-left: 2rem;
+}
+
+.content ol{
+    padding-left: 2rem;
 }
 
 .content ul li {
@@ -76,7 +90,6 @@ body {
 }
 
 .p_items_wrapper .p_table_items .item {
-    background-color: antiquewhite;
     padding: 1rem;
     border-radius: 10px;
 }

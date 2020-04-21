@@ -11,12 +11,23 @@ body{
     margin: 0rem;
 }
 
+
+
 .tag_container{
     margin-top: 8rem;
     padding: 1rem 2rem;
     border-radius: 3px;
     background-color: white;
 }
+@media screen and (max-width: 480px) {
+    .tag_container{
+        margin-top: 1rem;
+        padding: 1rem 2rem;
+        border-radius: 3px;
+        background-color: white;
+    }
+}
+
 
 .tag_container .tag_list li{
     display: inline-block;
@@ -33,9 +44,6 @@ body{
     line-height: 1.45em;
 } 
 
-.row .col.card_wrapper{
-    padding: 0 1.5rem 0 0;
-}
 
 .cp_card02 {
     font-size: 14px;
@@ -51,6 +59,17 @@ body{
     -webkit-box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
     box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
 }
+
+
+.cp_card02 .link_box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:100%;
+    width: 100%;
+    z-index: 1;
+}
+
 .cp_card02:hover .details {
     left: 0;
 }
@@ -91,7 +110,7 @@ body{
     top: 0;
     left: -100%;
     width: 40%;
-    height: 10em;
+    height: 10rem;
     margin: 0;
     padding: 10px 15px;
     list-style: none;
@@ -134,6 +153,29 @@ body{
     color:#827b7b;
 }
 
+
+
+.cp_card02 .description {
+    position: relative;
+    z-index: 0;
+    float: left;
+    width: 60%;
+    height:100%;
+    padding: 10px;
+    min-height: 10em;
+}
+.cp_card02 .description::before {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: -15px;
+    width: 100%;
+    content: '';
+    -webkit-transform: skewX(-8deg);
+    transform: skewX(-8deg);
+    background: #ffffff;
+}
 .cp_card02 .description a {
    
   
@@ -151,28 +193,6 @@ body{
     vertical-align: middle;
     opacity: 0;
 }
-
-.cp_card02 .description {
-    position: relative;
-    z-index: 0;
-    float: left;
-    width: 60%;
-    padding: 10px;
-    min-height: 10em;
-}
-.cp_card02 .description::before {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    bottom: 0;
-    left: -15px;
-    width: 100%;
-    content: '';
-    -webkit-transform: skewX(-8deg);
-    transform: skewX(-8deg);
-    background: #ffffff;
-}
-
 .cp_card02 .description .knowledge_title {
 
 }
@@ -182,21 +202,12 @@ body{
     width: auto;
     float:left;
     height: 20%;
-    font-size: 1.5em;
+    font-size: 1.2rem;
     line-height: 1em;
     margin: 0 0 0px 0;
 
 }
-.cp_card02 .description .knowledge_title h1 {
-    position: relative;
-    width: auto;
-    float:left;
-    height: 20%;
-    font-size: 1.5em;
-    line-height: 1em;
-    margin: 0 0 0px 0;
 
-}
 
 
 .cp_card02 .description p {

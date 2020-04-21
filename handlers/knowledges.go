@@ -103,9 +103,6 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			indexElem.SelectedTags = selectedTags
 			indexPage.IndexElems = append(indexPage.IndexElems, indexElem)
 		}
-		// funcMap := template.FuncMap{
-		// 	"addOne": func(x int) int { return x + 1 },
-		// }
 		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
 			Header    Header

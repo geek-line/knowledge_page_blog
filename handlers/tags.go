@@ -102,7 +102,6 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 				if err != nil {
 					panic(err.Error())
 				}
-				// db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
 				selectedTags = append(selectedTags, selectedTag)
 			}
 			indexElem.SelectedTags = selectedTags

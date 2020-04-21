@@ -2,9 +2,7 @@ package main
 
 import (
 	"log"
-	"net"
 	"net/http"
-	"net/http/fcgi"
 	"os"
 
 	"./handlers"

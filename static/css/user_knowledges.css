@@ -43,7 +43,9 @@ body{
     background-color: #827b7b;
     line-height: 1.45em;
 } 
-
+.row .col .card_wrapper{
+    padding: 0rem 1.5rem 0rem 0rem;
+}
 
 .cp_card02 {
     font-size: 14px;

@@ -3,6 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -26,8 +27,7 @@
                 <h4 class="content_title">記事一覧</h4>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class="col m6 card_wrapper">
-               
+            <div class="col s12 m6 card_wrapper">
                 <div  class="cp_card02">
                     <a href="/knowledges/{{ .ID |html| }}" class="link_box"></a>
                     <img class="photo photo1" src="{{ .EyeCatchSrc }}">

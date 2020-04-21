@@ -30,17 +30,7 @@ type Knowledges struct {
 	EyeCatchSrc string
 }
 
-<<<<<<< HEAD
-//Tag 各タグの要素
-type Tag struct {
-	ID   int
-	Name string
-}
-
-//IndexElem ナレッジ一覧ページの各リストの要素
-=======
 //IndexElem ナレッジ一覧ページの要素
->>>>>>> product
 type IndexElem struct {
 	ID           int    //タイトル
 	Title        string //タイトルの中身

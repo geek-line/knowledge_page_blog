@@ -103,7 +103,7 @@ body {
     position: relative;
     float: left;
     width: 40%;
-    height: 100%;
+    height: auto;
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }

@@ -10,11 +10,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var (
-	key   = []byte("super-secret-key")
-	store = sessions.NewCookieStore(key)
-)
-
 const lenPathDelete = len("/admin/delete/")
 
 func envLoad() {
@@ -26,6 +21,7 @@ func envLoad() {
 
 //AdminDeleteHandler admin/deleteに対するハンドラ
 func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)

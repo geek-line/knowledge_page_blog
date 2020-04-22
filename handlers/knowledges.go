@@ -7,12 +7,15 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/sessions"
 )
 
 const lenPathKnowledges = len("/knowledges/")
 
 //KnowledgesHandler /knowledgesに対するハンドラ
 func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
@@ -31,7 +34,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		query := r.URL.Query()
 		if query["page"] != nil {
 			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
-				StatusNotFoundHandler(w, r)
+				StatusNotFoundHandler(w, r, env)
 				return
 			}
 		}
@@ -54,7 +57,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
 		if pageNums < pageNum {
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			return
 		}
 		var pageNationElems = make([]Page, pageNums)
@@ -70,7 +73,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*20, 20)
 		if err != nil {
 			// panic(err.Error())
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			return
 		}
 		defer rows.Close()
@@ -78,14 +81,14 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			var indexElem IndexElem
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
 			if err != nil {
-				StatusNotFoundHandler(w, r)
+				StatusNotFoundHandler(w, r, env)
 				return
 			}
 			var selectedTags []Tag
 			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexElem.ID)
 			if err != nil {
 				// panic(err.Error())
-				StatusNotFoundHandler(w, r)
+				StatusNotFoundHandler(w, r, env)
 				return
 			}
 			defer tagsRows.Close()
@@ -94,7 +97,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				err := tagsRows.Scan(&selectedTag.ID)
 				if err != nil {
 					// panic(err.Error())
-					StatusNotFoundHandler(w, r)
+					StatusNotFoundHandler(w, r, env)
 					return
 				}
 				db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
@@ -124,7 +127,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 		case err != nil:
 			panic(err.Error())
 		default:

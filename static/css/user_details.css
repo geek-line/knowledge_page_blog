@@ -70,6 +70,7 @@ h3 {
     display:block;
     vertical-align:middle
 }
+
  
 .p_items_wrapper .p_action_item .display_like .like #like_button {
     color:black;
@@ -164,7 +165,10 @@ h3 {
 .p_items_wrapper .p_main_item #content {
     margin: 1rem;
 }
-
+.p_items_wrapper .p_main_item #content p img{
+    width:100%;
+    height:auto;
+}
 .p_items_wrapper .p_main_item #content ol li h1 span {
     font-size: 4.2rem;
     font-weight: bold;

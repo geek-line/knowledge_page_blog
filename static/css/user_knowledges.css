@@ -7,37 +7,25 @@ html {
 
 body {
     background-color: #e8f5f7;
+    margin: 0;
+        padding: 0;
+        width: 100%;
+        position: static;
+        min-height: 100%;
+        box-sizing: border-box;
    
 }
-@media screen and (min-height:500px) {
-    html{
-        
-        margin: 0;
-       
-        height:100%;
-    }
-    body{
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        position: relative;
-        min-height: 100vh;
-        box-sizing: border-box;
-       
-    }
-    .display{
-        min-height: 100vh;
-        box-sizing: border-box;
-    }
-    footer {
-        position: absolute;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        bottom: 0;
-    }
 
+ 
+footer {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    bottom: 0;
 }
+
+
 
 
 .content_header {
@@ -245,7 +233,7 @@ body {
 
 
 .cp_card02 .description .knowledge_title h1 {
-    position: relative;
+    position: static;
     width: auto;
     float: left;
     height: 20%;
@@ -255,9 +243,9 @@ body {
 }
 
 .cp_card02 .description p {
-    position: absolute;
+    position: relative;
     margin: 0;
-    top: 20%;
+    top: 2%;
 }
 
 .cp_card02 .description p::after {

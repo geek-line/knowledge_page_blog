@@ -6,10 +6,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gorilla/sessions"
 )
 
 //AdminSaveHandler /admin/saveに対するハンドラ
 func AdminSaveHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)

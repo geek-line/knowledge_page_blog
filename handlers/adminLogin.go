@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/sessions"
 )
 
 //AdminLoginHandler /admin/loginに対するハンドラ
 func AdminLoginHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	if r.Method == "GET" {
 		session, _ := store.Get(r, "cookie-name")
 		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {

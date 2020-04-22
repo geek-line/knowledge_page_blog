@@ -14,15 +14,16 @@
     {{ template "header" .Header }}
 
     <div class="p_items_wrapper row">
-        <div class= "p_action_item col s0 m0 l1">
-            <div>いいね:<span id='likes'>{{ .DetailPage.Likes }}</span></div>
-            <form id="like_form">
-                <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
-                <input id = "like_button" type='button' value="いいね" onclick="sendLike()">
-            </form>
-            <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+        <div class= "p_action_item col s0 m0 l1  hide-on-small-only">
+            <div class='display_like'>
+                <div class='balloon'><span id='likes' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                <form id="like_form" class="like">
+                    <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                    <input id ="like_button" type='button' value="like" onclick="sendLike()">
+                </form>
+                <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+            </div>
         </div>
-        
             <div class= "p_main_item col s12 m12 l8">
                 <ul class="tags">   
                     {{ range .DetailPage.SelectedTags }}
@@ -34,8 +35,9 @@
                 <br/>
                 <div id="content" class="content"></div>
                 <p></p>
+                
             </div>
-            <div class= "p_table_items col s0 m0 l3">
+            <div class= "p_table_items col s0 m0 l3 ">
                 <div id="p_table_items" class= "item"></div>
             </div>
         </div>
@@ -54,7 +56,7 @@
             let values = value.split(',')
             for (let i = 0; i < values.length; i++) {
                 if (values[i] == knowledge_id) {
-                    like_button.value = 'いいね済み'
+                    like_button.value = 'Liked'
                     break
                 }
             }
@@ -95,7 +97,7 @@
             value = localStorage.getItem('noLoginLike')
             values = value.split(',')
         }
-        console.log(values)
+       
         let isFound = false
         for (let i = 0; i < values.length; i++){
             if(values[i] == knowledge_id){
@@ -110,7 +112,7 @@
             values.push(knowledge_id)
             value = values.join()
         }
-        console.log(value)
+       
         const XHR = new XMLHttpRequest()
         let formdata = new FormData(like_form)
         if (isFound) {
@@ -123,10 +125,10 @@
                 if (XHR.status === 200) {
                     if(isFound){
                         likes.textContent = Number(likes.textContent) - 1
-                        like_button.value = 'いいね'
+                        like_button.value = 'Like'
                     }else{
                         likes.textContent = Number(likes.textContent) + 1
-                        like_button.value = 'いいね済み'
+                        like_button.value = 'Liked'
                     }
                     localStorage.setItem('noLoginLike', value)
                 } else {

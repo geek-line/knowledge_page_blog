@@ -6,10 +6,13 @@ import (
 	"strconv"
 	"text/template"
 	"time"
+
+	"github.com/gorilla/sessions"
 )
 
 //AdminTagsHandler /admin/tagsに対するハンドラ
 func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {

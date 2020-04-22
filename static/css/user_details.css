@@ -1,20 +1,146 @@
-body{
+
+body {
     background-color: #e8f5f7;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-weight: normal;
+    color: rgba(0, 0, 0, 0.87);
+}
+@media screen and (min-height:500px){
+
+    body{
+        height:100vh;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        position: relative;
+        min-height: 100vh;
+        box-sizing: border-box;
+       
+    }
+  
+    footer {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        bottom: 0;
+    }
+
 }
 
 
 
-.p_items_wrapper .p_action_item{
+
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.content ul {
+    padding-left: 2rem;
+}
+
+.content ol{
+    padding-left: 2rem;
+}
+
+.content ul li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    list-style-type: disc;
+}
+
+
+.p_items_wrapper .p_action_item  {
     position: sticky;
     top: 35vh;
+    text-align:center;
     will-change: transform;
 }
 
-.p_items_wrapper .p_main_item{
+.p_items_wrapper .p_action_item .display_like{
+    margin:0px auto;
+}
+.p_items_wrapper .p_action_item .display_like .like   {
+    display:block;
+    vertical-align:middle
+}
+ 
+.p_items_wrapper .p_action_item .display_like .like #like_button {
+    color:black;
+   
+    font-size:90%;
+    line-height:2em;
+    padding:5px 10px;
+    text-decoration:none;
+    border:1px solid #ccc;
+    border-radius:4px;
+    background:-webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+    background-color:#55c500;
+   
+    }
+ 
+.p_items_wrapper .p_action_item .display_like .like #like_button:focus,
+.p_items_wrapper .p_action_item .display_like .like #like_button:hover   {
+    opacity:0.75;
+    color:#55c500;
+    border-color:#55c500;
+    }
+ 
+/*吹き出し*/
+.display_like .balloon    {
+    display:block;
+    vertical-align:middle;
+    margin-bottom:5px;
+    width:100%;
+   
+    }
+ 
+.display_like  .balloon span.like_number    {
+    color:red;
+    font-size:90%;
+    line-height:2em;
+    padding:5px 12px;
+ 
+    position: relative;
+    background:white;
+    border: 1px solid #ccc;
+    border-radius:4px;
+    }
+ 
+.display_like .balloon span.like_number:after,
+.display_like .balloon span.like_number:before {
+    left:50%;
+    top:100%;
+    border: solid transparent;
+    content: "";
+    position: absolute;
+    }
+ 
+.display_like .balloon span.like_number:after  {
+    border-top-color: #fff;
+    border-width: 4px;
+    margin-left: -4px
+    }
+ 
+.display_like .balloon span.like_number:before {
+    border-top-color: #ccc;
+    border-width: 5px;
+    margin-left: -5px;
+    }
+
+.p_items_wrapper .p_main_item {
     padding: 1rem 1rem 1rem 1rem;
     position: relative;
-    margin:2rem 0rem;
-    background-color:white;
+    margin: 2rem 0rem 0rem 0rem;
+    background-color: white;
     border-radius: 10px;
 }
 
@@ -32,62 +158,54 @@ body{
     margin: 1rem;
 }
 
-.p_items_wrapper .p_main_item .update_time{
+.p_items_wrapper .p_main_item .update_time {
     position: absolute;
-    right:3vw;
-  
+    right: 3vw;
 }
 
-.p_items_wrapper .p_main_item #content{
+.p_items_wrapper .p_main_item #content {
     margin: 1rem;
-    
 }
 
-.p_items_wrapper .p_main_item #content ol li h1 span{
+.p_items_wrapper .p_main_item #content ol li h1 span {
     font-size: 4.2rem;
     font-weight: bold;
 }
 
-.p_items_wrapper .p_main_item #content ol li h2 span{
+.p_items_wrapper .p_main_item #content ol li h2 span {
     font-size: 3.56rem;
     font-weight: bold;
 }
 
-.p_items_wrapper .p_main_item #content ol li h3 span { 
+.p_items_wrapper .p_main_item #content ol li h3 span {
     font-size: 3.56rem;
     font-weight: bold;
-    
 }
+
 .p_items_wrapper .p_table_items {
     position: sticky;
-    top:34vh;
+    top: 34vh;
     will-change: transform;
-    padding:1rem;
-    
+    padding: 1rem;
 }
 
-.p_items_wrapper .p_table_items .item{
-    background-color: antiquewhite;
-    padding:1rem;
+.p_items_wrapper .p_table_items .item {
+    padding: 1rem;
     border-radius: 10px;
 }
 
-.p_items_wrapper .p_table_items .item ul li a{
+.p_items_wrapper .p_table_items .item ul li a {
     color: #827b7b;
-    
 }
 
-
-.p_items_wrapper .p_main_item .tags li  a {
-  
+.p_items_wrapper .p_main_item .tags li a {
     font-size: 0.8em;
     margin-right: 4px;
     padding: 0.2em 0.6em;
     cursor: pointer;
     border-radius: 10px;
-    color:white;
+    color: white;
     background-color: #827b7b;
     line-height: 1.45em;
     position: left;
 }
-

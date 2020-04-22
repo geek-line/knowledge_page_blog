@@ -4,14 +4,18 @@ import (
 	"database/sql"
 	"html/template"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/sessions"
 )
 
 const lenPathTags = len("/tags/")
 
 //TagsHandler /tags/に対するハンドラ
 func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
@@ -26,9 +30,18 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 	defer db.Close()
 
 	if suffix != "" {
-		id, err := strconv.Atoi(suffix)
+		pageNum := 1
+		query := r.URL.Query()
+		if query["page"] != nil {
+			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
+				StatusNotFoundHandler(w, r, env)
+				return
+			}
+		}
+		var filteredTag Tag
+		filteredTag.ID, err = strconv.Atoi(suffix)
 		if err != nil {
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			return
 		}
 		rows, err := db.Query("SELECT id, name FROM tags")
@@ -45,17 +58,35 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 			}
 			tags = append(tags, tag)
 		}
-		var filteredTagName string
-		db.QueryRow("SELECT name FROM tags WHERE id = ?", id).Scan(&filteredTagName)
-		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ?", id)
+
+		var indexPage IndexPage
+		var knowledgeNums float64
+		db.QueryRow("SELECT count(knowledges.id) FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ?", filteredTag.ID).Scan(&knowledgeNums)
+		pageNums := int(math.Ceil(knowledgeNums / 20))
+		if pageNums < pageNum {
+			StatusNotFoundHandler(w, r, env)
+			return
+		}
+		var pageNationElems = make([]Page, pageNums)
+		for i := 0; i < pageNums; i++ {
+			pageNationElems[i].PageNum = i + 1
+			pageNationElems[i].IsSelect = false
+		}
+		pageNationElems[pageNum-1].IsSelect = true
+		indexPage.PageNation.PageElems = pageNationElems
+		indexPage.PageNation.PageNum = pageNum
+		indexPage.PageNation.NextPageNum = pageNum + 1
+		indexPage.PageNation.PrevPageNum = pageNum - 1
+
+		db.QueryRow("SELECT name FROM tags WHERE id = ?", filteredTag.ID).Scan(&filteredTag.Name)
+		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? LIMIT ?, ?", filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
 			// panic(err.Error())
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			log.Println("クエリのエラー")
 			return
 		}
 		defer rows.Close()
-		var indexPage []IndexElem
 		for rows.Next() {
 			var indexElem IndexElem
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
@@ -74,27 +105,26 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 				if err != nil {
 					panic(err.Error())
 				}
-				// db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
 				selectedTags = append(selectedTags, selectedTag)
 			}
 			indexElem.SelectedTags = selectedTags
-			indexPage = append(indexPage, indexElem)
+			indexPage.IndexElems = append(indexPage.IndexElems, indexElem)
 		}
 		t := template.Must(template.ParseFiles("template/user_tags.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
-			Header          Header
-			Tags            []Tag
-			IndexPage       []IndexElem
-			FilteredTagName string
+			Header      Header
+			Tags        []Tag
+			IndexPage   IndexPage
+			FilteredTag Tag
 		}{
-			Header:          header,
-			Tags:            tags,
-			IndexPage:       indexPage,
-			FilteredTagName: filteredTagName,
+			Header:      header,
+			Tags:        tags,
+			IndexPage:   indexPage,
+			FilteredTag: filteredTag,
 		}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		StatusNotFoundHandler(w, r)
+		StatusNotFoundHandler(w, r, env)
 	}
 }

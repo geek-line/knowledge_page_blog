@@ -4,14 +4,18 @@ import (
 	"database/sql"
 	"html/template"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/sessions"
 )
 
 const lenPathKnowledges = len("/knowledges/")
 
 //KnowledgesHandler /knowledgesに対するハンドラ
 func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
@@ -25,7 +29,97 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 	}
 	defer db.Close()
 
-	if suffix != "" {
+	if suffix == "" || suffix == "search" {
+		pageNum := 1
+		query := r.URL.Query()
+		if query["page"] != nil {
+			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
+				StatusNotFoundHandler(w, r, env)
+				return
+			}
+		}
+		rows, err := db.Query("SELECT id, name FROM tags")
+		if err != nil {
+			panic(err.Error())
+		}
+		defer rows.Close()
+		var tags []Tag
+		for rows.Next() {
+			var tag Tag
+			err := rows.Scan(&tag.ID, &tag.Name)
+			if err != nil {
+				panic(err.Error())
+			}
+			tags = append(tags, tag)
+		}
+		var indexPage IndexPage
+		var knowledgeNums float64
+		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
+		pageNums := int(math.Ceil(knowledgeNums / 20))
+		if pageNums < pageNum {
+			StatusNotFoundHandler(w, r, env)
+			return
+		}
+		var pageNationElems = make([]Page, pageNums)
+		for i := 0; i < pageNums; i++ {
+			pageNationElems[i].PageNum = i + 1
+			pageNationElems[i].IsSelect = false
+		}
+		pageNationElems[pageNum-1].IsSelect = true
+		indexPage.PageNation.PageElems = pageNationElems
+		indexPage.PageNation.PageNum = pageNum
+		indexPage.PageNation.NextPageNum = pageNum + 1
+		indexPage.PageNation.PrevPageNum = pageNum - 1
+		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*20, 20)
+		if err != nil {
+			// panic(err.Error())
+			StatusNotFoundHandler(w, r, env)
+			return
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var indexElem IndexElem
+			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
+			if err != nil {
+				StatusNotFoundHandler(w, r, env)
+				return
+			}
+			var selectedTags []Tag
+			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexElem.ID)
+			if err != nil {
+				// panic(err.Error())
+				StatusNotFoundHandler(w, r, env)
+				return
+			}
+			defer tagsRows.Close()
+			for tagsRows.Next() {
+				var selectedTag Tag
+				err := tagsRows.Scan(&selectedTag.ID)
+				if err != nil {
+					// panic(err.Error())
+					StatusNotFoundHandler(w, r, env)
+					return
+				}
+				db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
+				selectedTags = append(selectedTags, selectedTag)
+			}
+			indexElem.SelectedTags = selectedTags
+			indexPage.IndexElems = append(indexPage.IndexElems, indexElem)
+		}
+		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
+		if err = t.Execute(w, struct {
+			Header    Header
+			Tags      []Tag
+			IndexPage IndexPage
+		}{
+			Header:    header,
+			Tags:      tags,
+			IndexPage: indexPage,
+		}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+	} else {
 		var detailPage DetailPage
 		var id int
 		id, _ = strconv.Atoi(suffix)
@@ -33,7 +127,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 		case err != nil:
 			panic(err.Error())
 		default:
@@ -62,63 +156,6 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			}); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
-		}
-	} else {
-		rows, err := db.Query("SELECT id, name FROM tags")
-		if err != nil {
-			panic(err.Error())
-		}
-		defer rows.Close()
-		var tags []Tag
-		for rows.Next() {
-			var tag Tag
-			err := rows.Scan(&tag.ID, &tag.Name)
-			if err != nil {
-				panic(err.Error())
-			}
-			tags = append(tags, tag)
-		}
-		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges")
-		if err != nil {
-			panic(err.Error())
-		}
-		defer rows.Close()
-		var indexPage []IndexElem
-		for rows.Next() {
-			var indexElem IndexElem
-			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
-			if err != nil {
-				panic(err.Error())
-			}
-			var selectedTags []Tag
-			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexElem.ID)
-			if err != nil {
-				panic(err.Error())
-			}
-			defer tagsRows.Close()
-			for tagsRows.Next() {
-				var selectedTag Tag
-				err := tagsRows.Scan(&selectedTag.ID)
-				if err != nil {
-					panic(err.Error())
-				}
-				db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
-				selectedTags = append(selectedTags, selectedTag)
-			}
-			indexElem.SelectedTags = selectedTags
-			indexPage = append(indexPage, indexElem)
-		}
-		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
-		if err = t.Execute(w, struct {
-			Header    Header
-			Tags      []Tag
-			IndexPage []IndexElem
-		}{
-			Header:    header,
-			Tags:      tags,
-			IndexPage: indexPage,
-		}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 }

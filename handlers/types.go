@@ -40,3 +40,23 @@ type IndexElem struct {
 	Likes        int
 	EyeCatchSrc  string
 }
+
+//Page ページネーションの際に用いるページの要素
+type Page struct {
+	PageNum  int
+	IsSelect bool
+}
+
+//PageNation ページネーションの全体の要素
+type PageNation struct {
+	PageElems   []Page
+	PageNum     int
+	NextPageNum int
+	PrevPageNum int
+}
+
+//IndexPage ナレッジ一覧ページの全体の要素
+type IndexPage struct {
+	PageNation PageNation
+	IndexElems []IndexElem
+}

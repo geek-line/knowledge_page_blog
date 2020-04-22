@@ -1,6 +1,9 @@
 sql_env.txt
 *.ddl
+*.pem
 node_modules
 aws_config.js
 .env
-.pem
+knowledge-blog
+main
+

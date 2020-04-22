@@ -10,43 +10,34 @@
     <link rel="stylesheet" type="text/css" href="/static/css/admin_knowledges.css">
 </head>
 <body>
-
-    <header class = "header">
-        <div class="header cyan darken-1">
-            <div class="row">
-                <div class="col s5 m3">
-                    <a class="header-anker white-text" href="/admin/knowledges"><h4> Knowledge Blog</h4></a>
-                </div>
-                <div class="col s6 offset-s4 offset-m4 m4">
-                    <a class="header-anker white-text" href="/admin/new/">新規作成</a>
-                </div>
-            </div>
-        </div>
-    </header>
-    <div>knowledges一覧</div>
-    <table>
-        <tr>
-            <th>id</th>
-            <th>title</th>
-            <th>created_at</th>
-            <th>updated_at</th>
-            <th>編集</th>
-            <th>削除</th>
-            <th>ユーザー画面</th>
-        </tr>
-        {{ range .IndexPage }}
-        <tr>
-            <td>{{ .ID }}</td>
-            <td>{{ .Title }}</td>
-            <td>{{ .CreatedAt }}</td>
-            <td>{{ .UpdatedAt }}</td>
-            <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
-            <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
-            <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
-        </tr>
-        {{ end }}
-    </table>
+    {{ template "header" .Header}}
+    <div class='container'>
+        <a href='/admin/tags/'>タグ編集へ</a>
+        <h4>knowledges一覧</h4>
+        <table>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>created_at</th>
+                <th>updated_at</th>
+                <th>編集</th>
+                <th>削除</th>
+                <th>ユーザー画面</th>
+            </tr>
+            {{ range .IndexPage }}
+            <tr>
+                <td>{{ .ID }}</td>
+                <td>{{ .Title }}</td>
+                <td>{{ .CreatedAt }}</td>
+                <td>{{ .UpdatedAt }}</td>
+                <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
+                <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
+                <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
+            </tr>
+            {{ end }}
+        </table>
         
-    <a href="/knowledges/">ユーザーページで一覧を表示</a>
+        <a href="/knowledges/">ユーザーページで一覧を表示</a>
+    </div>
 </body>
 </html>

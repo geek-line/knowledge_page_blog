@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="/node_modules/aws-sdk/dist/aws-sdk.min.js"></script>
         <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>  
+        <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+        <link rel="stylesheet" type="text/css" href="/static/css/admin_new.css">
         <script src="/static/aws_config.js"></script>
         <script type="text/javascript">
         AWS.config.update({
@@ -20,10 +22,11 @@
         tinymce.init({
             selector: '#edit_body',
             branding: false, // クレジットの削除
+            height:"640",
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
-            plugins: 'image lists table codesample',
-            toolbar: 'undo redo | styleselect | bold italic | image codesample | numlist bullist | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+            plugins: 'image lists table codesample link',
+            toolbar: 'undo redo | styleselect | link bold italic | image codesample | numlist bullist | table tabledelete',
             images_upload_handler: function (blobInfo, success, failure) {
                 setTimeout(function () {
                     const file = blobInfo.blob()
@@ -32,7 +35,7 @@
                     s3.putObject({ Key: 'uploads/' + filename, ContentType: blobInfo.blob().type, Body: blobInfo.blob(), ACL: "public-read" },
                         function (err, data) {
                             if (data !== null) {
-                                const srcHTML = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'uploads/' + filename
+                                const srcHTML = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'uploads/' + filename
                                 success(srcHTML);
                             } else {
                                 alert("アップロード失敗.");
@@ -45,30 +48,36 @@
     </head>
     <body>
         {{ template "header" .Header }}
-        <div><h2>{{ .EditPage.Title }}を編集</h2></div>
-        <form id="form">
-            <div><h3>タイトルの編集</h3></div>
-            <div><input type="text"  style="font-size:100%; width :100%;height : 50px;" name="title" value="{{ .EditPage.Title }}" id='form-title'></div>
-            <div>
-                <h3>タグの追加</h3>
-            </div>
-            <div id="select_display">
-            </div>
-            <button 
-              type="button"
-              id="add_tag_button"
-              value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>"
-            >タグを追加</button>
-            <div>アイキャッチ</div>
-            <input id="file_uploader" type='file'>
-            <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
-            <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="200px">
-            <div><h3>内容の編集</h3></div>         
-            <div><textarea id="edit_body" rows = "50">{{ .EditPage.Content }}</textarea><br></div>
-            <div><input type='hidden' name="id" value="{{ .EditPage.ID }}"></div>
-            <div><input type='hidden' name='selectedTagsID' value="{{range .SelectedTagsID}}{{.}},{{end}}"></div>
-            <div><input onclick="sendData()" type="button" value="Save"></div>
-        </form>
+        <div class="container">
+            <h4>"{{ .EditPage.Title }}"を編集</h4>
+            <form id="form">
+                <div class="row edit-block-container">
+                    <h5>タイトルの編集</h5>
+                    <input type="text" class="title-input" name="title" value="{{ .EditPage.Title }}"
+                        id='form-title'>
+                </div>
+                <div class="row edit-block-container">
+                    <h5>タグの編集</h5>
+                    <div id="select_display">
+                    </div>
+                    <button type="button" id="add_tag_button"
+                        value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>">タグを追加</button>
+                </div>
+                <div class="row edit-block-container">
+                    <h5>アイキャッチの編集</h5>
+                    <input id="file_uploader" type='file'>
+                    <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
+                    <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="200px">
+                </div>
+                <div class="row edit-block-container">
+                    <h5>内容の編集</h5>
+                    <textarea id="edit_body" rows="30">{{ .EditPage.Content }}</textarea><br>
+                </div>
+                <input type='hidden' name="id" value="{{ .EditPage.ID }}">
+                <input type='hidden' name='selectedTagsID' value="{{range .SelectedTagsID}}{{.}},{{end}}">
+                <input onclick="sendData()" type="button" value="Save">
+            </form>
+        </div>
     </body>  
     <script type="text/javascript">
     const form = document.getElementById('form')
@@ -137,7 +146,7 @@
             s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
                 function (err, data) {
                     if (data !== null) {
-                        document.getElementById('file_src').value = "https://knowledge-blog-img.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
+                        document.getElementById('file_src').value = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
                         let formdata = new FormData(form)
                         formdata.append('content', content)
                         formdata.append('tags', tags)

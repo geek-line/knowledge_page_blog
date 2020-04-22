@@ -7,7 +7,38 @@ html {
 
 body {
     background-color: #e8f5f7;
+   
 }
+@media screen and (min-height:500px) {
+    html{
+        
+        margin: 0;
+       
+        height:100%;
+    }
+    body{
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        position: relative;
+        min-height: 100vh;
+        box-sizing: border-box;
+       
+    }
+    .display{
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+    footer {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        bottom: 0;
+    }
+
+}
+
 
 .content_header {
     padding: 2.5rem 0;
@@ -275,5 +306,8 @@ body {
 @media screen and (max-width: 480px) {
     .cp_card02 .description h1 {
         font-size: 1.3em;
+    }
+    .row .col .card_wrapper {
+        padding: 0rem 0rem 0rem 0rem;
     }
 }

@@ -19,7 +19,7 @@
                 <div class='balloon'><span id='likes' class='like_number'>{{ .DetailPage.Likes }}</span></div>
                 <form id="like_form" class="like">
                     <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
-                    <input id ="like_button" type='button' value="like" onclick="sendLike()">
+                    <button class="like-button" id ="like_button" type='button' value="like" onclick="sendLike()">LIKE</button>
                 </form>
                 <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
             </div>
@@ -56,7 +56,8 @@
             let values = value.split(',')
             for (let i = 0; i < values.length; i++) {
                 if (values[i] == knowledge_id) {
-                    like_button.value = 'Liked'
+                    like_button.textContent = 'LIKED'
+                    like_button.classList.add('liked-button')
                     break
                 }
             }
@@ -125,10 +126,12 @@
                 if (XHR.status === 200) {
                     if(isFound){
                         likes.textContent = Number(likes.textContent) - 1
-                        like_button.value = 'Like'
+                        like_button.textContent = 'LIKE'
+                        like_button.classList.remove('liked-button')
                     }else{
                         likes.textContent = Number(likes.textContent) + 1
-                        like_button.value = 'Liked'
+                        like_button.textContent = 'LIKED'
+                        like_button.classList.add('liked-button')
                     }
                     localStorage.setItem('noLoginLike', value)
                 } else {

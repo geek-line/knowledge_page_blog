@@ -9,8 +9,9 @@
             <a class="header-anker white-text brand-logo left" href="/knowledges"style="margin-left:1rem;"> Code Database </a>
             <ul id="nav-mobile" class="right ">
                 {{ if .IsLogin  }}
-                    <li><a class="header-anker white-text hide-on-small-only" href="/admin/logout/">ログアウト</a></li>
+                    <li><a class="header-anker white-text hide-on-small-only" href='/admin/knowledges/' >管理画面</a></li>
                     <li><a class="header-anker white-text hide-on-small-only" href="/admin/new/">新規作成</a></li>
+                    <li><a class="header-anker white-text hide-on-small-only" href="/admin/logout/">ログアウト</a></li>
                 {{else}}
                
                 {{ end }}

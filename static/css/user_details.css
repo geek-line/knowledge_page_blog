@@ -180,7 +180,8 @@ h3 {
 
 .p_items_wrapper .p_table_items {
     position: sticky;
-    top: 34vh;
+    margin-top: 20vh;
+    top:0vh;
     will-change: transform;
     padding: 1rem;
 }
@@ -188,6 +189,9 @@ h3 {
 .p_items_wrapper .p_table_items .item {
     padding: 1rem;
     border-radius: 10px;
+    overflow-y: auto;
+    max-height: 70vh;
+
 }
 
 .p_items_wrapper .p_table_items .item ul li a {

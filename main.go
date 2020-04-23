@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"net"
 	"net/http"
+	"net/http/fcgi"
 	"os"
 
 	"./handlers"
@@ -51,5 +53,9 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
 	http.Handle("/node_modules/", http.StripPrefix("/node_modules/", http.FileServer(http.Dir(dir+"/node_modules/"))))
 	http.Handle("/google_sitemap/", http.StripPrefix("/google_sitemap/", http.FileServer(http.Dir(dir+"/google_sitemap/"))))
-	http.ListenAndServe(":3000", nil)
+	l, err := net.Listen("tcp", "127.0.0.1:9000")
+	if err != nil {
+		return
+	}
+	fcgi.Serve(l, nil)
 }

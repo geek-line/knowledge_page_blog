@@ -52,16 +52,28 @@ h3 {
     will-change: transform;
 }
 
-.p_items_wrapper .p_action_item .display_like {
+.p_items_wrapper .like-date-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.p_items_wrapper .like-date-wrapper .update_time, .p_items_wrapper .like-date-wrapper .display_like {
+    float: right;
+    vertical-align: bottom;
+}
+
+.display_like {
     margin: 0px auto;
 }
 
-.p_items_wrapper .p_action_item .display_like .like {
+.display_like .like {
     display: block;
     vertical-align: middle
 }
 
-.p_items_wrapper .p_action_item .display_like .like .like-button {
+.display_like .like .like-button {
     color: #ea3f60;
     font-weight: bold;
     height: 3.5rem;
@@ -75,13 +87,21 @@ h3 {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-.p_items_wrapper .p_action_item .display_like .like .like-button.liked-button {
+@media screen and (max-width: 1000px) and (min-width: 426px) {
+    .display_like .like .like-button {
+        width: 10rem;
+        border-radius: 10%;
+        font-weight: bold;
+    }
+}
+
+.display_like .like .like-button.liked-button {
     color: #fff;
     background: -webkit-gradient(linear, left top, left bottom, from(#ea3f60), to(#d92e50));
     background-color: #ea3f60;
 }
 
-.p_items_wrapper .p_action_item .display_like .like #like_button:hover {
+.display_like .like #like_button:hover {
     opacity: 0.75;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
@@ -149,17 +169,12 @@ h3 {
     margin: 1rem;
 }
 
-.p_items_wrapper .p_main_item .update_time {
-    position: absolute;
-    right: 3vw;
-}
-
 .p_items_wrapper .p_main_item #content {
     margin: 1rem;
 }
 
 .p_items_wrapper .p_main_item #content p img {
-    width: 100%;
+    max-width: 100%;
     height: auto;
 }
 
@@ -181,7 +196,7 @@ h3 {
 .p_items_wrapper .p_table_items {
     position: sticky;
     margin-top: 20vh;
-    top:0vh;
+    top: 0vh;
     will-change: transform;
     padding: 1rem;
 }
@@ -191,7 +206,6 @@ h3 {
     border-radius: 10px;
     overflow-y: auto;
     max-height: 70vh;
-
 }
 
 .p_items_wrapper .p_table_items .item ul li a {

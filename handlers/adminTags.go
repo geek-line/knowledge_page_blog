@@ -11,18 +11,13 @@ import (
 )
 
 //AdminTagsHandler /admin/tagsに対するハンドラ
-func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
 	}
-	db, err := sql.Open("mysql", env["SQL_ENV"])
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
 	switch {
 	case r.Method == "GET":
 		rows, err := db.Query("SELECT id, name FROM tags")
@@ -54,28 +49,32 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 		name := r.FormValue("name")
 		createdAt := time.Now()
 		updatedAt := time.Now()
-		_, err = db.Query("INSERT INTO tags(name, created_at, updated_at) VALUES(?, ?, ?)", name, createdAt, updatedAt)
+		rows, err := db.Query("INSERT INTO tags(name, created_at, updated_at) VALUES(?, ?, ?)", name, createdAt, updatedAt)
 		if err != nil {
 			panic(err.Error())
 		}
+		defer rows.Close()
 		http.Redirect(w, r, "/admin/tags/", http.StatusFound)
 	case r.Method == "PUT":
 		id, _ := strconv.Atoi(r.FormValue("id"))
 		name := r.FormValue("name")
 		updatedAt := time.Now()
-		_, err = db.Query("UPDATE tags SET name = ?, updated_at = ? WHERE id = ?", name, updatedAt, id)
+		rows, err := db.Query("UPDATE tags SET name = ?, updated_at = ? WHERE id = ?", name, updatedAt, id)
 		if err != nil {
 			panic(err.Error())
 		}
+		defer rows.Close()
 	case r.Method == "DELETE":
 		id, _ := strconv.Atoi(r.FormValue("id"))
-		_, err = db.Query("DELETE FROM tags WHERE id = ?", id)
+		rows, err := db.Query("DELETE FROM tags WHERE id = ?", id)
 		if err != nil {
 			panic(err.Error())
 		}
-		_, err = db.Query("DELETE FROM knowledges_tags WHERE tag_id = ?", id)
+		defer rows.Close()
+		rows, err = db.Query("DELETE FROM knowledges_tags WHERE tag_id = ?", id)
 		if err != nil {
 			panic(err.Error())
 		}
+		defer rows.Close()
 	}
 }

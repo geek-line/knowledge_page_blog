@@ -14,7 +14,7 @@
 <body>
     {{ template "header" .Header }}
     <div class="row">
-        <div class="col m3">
+        <div class="col s12 m3 hide-on-small-and-down">
 
             <div class="tag_container">
                 <h6 class='tag_title'>タグ一覧</h6>
@@ -41,7 +41,7 @@
                         <div  class="knowledge_title">
                             <h1>{{ .Title }}</h1>
                         </div>
-                        <ul class="tag_list">
+                        <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
                             <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
                             {{ end }}

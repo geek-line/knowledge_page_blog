@@ -6,4 +6,5 @@ aws_config.js
 .env
 knowledge-blog
 main
+google_sitemap/
 nohup.out

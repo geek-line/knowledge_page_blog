@@ -7,38 +7,35 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/sessions"
 )
 
 const lenPathTags = len("/tags/")
 
 //TagsHandler /tags/に対するハンドラ
-func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
 	}
-
 	suffix := r.URL.Path[lenPathTags:]
-	db, err := sql.Open("mysql", env["SQL_ENV"])
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
 	if suffix != "" {
 		pageNum := 1
+		var err error
 		query := r.URL.Query()
 		if query["page"] != nil {
 			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
-				StatusNotFoundHandler(w, r)
+				StatusNotFoundHandler(w, r, env)
 				return
 			}
 		}
 		var filteredTag Tag
 		filteredTag.ID, err = strconv.Atoi(suffix)
 		if err != nil {
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			return
 		}
 		rows, err := db.Query("SELECT id, name FROM tags")
@@ -61,7 +58,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 		db.QueryRow("SELECT count(knowledges.id) FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ?", filteredTag.ID).Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
 		if pageNums < pageNum {
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			return
 		}
 		var pageNationElems = make([]Page, pageNums)
@@ -79,7 +76,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? LIMIT ?, ?", filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
 			// panic(err.Error())
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 			log.Println("クエリのエラー")
 			return
 		}
@@ -122,6 +119,6 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		StatusNotFoundHandler(w, r)
+		StatusNotFoundHandler(w, r, env)
 	}
 }

@@ -6,24 +6,22 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/sessions"
 )
 
 const lenPathAdminKnowledges = len("/admin/knowledges/")
 
 //AdminKnowledgesHandler admin/knowledgesに対するハンドラ
-func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
+	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		return
 	}
 	header := newHeader(true)
 	suffix := r.URL.Path[lenPathAdminKnowledges:]
-	db, err := sql.Open("mysql", env["SQL_ENV"])
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
 	if suffix != "" {
 		var editPage Knowledges
 		knowledgeID, _ := strconv.Atoi(suffix)
@@ -31,7 +29,7 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
-			StatusNotFoundHandler(w, r)
+			StatusNotFoundHandler(w, r, env)
 		default:
 			rows, err := db.Query("SELECT id, name FROM tags")
 			if err != nil {

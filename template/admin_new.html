@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel='icon' href='/static/favicon.ico'>
+        <title>Code Database</title>
         <script src="/node_modules/aws-sdk/dist/aws-sdk.min.js"></script>
         <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>  
         <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
@@ -25,8 +27,8 @@
             height: "640",
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',
-            plugins: 'image lists table codesample',
-            toolbar: 'undo redo | styleselect | bold italic | image codesample | numlist bullist | table tabledelete',
+            plugins: 'link image lists table codesample',
+            toolbar: 'undo redo | styleselect | link bold italic | image codesample | numlist bullist | table tabledelete',
             images_upload_handler: function (blobInfo, success, failure) {
                 setTimeout(function () {
                     const file = blobInfo.blob()

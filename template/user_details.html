@@ -3,6 +3,8 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='icon' href='/static/favicon.ico'>
+    <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/tinymce/skins/content/default/content.min.css'>
     <link rel='stylesheet' href='/node_modules/tinymce/skins/ui/oxide/content.min.css'>
     <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
@@ -14,41 +16,53 @@
     {{ template "header" .Header }}
 
     <div class="p_items_wrapper row">
-        <div class= "p_action_item col s0 m0 l1  hide-on-small-only">
+        <div class= "p_action_item col s0 m0 l1 hide-on-med-and-down">
             <div class='display_like'>
-                <div class='balloon'><span id='likes' class='like_number'>{{ .DetailPage.Likes }}</span></div>
-                <form id="like_form" class="like">
+                <div class='balloon'><span id='likes_baloon' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                <form id="like_form_baloon" class="like">
                     <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
-                    <input id ="like_button" type='button' value="like" onclick="sendLike()">
+                    <button class="like-button" id ="like_button_baloon" type='button' value="like" onclick="sendLikeFromBaloon()">LIKE</button>
                 </form>
                 <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
             </div>
         </div>
-            <div class= "p_main_item col s12 m12 l8">
-                <ul class="tags">   
-                    {{ range .DetailPage.SelectedTags }}
-                    <li><a href='/tags/{{ .ID }}'>{{ .Name }}</a></li>
-                    {{ end }}
-                </ul>
-                <div class= "title">{{ .DetailPage.Title }}</div>
-                <div class= "update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
-                <br/>
-                <div id="content" class="content"></div>
-                <p></p>
-                
+        <div class= "p_main_item col s12 m12 l8">
+            <ul class="tags">   
+                {{ range .DetailPage.SelectedTags }}
+                <li><a href='/tags/{{ .ID }}'>{{ .Name }}</a></li>
+                {{ end }}
+            </ul>
+            <div class= "title">{{ .DetailPage.Title }}</div>
+            <div class='like-date-wrapper'>
+                <div class="update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
+                <div class='display_like hide-on-large-only'>
+                    <div class='balloon'><span id='likes_inline' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                    <form id="like_form_inline" class="like">
+                        <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                        <button class="like-button" id="like_button_inline" type='button' value="like" onclick="sendLikeFromInline()">LIKE</button>
+                    </form>
+                    <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+                </div>
             </div>
-            <div class= "p_table_items col s0 m0 l3 ">
-                <div id="p_table_items" class= "item"></div>
-            </div>
+            <br>
+            <hr>
+            <div id="content" class="content"></div>
+            <p></p>
+            
         </div>
-
+        <div class= "p_table_items col s0 m0 l3 hide-on-med-and-down">
+            <div id="p_table_items" class= "item"></div>
+        </div>
+    </div>
     {{ template "footer" }}
 </body>
 <script type="text/javascript">
     const content = document.getElementById('content')
     const input = document.getElementById('input')
-    const like_button = document.getElementById('like_button')
-    const likes = document.getElementById('likes')
+    const like_button_inline = document.getElementById('like_button_inline')
+    const like_button_baloon = document.getElementById('like_button_baloon')
+    const likes_inline = document.getElementById('likes_inline')
+    const likes_baloon = document.getElementById('likes_baloon')
     const knowledge_id = document.getElementById('knowledge_id').value
 
     
@@ -60,7 +74,8 @@
             let values = value.split(',')
             for (let i = 0; i < values.length; i++) {
                 if (values[i] == knowledge_id) {
-                    like_button.value = 'Liked'
+                    like_button_inline.textContent = 'LIKED'
+                    like_button_inline.classList.add('liked-button')
                     break
                 }
             }
@@ -127,38 +142,57 @@
     });
 
 
-    // window.addEventListener('DOMContentLoaded', function(){
-   
-    //     content.innerHTML = input.value
+    function sendLikeFromBaloon(){
+        let values = []
+        let value = ''
+        if (localStorage.getItem('noLoginLike')) {
+            value = localStorage.getItem('noLoginLike')
+            values = value.split(',')
+        }
 
-    //     var contentsList = document.getElementById("p_table_items"); // 目次を追加する先(table of contents)
-    //     var div = document.createElement('div'); // 作成する目次のコンテナ要素
+        let isFound = false
+        for (let i = 0; i < values.length; i++) {
+            if (values[i] == knowledge_id) {
+                values.splice(i, 1)
+                value = values.join()
+                isFound = true
+                break
+            }
+        }
+        if (!isFound) {
+            values.push(knowledge_id)
+            value = values.join()
+        }
 
-    //     // .entry-content配下のh2、h3要素を全て取得する
-    //     var matches = document.querySelectorAll('.content h2');
-        
-    //     // 取得した見出しタグ要素の数だけ以下の操作を繰り返す
-    //     matches.forEach(function (value, i) {
-    //         // 見出しタグ要素のidを取得し空の場合は内容をidにする
-    //         var id = value.id;
-    //         if(id === '') {
-    //             id = value.textContent;
-    //             value.id = id;
-    //         }
-    //             var ul = document.createElement('ul');
-    //             var li = document.createElement('li');
-    //             var a = document.createElement('a');
-    //             // 追加する<ul><li><a>タイトル</a></li></ul>を準備する
-    //             a.innerHTML = value.textContent;
-    //             a.href = '#' + value.id;
-    //             li.appendChild(a)
-    //             ul.appendChild(li);
-    //             div.appendChild(ul);
-    //             // コンテナ要素である<div>の中に要素を追加する
-    //     })
-    //     contentsList.appendChild(div);
-    // });
-    function sendLike(){
+        const XHR = new XMLHttpRequest()
+        let formdata = new FormData(document.getElementById('like_form_baloon'))
+        if (isFound) {
+            XHR.open('PUT', '/knowledges/like')
+        } else {
+            XHR.open('POST', '/knowledges/like')
+        }
+        XHR.onreadystatechange = function () {
+            if (XHR.readyState === 4) {
+                if (XHR.status === 200) {
+                    if (isFound) {
+                        likes_baloon.textContent = Number(likes_baloon.textContent) - 1
+                        like_button_baloon.textContent = 'LIKE'
+                        like_button_baloon.classList.remove('liked-button')
+                    } else {
+                        likes_baloon.textContent = Number(likes_baloon.textContent) + 1
+                        like_button_baloon.textContent = 'LIKED'
+                        like_button_baloon.classList.add('liked-button')
+                    }
+                    localStorage.setItem('noLoginLike', value)
+                } else {
+                    alert('データが正常に送れませんでした')
+                }
+            }
+        }
+        XHR.send(formdata)
+    }
+
+    function sendLikeFromInline(){
         let values = []
         let value = ''
         if (localStorage.getItem('noLoginLike')){
@@ -169,7 +203,6 @@
         let isFound = false
         for (let i = 0; i < values.length; i++){
             if(values[i] == knowledge_id){
-                console.log('hi')
                 values.splice(i, 1)
                 value = values.join()
                 isFound = true
@@ -182,7 +215,7 @@
         }
        
         const XHR = new XMLHttpRequest()
-        let formdata = new FormData(like_form)
+        let formdata = new FormData(document.getElementById('like_form_inline'))
         if (isFound) {
             XHR.open('PUT', '/knowledges/like')
         }else{
@@ -192,11 +225,13 @@
             if (XHR.readyState === 4) {
                 if (XHR.status === 200) {
                     if(isFound){
-                        likes.textContent = Number(likes.textContent) - 1
-                        like_button.value = 'Like'
+                        likes_inline.textContent = Number(likes_inline.textContent) - 1
+                        like_button_inline.textContent = 'LIKE'
+                        like_button_inline.classList.remove('liked-button')
                     }else{
-                        likes.textContent = Number(likes.textContent) + 1
-                        like_button.value = 'Liked'
+                        likes_inline.textContent = Number(likes_inline.textContent) + 1
+                        like_button_inline.textContent = 'LIKED'
+                        like_button_inline.classList.add('liked-button')
                     }
                     localStorage.setItem('noLoginLike', value)
                 } else {

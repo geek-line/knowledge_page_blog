@@ -18,6 +18,7 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		return
 	}
 	rows, err := db.Query("SELECT id, name FROM tags")
 	if err != nil {

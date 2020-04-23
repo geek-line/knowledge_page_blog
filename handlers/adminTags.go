@@ -17,6 +17,7 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
+		return
 	}
 	switch {
 	case r.Method == "GET":

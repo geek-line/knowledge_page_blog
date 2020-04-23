@@ -27,8 +27,6 @@ func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, env map
 		if err != nil {
 			panic(err.Error())
 		}
-		db.SetMaxOpenConns(10)
-		db.SetMaxIdleConns(10)
 		defer db.Close()
 		fn(w, r, env, db)
 	}

@@ -14,10 +14,13 @@ import (
 func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		return
+	}
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
-		return
 	}
 	switch {
 	case r.Method == "GET":

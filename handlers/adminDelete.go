@@ -20,28 +20,26 @@ func envLoad() {
 }
 
 //AdminDeleteHandler admin/deleteに対するハンドラ
-func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		return
 	}
-
 	suffix := r.URL.Path[lenPathDelete:]
-	db, err := sql.Open("mysql", env["SQL_ENV"])
-	if err != nil {
-		panic(err.Error())
-	}
 	defer db.Close()
 	var id int
 	id, _ = strconv.Atoi(suffix)
-	_, err = db.Query("DELETE FROM knowledges WHERE id = ?", id)
+	rows, err := db.Query("DELETE FROM knowledges WHERE id = ?", id)
 	if err != nil {
 		panic(err.Error())
 	}
-	_, err = db.Query("DELETE FROM knowledges_tags WHERE knowledge_id = ?", id)
+	defer rows.Close()
+	rows, err = db.Query("DELETE FROM knowledges_tags WHERE knowledge_id = ?", id)
 	if err != nil {
 		panic(err.Error())
 	}
+	defer rows.Close()
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
 }

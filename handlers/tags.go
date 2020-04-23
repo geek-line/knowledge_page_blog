@@ -14,23 +14,17 @@ import (
 const lenPathTags = len("/tags/")
 
 //TagsHandler /tags/に対するハンドラ
-func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
 	}
-
 	suffix := r.URL.Path[lenPathTags:]
-	db, err := sql.Open("mysql", env["SQL_ENV"])
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
 	if suffix != "" {
 		pageNum := 1
+		var err error
 		query := r.URL.Query()
 		if query["page"] != nil {
 			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 )
 
 var env = make(map[string]string)
+var db sql.DB
 
 func envLoad() {
 	err := godotenv.Load()
@@ -21,9 +23,14 @@ func envLoad() {
 	}
 }
 
-func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, env map[string]string)) http.HandlerFunc {
+func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fn(w, r, env)
+		db, err := sql.Open("mysql", env["SQL_ENV"])
+		if err != nil {
+			panic(err.Error())
+		}
+		defer db.Close()
+		fn(w, r, env, db)
 	}
 }
 

@@ -14,25 +14,19 @@ import (
 const lenPathKnowledges = len("/knowledges/")
 
 //KnowledgesHandler /knowledgesに対するハンドラ
-func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	header := newHeader(false)
 	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
 		header.IsLogin = true
 	}
-
 	suffix := r.URL.Path[lenPathKnowledges:]
-	db, err := sql.Open("mysql", env["SQL_ENV"])
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
 	if suffix == "" || suffix == "search" {
 		pageNum := 1
 		query := r.URL.Query()
 		if query["page"] != nil {
+			var err error
 			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
 				StatusNotFoundHandler(w, r, env)
 				return

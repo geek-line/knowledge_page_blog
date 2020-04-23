@@ -9,7 +9,7 @@ import (
 )
 
 //AdminLoginHandler /admin/loginに対するハンドラ
-func AdminLoginHandler(w http.ResponseWriter, r *http.Request, env map[string]string) {
+func AdminLoginHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	if r.Method == "GET" {
 		session, _ := store.Get(r, "cookie-name")
@@ -31,13 +31,8 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 	} else {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
-		db, err := sql.Open("mysql", env["SQL_ENV"])
-		if err != nil {
-			panic(err.Error())
-		}
-		defer db.Close()
 		var correctPassword string
-		if err = db.QueryRow("SELECT password FROM admin_user WHERE email = ?", email).Scan(&correctPassword); err != nil {
+		if err := db.QueryRow("SELECT password FROM admin_user WHERE email = ?", email).Scan(&correctPassword); err != nil {
 			http.Redirect(w, r, "/admin/login/", http.StatusFound)
 		}
 		if correctPassword == password {

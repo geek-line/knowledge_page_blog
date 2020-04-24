@@ -46,6 +46,21 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 				}
 				tags = append(tags, tag)
 			}
+			rows, err = db.Query("SELECT name, src FROM eyecatches")
+			if err != nil {
+				panic(err.Error())
+			}
+			defer rows.Close()
+			var eyecatches []EyeCatch
+
+			for rows.Next() {
+				var eyecatch EyeCatch
+				err := rows.Scan(&eyecatch.Name, &eyecatch.Src)
+				if err != nil {
+					panic(err.Error())
+				}
+				eyecatches = append(eyecatches, eyecatch)
+			}
 			var selectedTagsID []int
 
 			rows, _ = db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", knowledgeID)
@@ -63,11 +78,13 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 				Header         Header
 				EditPage       Knowledges
 				Tags           []Tag
+				EyeCatches     []EyeCatch
 				SelectedTagsID []int
 			}{
 				Header:         header,
 				EditPage:       editPage,
 				Tags:           tags,
+				EyeCatches:     eyecatches,
 				SelectedTagsID: selectedTagsID,
 			}); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)

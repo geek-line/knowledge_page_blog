@@ -1,5 +1,5 @@
 tinymce.init({
-    selector: '#create_body',
+    selector: '#tinymce_body',
     branding: false, // クレジットの削除
     height: "640",
     tinycomments_mode: 'embedded',

@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <link rel='icon' href='/static/favicon.ico'>
+    <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
@@ -55,8 +55,7 @@
                     </div>
                 </div>
             </div>
-            {{ end }}
-            
+            {{ end }} 
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>

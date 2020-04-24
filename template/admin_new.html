@@ -3,51 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel='icon' href='/static/favicon.ico'>
+        <link rel='icon' href='/static/public/favicon.ico'>
         <title>Code Database</title>
         <script src="/node_modules/aws-sdk/dist/aws-sdk.min.js"></script>
         <script src="/node_modules/tinymce/tinymce.min.js" referrerpolicy="origin"></script>  
         <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
         <link rel="stylesheet" type="text/css" href="/static/css/admin_new.css">
-        <script src="/static/aws_config.js"></script>
-        <script type="text/javascript">
-        AWS.config.update({
-            region: bucketRegion,
-            credentials: new AWS.CognitoIdentityCredentials({
-                IdentityPoolId: IdentityPoolId
-            })
-        });
-        const s3 = new AWS.S3({
-            apiVersion: "2006-03-01",
-            params: { Bucket: albumBucketName }
-        });
-        tinymce.init({
-            selector: '#create_body',
-            branding: false, // クレジットの削除
-            height: "640",
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
-            plugins: 'link image lists table codesample',
-            toolbar: 'undo redo | styleselect | link bold italic | image codesample | numlist bullist | table tabledelete',
-            images_upload_handler: function (blobInfo, success, failure) {
-                setTimeout(function () {
-                    const file = blobInfo.blob()
-                    const timestamp = new Date().getTime();
-                    const filename = "file" + timestamp + file.name;
-                    s3.putObject({ Key: 'uploads/' + filename, ContentType: blobInfo.blob().type, Body: blobInfo.blob(), ACL: "public-read" },
-                        function (err, data) {
-                            if (data !== null) {
-                                const srcHTML = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'uploads/'  + filename
-                                success(srcHTML);
-                            } else {
-                                alert("アップロード失敗.");
-                            }
-                        }
-                    );  
-                }, 2000);
-            }
-        });
-        </script>
+        <script src="/static/js/aws_config.js"></script>
+        <script src='/static/js/aws_init.js'></script>
+        <script src='/static/js/tinymce_init.js'></script>
     </head>
     <body>
         {{ template "header" .Header }}
@@ -86,64 +50,5 @@
             </form>
         </div>
     </body>
-    <script type="text/javascript">
-    const form = document.getElementById('form')
-    const add_tag_button = document.getElementById('add_tag_button')
-    const submit_button = document.getElementById('submit_button')
-    const select_eyecatch = document.getElementById('select_eyecatch')
-    const file_preview = document.getElementById('file_preview')
-    window.addEventListener('DOMContentLoaded', function(){
-        select_display.textContent = null;
-        file_preview.src = select_eyecatch.value
-    })
-    add_tag_button.addEventListener('click', function(){
-        const selectElement = document.createElement('div')
-        selectElement.innerHTML = add_tag_button.value
-        document.getElementById('select_display').appendChild(selectElement)
-        selectElement.childNodes[1].addEventListener('click', function () {
-            selectElement.parentNode.removeChild(selectElement);
-        })
-    })
-    select_eyecatch.addEventListener('change', function (e) {
-        file_preview.src = e.target.value
-    })
-    submit_button.addEventListener('click', function(e){
-        const content = document.getElementById('create_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
-        const elem_tags = document.getElementsByClassName('elem_tag')
-        const file_uploader = document.getElementById('file_uploader')
-        if (document.getElementById('form-title').value == '') {
-            alert('タイトルを入力してください')
-            e.preventDefault()
-            return
-        }
-        let arr = {}
-        let tags = ''
-        for (let i = 0; i < elem_tags.length; i++) {
-            if (arr[elem_tags[i].value]) {
-                alert('タグが重複しています')
-                e.preventDefault()
-                return
-            }
-            arr[elem_tags[i].value] = true
-            tags += elem_tags[i].value
-            tags += ','
-        }
-        tags = tags.slice(0, -1)
-        let formdata = new FormData(form)
-        formdata.append('content', content)
-        formdata.append('tags', tags)
-        const XHR = new XMLHttpRequest()
-        XHR.open('POST', '/admin/save/')
-        XHR.send(formdata)
-        XHR.onreadystatechange = function () {
-            if (XHR.readyState === 4) {
-                if (XHR.status === 200) {
-                    location.href = "/admin/knowledges";
-                } else {
-                    alert('データが正常に送れませんでした')
-                }
-            }
-        }
-    });
-    </script>
+    <script src='/static/js/admin_new.js'></script>
 </html>  

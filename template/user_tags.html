@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <link rel='icon' href='/static/favicon.ico'>
+    <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
@@ -23,7 +23,6 @@
     {{ template "header" .Header }}
     <div class="row">
         <div class="col s12 m3 hide-on-small-and-down">
-
             <div class="tag_container">
                 <h6 class='tag_title'>タグ一覧</h6>
                 <ul class="tag_list">
@@ -59,7 +58,6 @@
                 </div>
             </div>
             {{ end }}
-
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect"><a href="/tags/{{ .FilteredTag.ID }}?page={{ .IndexPage.PageNation.PrevPageNum }}"><i
@@ -80,7 +78,6 @@
                             class="material-icons">chevron_right</i></a></li>
                 {{ end }}
             </ul>
-
         </div>
     </div>
     {{ template "footer" }}

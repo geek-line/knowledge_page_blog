@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -51,7 +52,9 @@ func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		src := r.FormValue("src")
 		rows, err := db.Query("INSERT INTO eyecatches(name, src) VALUES(?, ?)", name, src)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 		http.Redirect(w, r, "/admin/eyecatches//", http.StatusFound)
@@ -61,14 +64,18 @@ func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		src := r.FormValue("src")
 		rows, err := db.Query("UPDATE eyecatches SET name = ?, src = ? WHERE id = ?", name, src, id)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 	case r.Method == "DELETE":
 		id, _ := strconv.Atoi(r.FormValue("id"))
 		rows, err := db.Query("DELETE FROM eyecatches WHERE id = ?", id)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 	}

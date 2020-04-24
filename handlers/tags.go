@@ -40,7 +40,9 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		}
 		rows, err := db.Query("SELECT id, name FROM tags")
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 		var tags []Tag
@@ -48,7 +50,9 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			var tag Tag
 			err := rows.Scan(&tag.ID, &tag.Name)
 			if err != nil {
-				panic(err.Error())
+				log.Print(err.Error())
+				StatusInternalServerError(w, r, env)
+				return
 			}
 			tags = append(tags, tag)
 		}
@@ -75,9 +79,8 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		db.QueryRow("SELECT name FROM tags WHERE id = ?", filteredTag.ID).Scan(&filteredTag.Name)
 		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? LIMIT ?, ?", filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
-			// panic(err.Error())
-			StatusNotFoundHandler(w, r, env)
-			log.Println("クエリのエラー")
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
 			return
 		}
 		defer rows.Close()
@@ -85,19 +88,25 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			var indexElem IndexElem
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
 			if err != nil {
-				panic(err.Error())
+				log.Print(err.Error())
+				StatusInternalServerError(w, r, env)
+				return
 			}
 			var selectedTags []Tag
 			tagsRows, err := db.Query("SELECT tags.id, tags.name FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id WHERE knowledge_id = ?", indexElem.ID)
 			if err != nil {
-				panic(err.Error())
+				log.Print(err.Error())
+				StatusInternalServerError(w, r, env)
+				return
 			}
 			defer tagsRows.Close()
 			for tagsRows.Next() {
 				var selectedTag Tag
 				err := tagsRows.Scan(&selectedTag.ID, &selectedTag.Name)
 				if err != nil {
-					panic(err.Error())
+					log.Print(err.Error())
+					StatusInternalServerError(w, r, env)
+					return
 				}
 				selectedTags = append(selectedTags, selectedTag)
 			}

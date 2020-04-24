@@ -69,6 +69,9 @@ footer {
     line-height: 1.45em;
 }
 
+.tag_container .tag_list .tag:hover {
+opacity: 0.5;
+}
 .row .col .card_wrapper {
     padding: 0rem 1.5rem 0rem 0rem;
 }
@@ -86,6 +89,7 @@ footer {
     background: #ffffff;
     -webkit-box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
     box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
 }
 
 .cp_card02 .link_box {
@@ -161,14 +165,6 @@ footer {
     margin-right: 10px;
     vertical-align: middle;
 }
-
-/* .cp_card02 .details .author::before {
-    content: '\f007';
-} */
-
-/* .cp_card02 .details .date::before {
-    content: '\f133';
-} */
 
 .cp_card02 .details .tags ul {
     margin: 0;
@@ -266,6 +262,31 @@ footer {
     flex-wrap: wrap;
     margin: 0;
     padding-top: 20px;
+   
+}
+
+
+
+.cp_card02 .description ul li .tag {
+    font-size: 0.8em;
+    margin-right: 4px;
+    padding: 0.2em 0.6em;
+    cursor: pointer;
+    border-radius: 10px;
+    color: white;
+    background-color: #827b7b;
+    line-height: 1.45em;
+    position: left;
+    
+    z-index: 99;
+ 
+}
+
+.cp_card02 .description ul li .tag:hover {
+    
+ 
+    opacity: 0.5;
+
 }
 
 .cp_card02 .description .like {
@@ -278,19 +299,6 @@ footer {
     text-decoration: none;
     color: #827b7b;
 }
-
-.cp_card02 .description ul li .tag {
-    font-size: 0.8em;
-    margin-right: 4px;
-    padding: 0.2em 0.6em;
-    cursor: pointer;
-    border-radius: 10px;
-    color: white;
-    background-color: #827b7b;
-    line-height: 1.45em;
-    position: left;
-}
-
 @media screen and (max-width: 480px) {
     .cp_card02 .description h1 {
         font-size: 1.3em;

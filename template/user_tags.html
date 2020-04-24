@@ -17,6 +17,11 @@
     gtag('js', new Date());
     gtag('config', 'UA-164168719-1');
     </script>
+    <script type="text/javascript">
+        function DivFrameClick(id) {
+          document.location.href = `/knowledges/${id}`;
+        }
+      </script>
 </head>
 
 <body>
@@ -37,9 +42,9 @@
                 <h4 class="content_title">"{{ .FilteredTag.Name }}"に関する記事一覧</h4>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class='col s12 m6 card_wrapper'>
+            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick({{.ID |html|}});">
                 <div class="cp_card02">
-                    <a href="/knowledges/{{ .ID |html| }}" class="link_box"></a>
+                   
                     <img class="photo photo1" src="{{ .EyeCatchSrc }}">
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>

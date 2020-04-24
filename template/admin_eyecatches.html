@@ -22,7 +22,7 @@
             <span>アイキャッチ名</span><input class="tag-input" type='text' name="name">
             <input id="file_uploader_post" type='file'>
             <input id="src_post" name="src" type='hidden'>
-            <input id="submit_btn_post" type='button' value="タグを追加">
+            <input id="submit_btn_post" type='button' value="アイキャッチを追加">
         </form>
         <h4>eyecatch一覧</h4>
         <ul>
@@ -30,18 +30,18 @@
             <li>
                 <form id="form">
                     <input type='hidden' name="id" value="{{ .ID }}">
-                    <span>タグ名</span><input class="tag-input" type='text' name="name" value="{{ .Name }}">
-                    <img id="file_preview" src='{{ .Src }}'>
+                    <img id="file_preview" class="responsive-img" width="100px" src='{{ .Src }}'>
+                    <span>アイキャッチ名</span><input class="tag-input" type='text' name="name" value="{{ .Name }}">
                     <input id="src_put" name='src' type='hidden' value="{{ .Src }}">
                     <input id="file_uploader_put" type='file'>
-                    <input id="submit_btn_put" type='button' value="タグを更新">
-                    <input id="submit_btn_delete" type='button' value="タグを削除">
+                    <input id="submit_btn_put" type='button' value="更新">
+                    <input id="submit_btn_delete" type='button' value="削除">
                 </form>
             </li>
             {{ end }}
         </ul>
     </div>
-    <script src='/static//js/admin_eyecatches.js'></script>
+    <script src='/static/js/admin_eyecatches.js'></script>
 </body>
 
 </html>

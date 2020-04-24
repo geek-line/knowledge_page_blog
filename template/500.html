@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='icon' href='/static/public/favicon.ico'>
+    <title>Code Database</title>
+    <link rel="stylesheet" href="/node_modules/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/404.css">
+</head>
+
+<body>
+    {{ template "header" .Header }}
+    <div class='page-not-found-container'>
+        <div class="row">
+            <div class='col s12 m6 l6'>
+                <h4>サーバーで問題が発生しました</h4>
+                <p>
+                    申し訳ございません、サーバーで問題が発生したためページを表示できません。<br>
+                    しばらく時間を置いてからやり直してください。
+                </p>
+            </div>
+            <div class='col s12 m6 l6'>
+                <img class="responsive-img"
+                    src="https://s3-ap-northeast-1.amazonaws.com/code-database.com/images/500.png">
+            </div>
+        </div>
+    </div>
+    {{ template "footer" }}
+</body>
+
+</html>

@@ -27,7 +27,9 @@ func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, env map
 	return func(w http.ResponseWriter, r *http.Request) {
 		db, err := sql.Open("mysql", env["SQL_ENV"])
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			handlers.StatusInternalServerError(w, r, env)
+			return
 		}
 		defer db.Close()
 		fn(w, r, env, db)

@@ -61,17 +61,22 @@
                     <input type="text" class="title-input" name="title" id='form-title'>
                 </div>
                 <div class="row edit-block-container">
-                    <h5>タグの追加</h5>
-                    <div id="select_display">
+                    <div class='col m6'>
+                        <h5>タグの追加</h5>
+                        <div id="select_display">
+                        </div>
+                        <button type="button" id="add_tag_button"
+                            value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>">タグを追加</button>
                     </div>
-                    <button type="button" id="add_tag_button"
-                        value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>">タグを追加</button>
-                </div>
-                <div class="row edit-block-container">
-                    <h5>アイキャッチ</h5>
-                    <input id="file_uploader" type='file'>
-                    <input id="file_src" type='hidden' name="eyecatch_src">
-                    <div><img id="file_preview" class="responsive-img" width="400px"></div>
+                    <div class='col m6'>
+                        <h5>アイキャッチ</h5>
+                        <img id="file_preview" class="responsive-img" width="100px">
+                        <select id="select_eyecatch" class="select-eyecatch" name='eyecatch_src' id=''>
+                            {{ range .EyeCatches }}
+                            <option value='{{ .Src }}'>{{ .Name }}</option>
+                            {{ end }}
+                        </select>
+                    </div>
                 </div>
                 <div class="row edit-block-container">
                     <h5>内容の編集</h5>
@@ -85,10 +90,11 @@
     const form = document.getElementById('form')
     const add_tag_button = document.getElementById('add_tag_button')
     const submit_button = document.getElementById('submit_button')
-    const file_uploader = document.getElementById('file_uploader')
+    const select_eyecatch = document.getElementById('select_eyecatch')
     const file_preview = document.getElementById('file_preview')
     window.addEventListener('DOMContentLoaded', function(){
         select_display.textContent = null;
+        file_preview.src = select_eyecatch.value
     })
     add_tag_button.addEventListener('click', function(){
         const selectElement = document.createElement('div')
@@ -98,11 +104,8 @@
             selectElement.parentNode.removeChild(selectElement);
         })
     })
-    file_uploader.addEventListener('change', function (e) {
-        const file = e.target.files[0];
-        // ファイルのブラウザ上でのURLを取得する
-        const blobUrl = window.URL.createObjectURL(file);
-        file_preview.src = blobUrl
+    select_eyecatch.addEventListener('change', function (e) {
+        file_preview.src = e.target.value
     })
     submit_button.addEventListener('click', function(e){
         const content = document.getElementById('create_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
@@ -110,11 +113,6 @@
         const file_uploader = document.getElementById('file_uploader')
         if (document.getElementById('form-title').value == '') {
             alert('タイトルを入力してください')
-            e.preventDefault()
-            return
-        }
-        if(file_uploader.files[0] == null){
-            alert('アイキャッチをアップロードしてください')
             e.preventDefault()
             return
         }
@@ -131,32 +129,21 @@
             tags += ','
         }
         tags = tags.slice(0, -1)
-        const timestamp = new Date().getTime();
-        const filename = "file" + timestamp + file_uploader.files[0].name;
-        s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
-            function (err, data) {
-                if (data !== null) {
-                    document.getElementById('file_src').value = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
-                    let formdata = new FormData(form)
-                    formdata.append('content', content)
-                    formdata.append('tags', tags)
-                    const XHR = new XMLHttpRequest()
-                    XHR.open('POST', '/admin/save/')
-                    XHR.send(formdata)
-                    XHR.onreadystatechange = function () {
-                        if (XHR.readyState === 4) {
-                            if (XHR.status === 200) {
-                                location.href = "/admin/knowledges";
-                            } else {
-                                alert('データが正常に送れませんでした')
-                            }
-                        }
-                    }
+        let formdata = new FormData(form)
+        formdata.append('content', content)
+        formdata.append('tags', tags)
+        const XHR = new XMLHttpRequest()
+        XHR.open('POST', '/admin/save/')
+        XHR.send(formdata)
+        XHR.onreadystatechange = function () {
+            if (XHR.readyState === 4) {
+                if (XHR.status === 200) {
+                    location.href = "/admin/knowledges";
                 } else {
-                    alert("アップロード失敗.");
+                    alert('データが正常に送れませんでした')
                 }
             }
-        );
-    })
+        }
+    });
     </script>
 </html>  

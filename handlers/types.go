@@ -60,3 +60,10 @@ type IndexPage struct {
 	PageNation PageNation
 	IndexElems []IndexElem
 }
+
+//EyeCatch アイキャッチの要素
+type EyeCatch struct {
+	ID   int
+	Name string
+	Src  string
+}

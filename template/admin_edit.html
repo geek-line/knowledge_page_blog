@@ -59,17 +59,22 @@
                         id='form-title'>
                 </div>
                 <div class="row edit-block-container">
-                    <h5>タグの編集</h5>
-                    <div id="select_display">
+                    <div class='col m6'>
+                        <h5>タグの編集</h5>
+                        <div id="select_display">
+                        </div>
+                        <button type="button" id="add_tag_button"
+                            value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>">タグを追加</button>
                     </div>
-                    <button type="button" id="add_tag_button"
-                        value="<select class='elem_tag'>{{range .Tags}}<option value='{{.ID}}'>{{.Name}}</option>{{end}}</select><button type='button'>削除</button>">タグを追加</button>
-                </div>
-                <div class="row edit-block-container">
-                    <h5>アイキャッチの編集</h5>
-                    <input id="file_uploader" type='file'>
-                    <input id="file_src" type='hidden' name="eyecatch_src" value="{{ .EditPage.EyeCatchSrc }}">
-                    <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="200px">
+                    <div class='col m6'>
+                        <h5>アイキャッチの編集</h5>
+                        <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="100px">
+                        <select id="select_eyecatch" name='eyecatch_src'>
+                            {{ range .EyeCatches }}
+                            <option value='{{ .Src }}'>{{ .Name }}</option>
+                            {{ end }}
+                        </select>
+                    </div>
                 </div>
                 <div class="row edit-block-container">
                     <h5>内容の編集</h5>
@@ -83,7 +88,7 @@
     </body>  
     <script type="text/javascript">
     const form = document.getElementById('form')
-    const file_uploader = document.getElementById('file_uploader')
+    const select_eyecatch = document.getElementById('select_eyecatch')
     const file_preview = document.getElementById('file_preview')
     const add_tag_button = document.getElementById('add_tag_button')
     window.addEventListener('DOMContentLoaded', function () {
@@ -114,11 +119,8 @@
             selectElement.parentNode.removeChild(selectElement);
         })
     })
-    file_uploader.addEventListener('change', function(e){
-        const file = e.target.files[0];
-        // ファイルのブラウザ上でのURLを取得する
-        const blobUrl = window.URL.createObjectURL(file);
-        file_preview.src = blobUrl
+    select_eyecatch.addEventListener('change', function (e) {
+        file_preview.src = e.target.value
     })
     function sendData(){
         const content = document.getElementById('edit_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
@@ -141,50 +143,19 @@
             tags += ','
         }
         tags = tags.slice(0, -1)
-        if (file_uploader.files[0] != null){
-            const timestamp = new Date().getTime();
-            const filename = "file" + timestamp + file_uploader.files[0].name;
-
-            s3.putObject({ Key: 'eyecatches/' + filename, ContentType: file_uploader.files[0].type, Body: file_uploader.files[0], ACL: "public-read" },
-                function (err, data) {
-                    if (data !== null) {
-                        document.getElementById('file_src').value = "https://knowledge-blog.s3-ap-northeast-1.amazonaws.com/" + 'eyecatches/' + filename
-                        let formdata = new FormData(form)
-                        formdata.append('content', content)
-                        formdata.append('tags', tags)
-                        const XHR = new XMLHttpRequest()
-                        XHR.open('PUT', '/admin/save/')
-                        XHR.send(formdata)
-                        XHR.onreadystatechange = function () {
-                            if (XHR.readyState === 4) {
-                                if (XHR.status === 200) {
-                                    alert('データが更新されました')
-                                    location.href = "/admin/knowledges";
-                                } else {
-                                    alert('データが正常に送れませんでした')
-                                }
-                            }
-                        }
-                    } else {
-                        alert("アップロード失敗.");
-                    }
-                }
-            );
-        }else{
-            let formdata = new FormData(form)
-            formdata.append('content', content)
-            formdata.append('tags', tags)
-            const XHR = new XMLHttpRequest()
-            XHR.open('PUT', '/admin/save/')
-            XHR.send(formdata)
-            XHR.onreadystatechange = function () {
-                if (XHR.readyState === 4) {
-                    if (XHR.status === 200) {
-                        alert('データが更新されました')
-                        location.href = "/admin/knowledges";
-                    } else {
-                        alert('データが正常に送れませんでした')
-                    }
+        let formdata = new FormData(form)
+        formdata.append('content', content)
+        formdata.append('tags', tags)
+        const XHR = new XMLHttpRequest()
+        XHR.open('PUT', '/admin/save/')
+        XHR.send(formdata)
+        XHR.onreadystatechange = function () {
+            if (XHR.readyState === 4) {
+                if (XHR.status === 200) {
+                    alert('データが更新されました')
+                    location.href = "/admin/knowledges";
+                } else {
+                    alert('データが正常に送れませんでした')
                 }
             }
         }

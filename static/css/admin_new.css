@@ -13,12 +13,16 @@ body {
 .elem_tag {
     margin-right: 0.7rem;
     display: inline-block;
-    width: 20rem;
+    width: 15rem;
 }
 
 input[type=text].title-input {
     padding-left: 1rem;
     width: 40rem;
+}
+
+select.select-eyecatch{
+    width: 20rem;
 }
 
 .edit-block-container {

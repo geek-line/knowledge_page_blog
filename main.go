@@ -52,6 +52,7 @@ func main() {
 	http.HandleFunc("/admin/new/", makeHandlerUsingEnv(handlers.AdminNewHandler))
 	http.HandleFunc("/admin/save/", makeHandlerUsingEnv(handlers.AdminSaveHandler))
 	http.HandleFunc("/admin/delete/", makeHandlerUsingEnv(handlers.AdminDeleteHandler))
+	http.HandleFunc("/admin/eyecatches/", makeHandlerUsingEnv(handlers.AdminEyeCatchesHandler))
 	http.HandleFunc("/knowledges/", makeHandlerUsingEnv(handlers.KnowledgesHandler))
 	http.HandleFunc("/knowledges/like", makeHandlerUsingEnv(handlers.KnowledgeLikeHandler))
 	http.HandleFunc("/tags/", makeHandlerUsingEnv(handlers.TagsHandler))

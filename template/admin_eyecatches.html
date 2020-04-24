@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='icon' href='/static/public/favicon.ico'>
+    <title>Code Database</title>
+    <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+    <link rel='stylesheet' href='/static/css/admin_tags.css'>
+    <script src="/node_modules/aws-sdk/dist/aws-sdk.min.js"></script>
+    <script src="/static/js/aws_config.js"></script>
+    <script src='/static/js/aws_init.js'></script>
+</head>
+
+<body>
+    {{ template "header" .Header}}
+    <div class='container'>
+        <a href='/admin/knowledges/'>ナレッジ一覧へ</a>
+        <h4>新規作成</h4>
+        <form id="form_post">
+            <span>アイキャッチ名</span><input class="tag-input" type='text' name="name">
+            <input id="file_uploader_post" type='file'>
+            <input id="src_post" name="src" type='hidden'>
+            <input id="submit_btn_post" type='button' value="アイキャッチを追加">
+        </form>
+        <h4>eyecatch一覧</h4>
+        <ul>
+            {{ range .EyeCatches }}
+            <li>
+                <form id="form">
+                    <input type='hidden' name="id" value="{{ .ID }}">
+                    <img id="file_preview" class="responsive-img" width="100px" src='{{ .Src }}'>
+                    <span>アイキャッチ名</span><input class="tag-input" type='text' name="name" value="{{ .Name }}">
+                    <input id="src_put" name='src' type='hidden' value="{{ .Src }}">
+                    <input id="file_uploader_put" type='file'>
+                    <input id="submit_btn_put" type='button' value="更新">
+                    <input id="submit_btn_delete" type='button' value="削除">
+                </form>
+            </li>
+            {{ end }}
+        </ul>
+    </div>
+    <script src='/static/js/admin_eyecatches.js'></script>
+</body>
+
+</html>

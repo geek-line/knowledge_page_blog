@@ -4,18 +4,31 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <link rel='icon' href='/static/favicon.ico'>
+    <meta name="robots" content="index, follow">
+    <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164168719-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-164168719-1');
+    </script>
+    <script type="text/javascript">
+    function DivFrameClick(id) {
+        document.location.href = `/knowledges/${id}`;
+    }
+    </script>
 </head>
 
 <body>
     {{ template "header" .Header }}
     <div class="row">
-        <div class="col m3">
-
+        <div class="col s12 m3 hide-on-small-and-down">
             <div class="tag_container">
                 <h6 class='tag_title'>タグ一覧</h6>
                 <ul class="tag_list">
@@ -30,9 +43,9 @@
                 <h4 class="content_title">"{{ .FilteredTag.Name }}"に関する記事一覧</h4>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class='col s12 m6 card_wrapper'>
+            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick({{.ID |html|}});">
                 <div class="cp_card02">
-                    <a href="/knowledges/{{ .ID |html| }}" class="link_box"></a>
+                   
                     <img class="photo photo1" src="{{ .EyeCatchSrc }}">
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
@@ -41,7 +54,7 @@
                         <div  class="knowledge_title">
                             <h1>{{ .Title }}</h1>
                         </div>
-                        <ul class="tag_list">
+                        <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
                             <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
                             {{ end }}
@@ -51,7 +64,6 @@
                 </div>
             </div>
             {{ end }}
-
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect"><a href="/tags/{{ .FilteredTag.ID }}?page={{ .IndexPage.PageNation.PrevPageNum }}"><i
@@ -72,7 +84,6 @@
                             class="material-icons">chevron_right</i></a></li>
                 {{ end }}
             </ul>
-
         </div>
     </div>
     {{ template "footer" }}

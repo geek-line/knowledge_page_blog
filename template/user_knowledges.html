@@ -3,11 +3,26 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <link rel='icon' href='/static/favicon.ico'>
+    <meta name="robots" content="index, follow">
+    <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
     <link rel='stylesheet' href='/static/css/user_knowledges.css/'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164168719-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-164168719-1');
+    </script>
+    <script type="text/javascript">
+    function DivFrameClick(id) {
+        document.location.href = `/knowledges/${id}`;
+    }
+    </script>
+    
 </head>
 <body>
     {{ template "header" .Header }}
@@ -27,9 +42,9 @@
                 <h4 class="content_title">記事一覧</h4>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class="col s12 m6 card_wrapper">
+            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick({{.ID |html|}});">
                 <div  class="cp_card02">
-                    <a href="/knowledges/{{ .ID |html| }}" class="link_box"></a>
+
                     <img class="photo photo1 responsive-img" src="{{ .EyeCatchSrc }}">
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
@@ -40,15 +55,14 @@
                        </div>
                         <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
-                            <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
+                            <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                         <div class="like">いいね:{{ .Likes }}</div>
                     </div>
                 </div>
             </div>
-            {{ end }}
-            
+            {{ end }} 
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>

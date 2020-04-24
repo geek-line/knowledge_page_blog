@@ -1,5 +1,8 @@
 # knowledge_page_blog
 
+## デプロイ先
+https://code-database.com/
+
 ## 作業環境 
 Go(1.14 darwin/amd64)  
 MySQL(8.0.19)

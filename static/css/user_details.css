@@ -162,6 +162,10 @@ h3 {
     margin: 0rem 0rem 1rem 0rem;
 }
 
+.p_items_wrapper .p_main_item .tags li:hover {
+    opacity: 0.5;
+}
+
 .p_items_wrapper .p_main_item .title {
     font-size: 2.0rem;
     margin-bottom: 1vh;

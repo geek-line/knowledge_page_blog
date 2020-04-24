@@ -34,7 +34,7 @@ select_eyecatch.addEventListener('change', function (e) {
     file_preview.src = e.target.value
 })
 function sendData() {
-    const content = document.getElementById('edit_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
+    const content = document.getElementById('tinymce_body_ifr').contentWindow.document.getElementById('tinymce').innerHTML
     const elem_tags = document.getElementsByClassName('elem_tag')
     if (document.getElementById('form-title').value == '') {
         alert('タイトルを入力してください')

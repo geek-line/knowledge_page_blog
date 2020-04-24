@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"strconv"
 	"text/template"
@@ -26,7 +27,9 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 	case r.Method == "GET":
 		rows, err := db.Query("SELECT id, name FROM tags")
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 		var tags []Tag
@@ -35,7 +38,9 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 			var tag Tag
 			err := rows.Scan(&tag.ID, &tag.Name)
 			if err != nil {
-				panic(err.Error())
+				log.Print(err.Error())
+				StatusInternalServerError(w, r, env)
+				return
 			}
 			tags = append(tags, tag)
 		}
@@ -55,7 +60,9 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 		updatedAt := time.Now()
 		rows, err := db.Query("INSERT INTO tags(name, created_at, updated_at) VALUES(?, ?, ?)", name, createdAt, updatedAt)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 		http.Redirect(w, r, "/admin/tags/", http.StatusFound)
@@ -65,19 +72,25 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 		updatedAt := time.Now()
 		rows, err := db.Query("UPDATE tags SET name = ?, updated_at = ? WHERE id = ?", name, updatedAt, id)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 	case r.Method == "DELETE":
 		id, _ := strconv.Atoi(r.FormValue("id"))
 		rows, err := db.Query("DELETE FROM tags WHERE id = ?", id)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 		rows, err = db.Query("DELETE FROM knowledges_tags WHERE tag_id = ?", id)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		defer rows.Close()
 	}

@@ -33,12 +33,16 @@ func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]s
 	id, _ = strconv.Atoi(suffix)
 	rows, err := db.Query("DELETE FROM knowledges WHERE id = ?", id)
 	if err != nil {
-		panic(err.Error())
+		log.Print(err.Error())
+		StatusInternalServerError(w, r, env)
+		return
 	}
 	defer rows.Close()
 	rows, err = db.Query("DELETE FROM knowledges_tags WHERE knowledge_id = ?", id)
 	if err != nil {
-		panic(err.Error())
+		log.Print(err.Error())
+		StatusInternalServerError(w, r, env)
+		return
 	}
 	defer rows.Close()
 	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)

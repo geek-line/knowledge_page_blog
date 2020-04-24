@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -22,7 +23,9 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 	}
 	rows, err := db.Query("SELECT id, name FROM tags")
 	if err != nil {
-		panic(err.Error())
+		log.Print(err.Error())
+		StatusInternalServerError(w, r, env)
+		return
 	}
 	defer rows.Close()
 	var tags []Tag
@@ -30,13 +33,17 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 		var tag Tag
 		err := rows.Scan(&tag.ID, &tag.Name)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		tags = append(tags, tag)
 	}
 	rows, err = db.Query("SELECT name, src FROM eyecatches")
 	if err != nil {
-		panic(err.Error())
+		log.Print(err.Error())
+		StatusInternalServerError(w, r, env)
+		return
 	}
 	defer rows.Close()
 	var eyecatches []EyeCatch
@@ -44,7 +51,9 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 		var eyecatch EyeCatch
 		err := rows.Scan(&eyecatch.Name, &eyecatch.Src)
 		if err != nil {
-			panic(err.Error())
+			log.Print(err.Error())
+			StatusInternalServerError(w, r, env)
+			return
 		}
 		eyecatches = append(eyecatches, eyecatch)
 	}

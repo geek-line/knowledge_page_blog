@@ -4,6 +4,14 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta property="og:site_name" content="Code Database" />
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://code-database.com/tags/{{.FilteredTag.ID}}" />
+    <meta property="og:title" content="Code Database" />
+    <meta property="og:description"
+        content="記事一覧ページ | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
+    <meta property="og:image"
+        content="https://s3-ap-northeast-1.amazonaws.com/code-database.com/images/code-database-ogp.png" />
     <meta name="robots" content="index, follow">
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
@@ -35,16 +43,13 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}
-                        
-                      <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
-                        <td></td>
-                        <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                        <td>記事数:{{ .CountOfUse }}</td>
-                       
-                      </tr>
-                      {{ end }}
-                     
+                        {{ range .Tags }}
+                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                            <td class="center"></td>
+                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                        </tr>
+                        {{ end }}
                     </tbody>
                   </table>
             </div>
@@ -114,16 +119,13 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}
-                        
-                      <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
-                        <td></td>
-                        <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                        <td>記事数:{{ .CountOfUse }}</td>
-                       
-                      </tr>
-                      {{ end }}
-                     
+                        {{ range  .Tags }}                       
+                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                            <td class="center"></td>
+                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                        </tr>
+                        {{ end }}
                     </tbody>
                   </table>
             </div>

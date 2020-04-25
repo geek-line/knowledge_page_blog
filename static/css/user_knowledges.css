@@ -323,7 +323,7 @@ select.select-sort {
     margin: 0 0 0px 0;
     display: table-cell;
     min-height:20%;
-    max-height: 30%;
+    max-height: 45%;
 }
 
 .cp_card02 .description .knowledge_title h1 {
@@ -351,13 +351,13 @@ select.select-sort {
 
 .cp_card02 .description .tag_list {
     position: absolute;
-    top:35%;
+    top:50%;
     width:95%;
     margin:0;
     flex-direction: row;
     flex-wrap: wrap;
     display: flex;
-    max-height: 45%;
+    max-height: 40%;
 }
 
 .cp_card02 .description ul li .tag {

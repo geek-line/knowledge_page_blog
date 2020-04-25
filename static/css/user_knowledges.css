@@ -24,6 +24,7 @@ footer {
 }
 
 .content_header {
+    position: relative;
     padding: 2.5rem 0;
     height: 8rem;
 }
@@ -49,7 +50,7 @@ footer {
     h4.content_title {
         font-size: 1.5rem;
     }
-    .content_header{
+    .content_header {
         height: 4rem;
     }
 }
@@ -70,10 +71,28 @@ footer {
 }
 
 .tag_container .tag_list .tag:hover {
-opacity: 0.5;
+    opacity: 0.5;
 }
+
 .row .col .card_wrapper {
     padding: 0rem 1.5rem 0rem 0rem;
+}
+
+select.select-sort {
+    display: block;
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1.5rem;
+    width: 8rem;
+    border-style: solid;
+    border-color: #00acc1;
+}
+
+@media screen and (max-width: 480px) {
+    select.select-sort {
+        bottom: 0.5rem;
+        right: 0;
+    }
 }
 
 .cp_card02 {
@@ -262,10 +281,7 @@ opacity: 0.5;
     flex-wrap: wrap;
     margin: 0;
     padding-top: 20px;
-   
 }
-
-
 
 .cp_card02 .description ul li .tag {
     font-size: 0.8em;
@@ -277,16 +293,11 @@ opacity: 0.5;
     background-color: #827b7b;
     line-height: 1.45em;
     position: left;
-    
     z-index: 99;
- 
 }
 
 .cp_card02 .description ul li .tag:hover {
-    
- 
     opacity: 0.5;
-
 }
 
 .cp_card02 .description .like {
@@ -299,6 +310,7 @@ opacity: 0.5;
     text-decoration: none;
     color: #827b7b;
 }
+
 @media screen and (max-width: 480px) {
     .cp_card02 .description h1 {
         font-size: 1.3em;

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"math"
@@ -23,6 +24,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 	}
 	suffix := r.URL.Path[lenPathKnowledges:]
 	if suffix == "" || suffix == "search" {
+		var indexPage IndexPage
 		pageNum := 1
 		query := r.URL.Query()
 		if query["page"] != nil {
@@ -32,7 +34,25 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				return
 			}
 		}
-		rows, err := db.Query("SELECT id, name FROM tags")
+		sortKey := "updated_at"
+		if query["sort"] != nil {
+			switch {
+			case query.Get("sort") == "update":
+				sortKey = "updated_at"
+				indexPage.CurrentSort = "update"
+				break
+			case query.Get("sort") == "like":
+				sortKey = "likes"
+				indexPage.CurrentSort = "like"
+				break
+			default:
+				StatusNotFoundHandler(w, r, env)
+				break
+			}
+		} else {
+			indexPage.CurrentSort = "update"
+		}
+		rows, err := db.Query("SELECT tags.id, tags.name, count(knowledges_tags.id) AS count FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id GROUP BY knowledges_tags.tag_id ORDER BY count DESC LIMIT 10;")
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)
@@ -42,7 +62,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		var tags []Tag
 		for rows.Next() {
 			var tag Tag
-			err := rows.Scan(&tag.ID, &tag.Name)
+			err := rows.Scan(&tag.ID, &tag.Name, &tag.CountOfUse)
 			if err != nil {
 				log.Print(err.Error())
 
@@ -51,7 +71,6 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			}
 			tags = append(tags, tag)
 		}
-		var indexPage IndexPage
 		var knowledgeNums float64
 		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
@@ -69,7 +88,8 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		indexPage.PageNation.PageNum = pageNum
 		indexPage.PageNation.NextPageNum = pageNum + 1
 		indexPage.PageNation.PrevPageNum = pageNum - 1
-		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*20, 20)
+		qtext := fmt.Sprintf("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges ORDER BY %s DESC LIMIT ?, ?", sortKey)
+		rows, err = db.Query(qtext, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)

@@ -51,6 +51,16 @@
         <div class="col s12 m9">
             <div class='content_header'>
                 <h4 class="content_title">"{{ .FilteredTag.Name }}"に関する記事一覧</h4>
+                {{ $currentSort := .IndexPage.CurrentSort }}
+                <select class="select-sort" onchange="location=this.value">
+                    {{ if eq $currentSort "update" }}
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    {{ else }}
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    {{ end }}
+                </select>
             </div>
             {{ range .IndexPage.IndexElems }}
             <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.ID |html|}}');">
@@ -76,7 +86,7 @@
             {{ end }}
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
-                <li class="waves-effect"><a href="/tags/{{ .FilteredTag.ID }}?page={{ .IndexPage.PageNation.PrevPageNum }}"><i
+                <li class="waves-effect"><a href="/tags/{{.FilteredTag.ID}}?page={{.IndexPage.PageNation.PrevPageNum}}&sort={{$currentSort}}"><i
                             class="material-icons">chevron_left</i></a>
                 </li>
                 {{ end }}
@@ -85,12 +95,12 @@
                 {{ if .IsSelect }}
                 <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
                 {{ else }}
-                <li class="waves-effect grey lighten-1"><a class="white-text" href="/tags/{{ $filteredTagID }}?page={{ .PageNum }}">{{ .PageNum }}</a></li>
+                <li class="waves-effect grey lighten-1"><a class="white-text" href="/tags/{{$filteredTagID}}?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
                 {{ end }}
                 {{ end }}
                 {{ $length := len .IndexPage.PageNation.PageElems }}
                 {{ if ne .IndexPage.PageNation.PageNum $length  }}
-                <li class="waves-effect"><a href="/tags/{{ .FilteredTag.ID }}?page={{ .IndexPage.PageNation.NextPageNum }}"><i
+                <li class="waves-effect"><a href="/tags/{{.FilteredTag.ID}}?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i
                             class="material-icons">chevron_right</i></a></li>
                 {{ end }}
             </ul>

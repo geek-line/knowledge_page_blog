@@ -58,8 +58,9 @@ type PageNation struct {
 
 //IndexPage ナレッジ一覧ページの全体の要素
 type IndexPage struct {
-	PageNation PageNation
-	IndexElems []IndexElem
+	PageNation  PageNation
+	IndexElems  []IndexElem
+	CurrentSort string
 }
 
 //EyeCatch アイキャッチの要素

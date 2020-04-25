@@ -21,7 +21,6 @@
         document.location.href = `${id}`;
     }
     </script>
-    
 </head>
 <body>
     {{ template "header" .Header }}
@@ -51,11 +50,20 @@
         <div class="col s12 m9">
             <div class='content_header'>
                 <h4 class="content_title">記事一覧</h4>
+                {{ $currentSort := .IndexPage.CurrentSort }}
+                <select class="select-sort" onchange="location=this.value">       
+                    {{ if eq $currentSort "update" }}
+                    <option selected value="/knowledges/search?sort=update">更新日順</option>
+                    <option value="/knowledges/search?sort=like">いいね数順</option>
+                    {{ else }}
+                    <option value="/knowledges/search?sort=update">更新日順</option>
+                    <option selected value="/knowledges/search?sort=like">いいね数順</option>
+                    {{ end }}
+                </select>
             </div>
             {{ range .IndexPage.IndexElems }}
             <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledges/{{.ID |html|}}');">
                 <div  class="cp_card02">
-
                     <img class="photo photo1 responsive-img" src="{{ .EyeCatchSrc }}">
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
@@ -76,20 +84,22 @@
             {{ end }} 
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
-                <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.PrevPageNum }}"><i class="material-icons">chevron_left</i></a>
+                <li class="waves-effect">
+                    <a href="/knowledges/search?page={{.IndexPage.PageNation.PrevPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_left</i></a>
                 </li>
                 {{ end }}
                 {{ range .IndexPage.PageNation.PageElems }}
                 {{ if .IsSelect }}
                 <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
                 {{ else }}
-                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges/search?page={{ .PageNum }}">{{ .PageNum }}</a></li>
+                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges/search?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
                 {{ end }}
                 {{ end }}
                 {{ $length := len .IndexPage.PageNation.PageElems }}
                 {{ if ne .IndexPage.PageNation.PageNum $length  }}
-                <li class="waves-effect"><a href="/knowledges/search?page={{ .IndexPage.PageNation.NextPageNum }}"><i
-                            class="material-icons">chevron_right</i></a></li>
+                <li class="waves-effect">
+                    <a href="/knowledges/search?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_right</i></a>
+                </li>
                 {{ end }}
             </ul>
         </div>

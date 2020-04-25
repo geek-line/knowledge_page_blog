@@ -32,13 +32,6 @@ footer {
     margin: 0rem;
 }
 
-.tag_container {
-    margin-top: 8rem;
-    padding: 1rem 2rem;
-    border-radius: 3px;
-    background-color: white;
-}
-
 @media screen and (max-width: 480px) {
     .tag_container {
         margin-top: 1rem;
@@ -54,24 +47,64 @@ footer {
     }
 }
 
-.tag_container .tag_list li {
-    display: inline-block;
+.tag_container {
+    margin-top: 8rem;
+    padding: 1rem 2rem;
+    border-radius: 3px;
+    background-color: #fff;
+  
 }
-
-.tag_container .tag_list .tag {
+  
+table {
+    counter-reset: rowCount;
+    text-align: center;
+    
+  }
+  table > thead > .tag_title{
+    margin:8rem 0rem;
+  }
+  table > tbody > tr {
+    counter-increment: rowCount;
+    text-align: center;
+    
+  }
+  table > tbody > tr:nth-child(even) {
+    counter-increment: rowCount;
+    text-align: center;
+    background:#cde2e8;
+   
+  }
+  table > tbody > tr > td {
+    margin:0px 0px;
+  }
+  table > tbody > tr > td:first-child::before {
+    content: counter(rowCount);
+    height:auto;
+    margin: 0 5px 0 0;
+    padding:5px 10px;
+    border-radius: 3px;
+    background: #30b0d8;
+    color: #fff;
+    text-align: center;
+    z-index: 1;
+  }
+  
+  table > tbody > tr:hover  {
+    opacity: 0.5;
+    cursor: pointer;
+  
+  }
+  table > tbody > tr > td:nth-child(2) .tag  {
     font-size: 0.8em;
-    margin-right: 4px;
     padding: 0.2em 0.6em;
     cursor: pointer;
     border-radius: 10px;
     color: white;
     background-color: #827b7b;
     line-height: 1.45em;
-}
+   
+    }
 
-.tag_container .tag_list .tag:hover {
-opacity: 0.5;
-}
 .row .col .card_wrapper {
     padding: 0rem 1.5rem 0rem 0rem;
 }
@@ -265,8 +298,6 @@ opacity: 0.5;
    
 }
 
-
-
 .cp_card02 .description ul li .tag {
     font-size: 0.8em;
     margin-right: 4px;
@@ -299,6 +330,7 @@ opacity: 0.5;
     text-decoration: none;
     color: #827b7b;
 }
+
 @media screen and (max-width: 480px) {
     .cp_card02 .description h1 {
         font-size: 1.3em;

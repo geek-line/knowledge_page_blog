@@ -26,29 +26,26 @@
 <body>
     {{ template "header" .Header }}
     <div class="display row">
-        <div class="col s12 m3 hide-on-small-and-down">
+        <div class="col s0 m0 l3 hide-on-med-and-down">
             <div class="tag_container">
                 <table class="tag_table striped ">
                     <thead>
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}
-                        
-                      <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
-                        <td></td>
-                        <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                        <td>記事数:{{ .CountOfUse }}</td>
-                       
-                      </tr>
-                      {{ end }}
-                     
+                        {{ range .Tags }} 
+                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                            <td class="center"></td>
+                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                        </tr>
+                        {{ end }}
                     </tbody>
                   </table>
             </div>
            
         </div>
-        <div class="col s12 m9">
+        <div class="col s12 m12 l9">
             <div class='content_header'>
                 <h4 class="content_title">記事一覧</h4>
                 {{ $currentSort := .IndexPage.CurrentSort }}
@@ -103,6 +100,25 @@
                 </li>
                 {{ end }}
             </ul>
+        </div>
+        <div class="col s12 m12 l0 hide-on-large-only">
+            <div class="tag_container">
+                <table class="tag_table striped ">
+                    <thead>
+                        <h6 class='tag_title'>タグランキング</h6>
+                    </thead>
+                    <tbody>
+                        {{ range .Tags }}
+                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                            <td class="center"></td>
+                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                        </tr>  
+                        {{ end }}
+                    </tbody>
+                  </table>
+            </div>
+           
         </div>
     </div>
     {{ template "footer" }}

@@ -184,7 +184,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				Header:     header,
 				DetailPage: detailPage,
 			}); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				StatusInternalServerError(w, r, env)
 			}
 		}
 	}

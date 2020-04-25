@@ -16,11 +16,9 @@ func StatusInternalServerError(w http.ResponseWriter, r *http.Request, env map[s
 		header.IsLogin = true
 	}
 	t := template.Must(template.ParseFiles("template/500.html", "template/_header.html", "template/_footer.html"))
-	if err := t.Execute(w, struct {
+	t.Execute(w, struct {
 		Header Header
 	}{
 		Header: header,
-	}); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	})
 }

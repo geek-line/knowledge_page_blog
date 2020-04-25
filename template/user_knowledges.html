@@ -18,7 +18,7 @@
     </script>
     <script type="text/javascript">
     function DivFrameClick(id) {
-        document.location.href = `/knowledges/${id}`;
+        document.location.href = `${id}`;
     }
     </script>
 </head>
@@ -27,13 +27,25 @@
     <div class="display row">
         <div class="col s12 m3 hide-on-small-and-down">
             <div class="tag_container">
-                <h6 class='tag_title'>タグランキング</h6>
-                <ul class="tag_list">
-                    {{ range .Tags }}
-                    <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a>記事数:{{ .CountOfUse }}</li>
-                    {{ end }}
-                </ul>
+                <table class="tag_table striped ">
+                    <thead>
+                        <h6 class='tag_title'>タグランキング</h6>
+                    </thead>
+                    <tbody>
+                        {{ range  .Tags }}
+                        
+                      <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                        <td></td>
+                        <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                        <td>記事数:{{ .CountOfUse }}</td>
+                       
+                      </tr>
+                      {{ end }}
+                     
+                    </tbody>
+                  </table>
             </div>
+           
         </div>
         <div class="col s12 m9">
             <div class='content_header'>
@@ -50,7 +62,7 @@
                 </select>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick({{.ID |html|}});">
+            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledges/{{.ID |html|}}');">
                 <div  class="cp_card02">
                     <img class="photo photo1 responsive-img" src="{{ .EyeCatchSrc }}">
                     <ul class="details">

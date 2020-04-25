@@ -32,7 +32,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				return
 			}
 		}
-		rows, err := db.Query("select tags.id, tags.name, count(knowledges_tags.id) as count from tags inner join knowledges_tags on knowledges_tags.tag_id = tags.id group by knowledges_tags.tag_id order by count desc limit 10;")
+		rows, err := db.Query("SELECT tags.id, tags.name, count(knowledges_tags.id) AS count FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id GROUP BY knowledges_tags.tag_id ORDER BY count DESC LIMIT 10;")
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)
@@ -69,7 +69,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		indexPage.PageNation.PageNum = pageNum
 		indexPage.PageNation.NextPageNum = pageNum + 1
 		indexPage.PageNation.PrevPageNum = pageNum - 1
-		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges LIMIT ?, ?", (pageNum-1)*20, 20)
+		rows, err = db.Query("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges ORDER BY updated_at DESC LIMIT ?, ?", (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)

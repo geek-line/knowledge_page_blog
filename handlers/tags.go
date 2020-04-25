@@ -38,7 +38,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			StatusNotFoundHandler(w, r, env)
 			return
 		}
-		rows, err := db.Query("select tags.id, tags.name, count(knowledges_tags.id) as count from tags inner join knowledges_tags on knowledges_tags.tag_id = tags.id group by knowledges_tags.tag_id order by count desc limit 10;")
+		rows, err := db.Query("SELECT tags.id, tags.name, count(knowledges_tags.id) AS count FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id GROUP BY knowledges_tags.tag_id ORDER BY count DESC LIMIT 10;")
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)
@@ -77,7 +77,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		indexPage.PageNation.PrevPageNum = pageNum - 1
 
 		db.QueryRow("SELECT name FROM tags WHERE id = ?", filteredTag.ID).Scan(&filteredTag.Name)
-		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? LIMIT ?, ?", filteredTag.ID, (pageNum-1)*20, 20)
+		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? ORDER BY updated_at DESC LIMIT ?, ?", filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)

@@ -280,6 +280,7 @@ select.select-sort {
     height: 100%;
     padding: 10px;
     min-height: 10em;
+    display:table;
 }
 
 .cp_card02 .description::before {
@@ -311,15 +312,26 @@ select.select-sort {
     opacity: 0;
 }
 
-.cp_card02 .description .knowledge_title h1 {
-    position: static;
+.cp_card02 .description .knowledge_title  {
+    position: absolute;
     width: auto;
+    top:5%;
     float: left;
-    height: 20%;
+    
     font-size: 1.2rem;
     line-height: 1em;
     margin: 0 0 0px 0;
+    display: table-cell;
+    min-height:20%;
+    max-height: 30%;
 }
+
+.cp_card02 .description .knowledge_title h1 {
+    font-size: 1.2rem;
+
+    margin: 0 0 0px 0;
+}
+
 
 .cp_card02 .description p {
     position: relative;
@@ -339,12 +351,13 @@ select.select-sort {
 
 .cp_card02 .description .tag_list {
     position: absolute;
-    bottom: 4em;
-    display: flex;
+    top:35%;
+    width:95%;
+    margin:0;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 0;
-    padding-top: 20px;
+    display: flex;
+    max-height: 45%;
 }
 
 .cp_card02 .description ul li .tag {
@@ -355,9 +368,10 @@ select.select-sort {
     border-radius: 10px;
     color: white;
     background-color: #827b7b;
-    line-height: 1.45em;
+    line-height: 1em;
     position: left;
     z-index: 99;
+    margin: 0 0 0px 0;
 }
 
 .cp_card02 .description ul li .tag:hover {
@@ -367,12 +381,14 @@ select.select-sort {
 .cp_card02 .description .like {
     position: absolute;
     right: 0.5rem;
-    bottom: 0.5rem;
+    top:80%;
     font-size: 0.9em;
     line-height: 1.45em;
     margin-bottom: 10px;
     text-decoration: none;
     color: #827b7b;
+    
+    height:20%;
 }
 
 @media screen and (max-width: 480px) {

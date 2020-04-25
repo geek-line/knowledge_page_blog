@@ -3,6 +3,14 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta property="og:site_name" content="Code Database" />
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://code-database.com/knowledges/{{.DetailPage.ID}}" />
+    <meta property="og:title" content="Code Database" />
+    <meta property="og:description"
+        content="{{ .DetailPage.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
+    <meta property="og:image"
+        content="https://s3-ap-northeast-1.amazonaws.com/code-database.com/images/code-database-ogp.png" />
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/tinymce/skins/ui/oxide/content.min.css'>

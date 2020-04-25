@@ -32,16 +32,13 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}
-                        
-                      <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
-                        <td></td>
-                        <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                        <td>記事数:{{ .CountOfUse }}</td>
-                       
-                      </tr>
-                      {{ end }}
-                     
+                        {{ range .Tags }} 
+                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                            <td class="center"></td>
+                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                        </tr>
+                        {{ end }}
                     </tbody>
                   </table>
             </div>
@@ -110,16 +107,13 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}
-                        
-                      <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
-                        <td></td>
-                        <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                        <td>記事数:{{ .CountOfUse }}</td>
-                       
-                      </tr>
-                      {{ end }}
-                     
+                        {{ range .Tags }}
+                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                            <td class="center"></td>
+                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
+                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                        </tr>  
+                        {{ end }}
                     </tbody>
                   </table>
             </div>

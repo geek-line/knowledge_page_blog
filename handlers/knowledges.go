@@ -32,7 +32,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				return
 			}
 		}
-		rows, err := db.Query("SELECT id, name FROM tags")
+		rows, err := db.Query("select tags.id, tags.name, count(knowledges_tags.id) as count from tags inner join knowledges_tags on knowledges_tags.tag_id = tags.id group by knowledges_tags.tag_id order by count desc limit 10;")
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)
@@ -42,7 +42,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		var tags []Tag
 		for rows.Next() {
 			var tag Tag
-			err := rows.Scan(&tag.ID, &tag.Name)
+			err := rows.Scan(&tag.ID, &tag.Name, &tag.CountOfUse)
 			if err != nil {
 				log.Print(err.Error())
 

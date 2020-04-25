@@ -28,10 +28,10 @@
     <div class="display row">
         <div class="col s12 m3 hide-on-small-and-down">
             <div class="tag_container">
-                <h6 class='tag_title'>タグ一覧</h6>
+                <h6 class='tag_title'>タグランキング</h6>
                 <ul class="tag_list">
                     {{ range .Tags }}
-                    <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></li>
+                    <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a>記事数:{{ .CountOfUse }}</li>
                     {{ end }}
                 </ul>
             </div>

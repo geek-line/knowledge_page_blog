@@ -2,8 +2,9 @@ package handlers
 
 //Tag 各タグの要素
 type Tag struct {
-	ID   int
-	Name string
+	ID         int
+	Name       string
+	CountOfUse int
 }
 
 //DetailPage userのナレッジ詳細ページの要素

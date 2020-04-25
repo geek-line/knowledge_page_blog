@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"math"
@@ -23,6 +24,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 	}
 	suffix := r.URL.Path[lenPathTags:]
 	if suffix != "" {
+		var indexPage IndexPage
 		pageNum := 1
 		var err error
 		query := r.URL.Query()
@@ -31,6 +33,24 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 				StatusNotFoundHandler(w, r, env)
 				return
 			}
+		}
+		sortKey := "updated_at"
+		if query["sort"] != nil {
+			switch {
+			case query.Get("sort") == "update":
+				sortKey = "updated_at"
+				indexPage.CurrentSort = "update"
+				break
+			case query.Get("sort") == "like":
+				sortKey = "likes"
+				indexPage.CurrentSort = "like"
+				break
+			default:
+				StatusNotFoundHandler(w, r, env)
+				break
+			}
+		} else {
+			indexPage.CurrentSort = "update"
 		}
 		var filteredTag Tag
 		filteredTag.ID, err = strconv.Atoi(suffix)
@@ -56,8 +76,6 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			}
 			tags = append(tags, tag)
 		}
-
-		var indexPage IndexPage
 		var knowledgeNums float64
 		db.QueryRow("SELECT count(knowledges.id) FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ?", filteredTag.ID).Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
@@ -77,7 +95,8 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		indexPage.PageNation.PrevPageNum = pageNum - 1
 
 		db.QueryRow("SELECT name FROM tags WHERE id = ?", filteredTag.ID).Scan(&filteredTag.Name)
-		rows, err = db.Query("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? ORDER BY updated_at DESC LIMIT ?, ?", filteredTag.ID, (pageNum-1)*20, 20)
+		qtext := fmt.Sprintf("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? ORDER BY %s DESC LIMIT ?, ?", sortKey)
+		rows, err = db.Query(qtext, filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, env)

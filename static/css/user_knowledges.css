@@ -360,9 +360,13 @@ select.select-sort {
     max-height: 40%;
 }
 
+.cp_card02 .description ul li {
+    margin-right: 4px;
+
+}
 .cp_card02 .description ul li .tag {
     font-size: 0.8em;
-    margin-right: 4px;
+    margin-right: 0;
     padding: 0.2em 0.6em;
     cursor: pointer;
     border-radius: 10px;

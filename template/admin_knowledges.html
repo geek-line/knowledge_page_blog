@@ -31,12 +31,13 @@
                 <td>{{ .CreatedAt }}</td>
                 <td>{{ .UpdatedAt }}</td>
                 <td><a href="/admin/knowledges/{{ .ID |html| }}">編集する</a></td>
-                <td><a href="/admin/delete/{{ .ID  }}">削除</a></td>
+                <td><button id="delete_button" value="{{ .ID }}">削除</button></td>
                 <td><a href="/knowledges/{{ .ID |html| }}">ユーザーページで表示</a></td>
             </tr>
             {{ end }}
         </table>
         <a href="/knowledges/">ユーザーページで一覧を表示</a>
+        <script src='/static/js/admin_knowledges.js'></script>
     </div>
 </body>
 </html>

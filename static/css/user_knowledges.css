@@ -247,7 +247,7 @@ select.select-sort {
     position: absolute;
     top: 0;
     left: -100%;
-    width: 40%;
+    width: 52%;
     height: 10rem;
     margin: 0;
     padding: 10px 15px;
@@ -310,8 +310,8 @@ select.select-sort {
     /* left: -15px; */
     width: 100%;
     content: '';
-    -webkit-transform: skewX(-8deg);
-    transform: skewX(-8deg);
+    /* -webkit-transform: skewX(-8deg);
+    transform: skewX(-8deg); */
     background: #ffffff;
 }
 

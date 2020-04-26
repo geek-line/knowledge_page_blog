@@ -11,7 +11,7 @@
     <meta property="og:description"
         content="{{ .DetailPage.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
     <meta property="og:image"
-        content="{{.Detailpage.EyeCatchSrc}}" />
+        content="{{ .DetailPage.EyeCatchSrc }}" />
     <meta name="robots" content="index, follow">
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
@@ -31,6 +31,7 @@
 <body>
     {{ template "header" .Header }}
 
+    <img src='' alt=''>
     <div class="p_items_wrapper row">
         <div class= "p_action_item col s0 m0 l1 hide-on-med-and-down">
             <div class='display_like'>

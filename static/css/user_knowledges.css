@@ -77,55 +77,58 @@ footer {
         height: 4rem;
     }
 }
+
 @media screen and (min-width: 825px) {
-.tag_container {
-    margin-top: 8rem;
-    padding: 1rem 2rem;
-    border-radius: 3px;
-    background-color: #fff;
+    .tag_container {
+        margin-top: 8rem;
+        padding: 1rem 2rem;
+        border-radius: 3px;
+        background-color: #fff;
+    }
 }
-  
-}
+
 table {
     counter-reset: rowCount;
     text-align: center;
-    
-  }
-  table > thead > .tag_title{
-    margin:8rem 0rem;
-  }
-  table > tbody > tr {
+}
+
+table>thead>.tag_title {
+    margin: 8rem 0rem;
+}
+
+table>tbody>tr {
     counter-increment: rowCount;
     text-align: center;
-    
-  }
-  table > tbody > tr:nth-child(even) {
+}
+
+table>tbody>tr:nth-child(even) {
     counter-increment: rowCount;
     text-align: center;
-    background:#cde2e8;
-   
-  }
-  table > tbody > tr > td {
-    margin:0px 0px;
-  }
-  table > tbody > tr > td:first-child::before {
+    background: #cde2e8;
+}
+
+table>tbody>tr>td {
+    margin: 0px 0px;
+}
+
+table>tbody>tr>td:first-child::before {
     content: counter(rowCount);
-    height:auto;
+    height: auto;
     margin: 0 5px 0 0;
-    padding:5px 10px;
+    padding: 5px 10px;
     border-radius: 3px;
     background: #30b0d8;
     color: #fff;
     text-align: center;
     z-index: 1;
-  }
-  
-  table > tbody > tr:hover  {
+}
+
+table>tbody>tr:hover {
     opacity: 0.5;
     cursor: pointer;
-  
-  }
-  table > tbody > tr > td:nth-child(2) .tag  {
+}
+
+table>tbody>tr>td:nth-child(2) .tag {
     font-size: 0.8em;
     padding: 0.2em 0.6em;
     cursor: pointer;
@@ -133,10 +136,7 @@ table {
     color: white;
     background-color: #827b7b;
     line-height: 1.45em;
-   
-    }
-
-
+}
 
 .row .col .card_wrapper {
     padding: 0rem 1.5rem 0rem 0rem;
@@ -216,8 +216,8 @@ select.select-sort {
 }
 
 .cp_card02:hover .photo {
-    -webkit-transform: rotate(5deg) scale(1.3);
-    transform: rotate(5deg) scale(1.3);
+    -webkit-transform:  scale(1.3);
+    transform:  scale(1.3);
 }
 
 .cp_card02 .photo.photo1 {
@@ -280,7 +280,7 @@ select.select-sort {
     height: 100%;
     padding: 10px;
     min-height: 10em;
-    display:table;
+    display: table;
 }
 
 .cp_card02 .description::before {
@@ -312,26 +312,23 @@ select.select-sort {
     opacity: 0;
 }
 
-.cp_card02 .description .knowledge_title  {
+.cp_card02 .description .knowledge_title {
     position: absolute;
     width: auto;
-    top:5%;
+    top: 5%;
     float: left;
-    
     font-size: 1.2rem;
     line-height: 1em;
     margin: 0 0 0px 0;
     display: table-cell;
-    min-height:20%;
+    min-height: 20%;
     max-height: 45%;
 }
 
 .cp_card02 .description .knowledge_title h1 {
     font-size: 1.2rem;
-
     margin: 0 0 0px 0;
 }
-
 
 .cp_card02 .description p {
     position: relative;
@@ -351,9 +348,9 @@ select.select-sort {
 
 .cp_card02 .description .tag_list {
     position: absolute;
-    top:50%;
-    width:95%;
-    margin:0;
+    top: 50%;
+    width: 95%;
+    margin: 0;
     flex-direction: row;
     flex-wrap: wrap;
     display: flex;
@@ -362,8 +359,8 @@ select.select-sort {
 
 .cp_card02 .description ul li {
     margin-right: 4px;
-
 }
+
 .cp_card02 .description ul li .tag {
     font-size: 0.8em;
     margin-right: 0;
@@ -385,14 +382,13 @@ select.select-sort {
 .cp_card02 .description .like {
     position: absolute;
     right: 0.5rem;
-    top:80%;
+    top: 80%;
     font-size: 0.9em;
     line-height: 1.45em;
     margin-bottom: 10px;
     text-decoration: none;
     color: #827b7b;
-    
-    height:20%;
+    height: 20%;
 }
 
 @media screen and (max-width: 480px) {

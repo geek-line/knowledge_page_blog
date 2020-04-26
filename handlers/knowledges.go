@@ -135,9 +135,9 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			Tags:      tags,
 			IndexPage: indexPage,
 		}); err != nil {
+			log.Print(err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-
 	} else {
 		var detailPage DetailPage
 		var id int
@@ -184,6 +184,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				Header:     header,
 				DetailPage: detailPage,
 			}); err != nil {
+				log.Print(err.Error())
 				StatusInternalServerError(w, r, env)
 			}
 		}

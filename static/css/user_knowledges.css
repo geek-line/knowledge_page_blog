@@ -173,6 +173,7 @@ select.select-sort {
     -webkit-box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
     box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.3);
     cursor: pointer;
+ 
 }
 
 .cp_card02 .link_box {
@@ -206,23 +207,41 @@ select.select-sort {
     width: 100%;
 }
 
+
+
+
 .cp_card02 .photo {
+    
     position: relative;
     float: left;
+ 
     width: 40%;
-    height: auto;
+    height: 100%;
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
+
 }
+
+.cp_card02 .photo .photo1 {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+}
+
+
 
 .cp_card02:hover .photo {
     -webkit-transform:  scale(1.3);
     transform:  scale(1.3);
+    background-size: cover;
+    display: block;
+
 }
 
-.cp_card02 .photo.photo1 {
-    background-size: cover;
-}
+
 
 .cp_card02 .details {
     position: absolute;

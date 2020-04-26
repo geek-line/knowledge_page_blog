@@ -74,7 +74,9 @@
             <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.ID |html|}}');">
                 <div class="cp_card02">
                    
-                    <img class="photo photo1" src="{{ .EyeCatchSrc }}">
+                    <div class ="photo">
+                        <img class="photo1 responsive-img" src="{{ .EyeCatchSrc }}">
+                    </div>
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
                     </ul>

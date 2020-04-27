@@ -44,6 +44,12 @@ h3 {
     text-align: -webkit-match-parent;
     list-style-type: disc;
 }
+.menu{
+    position: fixed;
+    top:2.5%;
+    right:1vw;
+  z-index: 6;
+}
 
 .p_items_wrapper .p_action_item {
     position: sticky;
@@ -226,4 +232,43 @@ h3 {
     background-color: #827b7b;
     line-height: 1.45em;
     position: left;
+}
+
+.p_items_wrapper .p_table_items_devise {
+
+   
+}
+.sidenav {
+    max-height: 80%;
+    margin-top: 20%;
+    border-radius: 5px;
+    
+}
+
+.item_devise {
+    
+    border-radius: 10px;
+    overflow-y: auto;
+  
+
+}
+/* .item_devise ul li ul li {
+    color: #827b7b;
+    font-size: 0.4em;
+    line-height: 21px;
+} */
+
+.item_devise > div > ul {
+    margin:0%;
+}
+.item_devise > div > ul >li > ul > li > a.h3 {
+    color: #827b7b;
+    font-size: 0.4em;
+    line-height: 21px;
+    margin-left: 20%;
+}
+.item_devise > div > ul >li > .h2 {
+    color: #827b7b;
+    font-size: 0.8em;
+ 
 }

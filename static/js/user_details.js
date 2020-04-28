@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    content.innerHTML = input.value
+    content.innerHTML = input.value.replace(/<table/g, "<div class='scroll-table'><table").replace(/<\/table>/g, "</table></div>")
     var p_table_items = document.getElementById("p_table_items"); // 目次を追加する先(table of contents)
     var p_table_items_devise = document.getElementById("p_table_items_devise"); // 目次を追加する先(table of contents)
     var div = document.createElement('div'); // 作成する目次のコンテナ要素
@@ -77,11 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const smoothScroll = () =>{
     let links = document.querySelectorAll('.item_devise a[href^="#"]');
-    const speed = 200;          // スクロールスピード   
+    const speed = 3000;          // スクロールスピード   
     const divisor = 100;        // 分割数
     const tolerance = 5;        // 許容誤差
     const headerHeight = 40;     // 固定ヘッダーがある場合はその高さ分ずらす
-    const interval = speed/divisor;
+    const interval = divisor / speed;
     for(let i = 0; i < links.length; i++){
       links[i].addEventListener('click',(e)=>{
         e.preventDefault();

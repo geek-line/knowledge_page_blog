@@ -219,6 +219,12 @@ h3 {
     font-weight: bold;
 }
 
+.p_items_wrapper .p_main_item #content .scroll-table{
+    /* max-width: 100%; */
+    overflow: auto;
+    white-space: nowrap;
+}
+
 .p_items_wrapper .p_table_items {
     position: sticky;
     margin-top: 20vh;
@@ -267,18 +273,23 @@ h3 {
     line-height: 21px;
 } */
 
-.item_devise>div>ul {
-    margin: 0%;
+.item_devise > div > ul {
+    margin:0%;
+    overflow: scroll;
 }
-
-.item_devise>div>ul>li>ul>li>a.h3 {
+.item_devise > div > ul >li > ul > li > a.h3 {
     color: #827b7b;
-    font-size: 0.6em;
+    font-size: 12px;
     line-height: 21px;
-    margin-left: 20%;
+    margin-left: 10%;
+}
+.item_devise > div > ul >li > .h2 {
+    color: #827b7b;
+    font-size: 16px;
+    margin-top: 1rem;
 }
 
-.item_devise>div>ul>li>.h2 {
-    color: #827b7b;
-    font-size: 0.8em;
+.sidenav li>a {
+    height: auto;
+    line-height: normal;
 }

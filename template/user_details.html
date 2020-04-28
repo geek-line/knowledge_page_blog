@@ -16,7 +16,10 @@
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/tinymce/skins/ui/oxide/content.min.css'>
+    <link rel='stylesheet' href='/node_modules/tinymce/skins/content/default/content.min.css'>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script  src="/node_modules/materialize-css/dist/js/materialize.min.js"></script>
     <link rel='stylesheet' href='/static/css/user_details.css/'>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164168719-1"></script>
@@ -26,12 +29,17 @@
     gtag('js', new Date());
     gtag('config', 'UA-164168719-1');
     </script>
+
 </head>
 
 <body>
     {{ template "header" .Header }}
+    <a data-target="slide-out" class="menu sidenav-trigger right hide-on-large-only"><i class="material-icons black-text">format_list_bulleted</i></a>
+  
 
-    <img src='' alt=''>
+
+
+
     <div class="p_items_wrapper row">
         <div class= "p_action_item col s0 m0 l1 hide-on-med-and-down">
             <div class='display_like'>
@@ -67,9 +75,15 @@
             <p></p>
             
         </div>
+    
         <div class= "p_table_items col s0 m0 l3 hide-on-med-and-down">
             <div id="p_table_items" class= "item"></div>
         </div>
+
+        <div class= "p_table_items_devise hide-on-large-only sidenav-close sidenav " id="slide-out">
+            <div id="p_table_items_devise" class="item_devise"></div>
+        </div>
+      
     </div>
     {{ template "footer" }}
     <script src='/static/js/user_details.js'></script>

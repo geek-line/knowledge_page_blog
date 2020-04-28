@@ -45,6 +45,13 @@ h3 {
     list-style-type: disc;
 }
 
+.menu {
+    position: fixed;
+    top: 2.5%;
+    right: 1vw;
+    z-index: 6;
+}
+
 .p_items_wrapper .p_action_item {
     position: sticky;
     top: 35vh;
@@ -155,6 +162,12 @@ h3 {
     border-radius: 10px;
 }
 
+@media screen and (max-width: 426px) {
+    .p_items_wrapper .p_main_item {
+        padding: 1rem 0rem 1rem 0rem;
+    }
+}
+
 .p_items_wrapper .p_main_item .tags {
     display: flex;
     flex-direction: row;
@@ -177,6 +190,15 @@ h3 {
     margin: 1rem;
 }
 
+@media screen and (max-width: 426px) {
+    .p_items_wrapper .p_main_item .title {
+        margin: 0.5rem;
+    }
+    .p_items_wrapper .p_main_item #content {
+        margin: 0.5rem;
+    }
+}
+
 .p_items_wrapper .p_main_item #content p img {
     max-width: 100%;
     height: auto;
@@ -195,6 +217,12 @@ h3 {
 .p_items_wrapper .p_main_item #content ol li h3 span {
     font-size: 3.56rem;
     font-weight: bold;
+}
+
+.p_items_wrapper .p_main_item #content .scroll-table{
+    /* max-width: 100%; */
+    overflow: auto;
+    white-space: nowrap;
 }
 
 .p_items_wrapper .p_table_items {
@@ -218,7 +246,7 @@ h3 {
 
 .p_items_wrapper .p_main_item .tags li a {
     font-size: 0.8em;
-    margin-right: 4px;
+    margin-left: 0.5rem;
     padding: 0.2em 0.6em;
     cursor: pointer;
     border-radius: 10px;
@@ -226,4 +254,42 @@ h3 {
     background-color: #827b7b;
     line-height: 1.45em;
     position: left;
+}
+
+.sidenav {
+    max-height: 80%;
+    margin-top: 20%;
+    border-radius: 5px;
+}
+
+.item_devise {
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+/* .item_devise ul li ul li {
+    color: #827b7b;
+    font-size: 0.4em;
+    line-height: 21px;
+} */
+
+.item_devise > div > ul {
+    margin:0%;
+    overflow: scroll;
+}
+.item_devise > div > ul >li > ul > li > a.h3 {
+    color: #827b7b;
+    font-size: 12px;
+    line-height: 21px;
+    margin-left: 10%;
+}
+.item_devise > div > ul >li > .h2 {
+    color: #827b7b;
+    font-size: 16px;
+    margin-top: 1rem;
+}
+
+.sidenav li>a {
+    height: auto;
+    line-height: normal;
 }

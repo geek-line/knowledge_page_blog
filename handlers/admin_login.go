@@ -3,10 +3,13 @@ package handlers
 import (
 	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
 
 	"../config"
+	"../models"
 	"../routes"
+	"../structs"
 	"github.com/gorilla/sessions"
 )
 
@@ -18,7 +21,7 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 			t := template.Must(template.ParseFiles("template/admin_login.html", "template/_header.html"))
 			header := newHeader(false)
 			if err := t.Execute(w, struct {
-				Header Header
+				Header structs.Header
 			}{
 				Header: header,
 			}); err != nil {
@@ -34,7 +37,9 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 		var correctPassword string
-		if err := db.QueryRow("SELECT password FROM admin_user WHERE email = ?", email).Scan(&correctPassword); err != nil {
+		correctPassword, err := models.GetPasswordFromEmail(email)
+		if err != nil {
+			log.Print(err.Error())
 			http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
 		}
 		if correctPassword == password {

@@ -3,6 +3,8 @@ package handlers
 import (
 	"net/http"
 	"text/template"
+
+	"../structs"
 )
 
 // StatusNotFoundHandler に対するハンドラ
@@ -14,7 +16,7 @@ func StatusNotFoundHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	}
 	t := template.Must(template.ParseFiles("template/404.html", "template/_header.html", "template/_footer.html"))
 	if err := t.Execute(w, struct {
-		Header Header
+		Header structs.Header
 	}{
 		Header: header,
 	}); err != nil {

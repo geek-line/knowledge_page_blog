@@ -24,7 +24,7 @@ func main() {
 	http.HandleFunc(routes.AdminNewPath, middleware.AdminAuth(handlers.AdminNewHandler))
 	http.HandleFunc(routes.AdminSavePath, middleware.AdminAuth(handlers.AdminSaveHandler))
 	http.HandleFunc(routes.AdminDeletePath, middleware.AdminAuth(handlers.AdminDeleteHandler))
-	http.HandleFunc(routes.AdminEyecatchesPath, middleware.AdminAuth(handlers.AdminEyeCatchesHandler))
+	http.HandleFunc(routes.AdminEyecatchesPath, middleware.AdminAuth(handlers.AdminEyecatchesHandler))
 	http.HandleFunc(routes.UserKnowledgesPath, middleware.UserAuth(handlers.KnowledgesHandler))
 	http.HandleFunc(routes.UserKnowledgesLikePath, middleware.UserAuth(handlers.KnowledgeLikeHandler))
 	http.HandleFunc(routes.UserTagsPath, middleware.UserAuth(handlers.TagsHandler))

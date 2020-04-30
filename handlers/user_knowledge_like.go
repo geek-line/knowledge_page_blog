@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	"../models"
 )
 
 // KnowledgeLikeHandler /knowledge/likeに対するハンドラ
@@ -16,18 +18,14 @@ func KnowledgeLikeHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, au
 		return
 	}
 	if r.Method == "POST" {
-		if rows, err := db.Query("UPDATE knowledges SET likes = likes + 1 WHERE id = ?", id); err != nil {
+		if err := models.IncrementLikes(id); err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, auth)
-		} else {
-			defer rows.Close()
 		}
 	} else {
-		if rows, err := db.Query("UPDATE knowledges SET likes = likes - 1 WHERE id = ?", id); err != nil {
+		if err := models.DecrementLikes(id); err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, auth)
-		} else {
-			defer rows.Close()
 		}
 	}
 	return

@@ -36,7 +36,7 @@
                         <h5>アイキャッチ</h5>
                         <img id="file_preview" class="responsive-img" width="100px">
                         <select id="select_eyecatch" class="select-eyecatch" name='eyecatch_src' id=''>
-                            {{ range .EyeCatches }}
+                            {{ range .Eyecatches }}
                             <option value='{{ .Src }}'>{{ .Name }}</option>
                             {{ end }}
                         </select>

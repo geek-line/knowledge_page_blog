@@ -44,11 +44,11 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range .Tags }}
-                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                        {{ range .IndexPage.TagRanking }}
+                        <tr onclick="DivFrameClick('/tags/{{.TagID |html|}}');">
                             <td class="center"></td>
-                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                            <td><a href="/tags/{{.TagID}}" class="tag">{{ .TagName }}</a></td>
+                            <td class="center">記事数:{{ .CountOfRefferenced }}</td>
                         </tr>
                         {{ end }}
                     </tbody>
@@ -71,25 +71,25 @@
                 </select>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.ID |html|}}');">
+            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.Knowledge.ID |html|}}');">
                 <div class="cp_card02">
                    
                     <div class ="photo">
-                        <img class="photo1 responsive-img" src="{{ .EyecatchSrc }}">
+                        <img class="photo1 responsive-img" src="{{ .Knowledge.EyecatchSrc }}">
                     </div>
                     <ul class="details">
-                        <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
+                        <li class="date">最終更新日:<br />{{ .Knowledge.UpdatedAt }}</li>
                     </ul>
                     <div class="description">
                         <div  class="knowledge_title">
-                            <h1>{{ .Title }}</h1>
+                            <h1>{{ .Knowledge.Title }}</h1>
                         </div>
                         <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
                             <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
-                        <div class="like">いいね:{{ .Likes }}</div>
+                        <div class="like">いいね:{{ .Knowledge.Likes }}</div>
                     </div>
                 </div>
             </div>
@@ -122,11 +122,11 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}                       
-                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                        {{ range  .IndexPage.TagRanking }}                       
+                        <tr onclick="DivFrameClick('/tags/{{.TagID |html|}}');">
                             <td class="center"></td>
-                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                            <td><a href="/tags/{{.TagID}}" class="tag">{{ .TagName }}</a></td>
+                            <td class="center">記事数:{{ .CountOfRefferenced }}</td>
                         </tr>
                         {{ end }}
                     </tbody>

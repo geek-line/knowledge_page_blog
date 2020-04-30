@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"./handlers"
+	"./routes"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -33,7 +34,7 @@ func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, env map
 }
 
 func redirectHandler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/knowledges/", http.StatusFound)
+	http.Redirect(w, r, routes.UserKnowledgesPath, http.StatusFound)
 }
 
 func init() {
@@ -44,20 +45,20 @@ func init() {
 
 func main() {
 	dir, _ := os.Getwd()
-	http.HandleFunc("/", redirectHandler)
-	http.HandleFunc("/admin/login/", makeHandlerUsingEnv(handlers.AdminLoginHandler))
-	http.HandleFunc("/admin/logout/", makeHandlerUsingEnv(handlers.AdminLogoutHandler))
-	http.HandleFunc("/admin/knowledges/", makeHandlerUsingEnv(handlers.AdminKnowledgesHandler))
-	http.HandleFunc("/admin/tags/", makeHandlerUsingEnv(handlers.AdminTagsHandler))
-	http.HandleFunc("/admin/new/", makeHandlerUsingEnv(handlers.AdminNewHandler))
-	http.HandleFunc("/admin/save/", makeHandlerUsingEnv(handlers.AdminSaveHandler))
-	http.HandleFunc("/admin/delete/", makeHandlerUsingEnv(handlers.AdminDeleteHandler))
-	http.HandleFunc("/admin/eyecatches/", makeHandlerUsingEnv(handlers.AdminEyeCatchesHandler))
-	http.HandleFunc("/knowledges/", makeHandlerUsingEnv(handlers.KnowledgesHandler))
-	http.HandleFunc("/knowledges/like", makeHandlerUsingEnv(handlers.KnowledgeLikeHandler))
-	http.HandleFunc("/tags/", makeHandlerUsingEnv(handlers.TagsHandler))
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
-	http.Handle("/node_modules/", http.StripPrefix("/node_modules/", http.FileServer(http.Dir(dir+"/node_modules/"))))
-	http.Handle("/google_sitemap/", http.StripPrefix("/google_sitemap/", http.FileServer(http.Dir(dir+"/google_sitemap/"))))
+	http.HandleFunc(routes.RootPath, redirectHandler)
+	http.HandleFunc(routes.AdminLoginPath, makeHandlerUsingEnv(handlers.AdminLoginHandler))
+	http.HandleFunc(routes.AdminLogoutPath, makeHandlerUsingEnv(handlers.AdminLogoutHandler))
+	http.HandleFunc(routes.AdminKnowledgesPath, makeHandlerUsingEnv(handlers.AdminKnowledgesHandler))
+	http.HandleFunc(routes.AdminTagsPath, makeHandlerUsingEnv(handlers.AdminTagsHandler))
+	http.HandleFunc(routes.AdminNewPath, makeHandlerUsingEnv(handlers.AdminNewHandler))
+	http.HandleFunc(routes.AdminSavePath, makeHandlerUsingEnv(handlers.AdminSaveHandler))
+	http.HandleFunc(routes.AdminDeletePath, makeHandlerUsingEnv(handlers.AdminDeleteHandler))
+	http.HandleFunc(routes.AdminEyecatchesPath, makeHandlerUsingEnv(handlers.AdminEyeCatchesHandler))
+	http.HandleFunc(routes.UserKnowledgesPath, makeHandlerUsingEnv(handlers.KnowledgesHandler))
+	http.HandleFunc(routes.UserKnowledgesLikePath, makeHandlerUsingEnv(handlers.KnowledgeLikeHandler))
+	http.HandleFunc(routes.UserTagsPath, makeHandlerUsingEnv(handlers.TagsHandler))
+	http.Handle(routes.StaticPath, http.StripPrefix(routes.StaticPath, http.FileServer(http.Dir(dir+routes.StaticPath))))
+	http.Handle(routes.NodeModulesPath, http.StripPrefix(routes.NodeModulesPath, http.FileServer(http.Dir(dir+routes.NodeModulesPath))))
+	http.Handle(routes.GoogleSitemapPath, http.StripPrefix(routes.GoogleSitemapPath, http.FileServer(http.Dir(dir+routes.GoogleSitemapPath))))
 	http.ListenAndServe(":3000", nil)
 }

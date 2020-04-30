@@ -9,10 +9,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"../routes"
+
 	"github.com/gorilla/sessions"
 )
 
-const lenPathTags = len("/tags/")
+const lenPathTags = len(routes.UserTagsPath)
 
 //TagsHandler /tags/に対するハンドラ
 func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {

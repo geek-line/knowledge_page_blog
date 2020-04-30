@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"../routes"
+
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 )
 
-const lenPathDelete = len("/admin/delete/")
+const lenPathDelete = len(routes.AdminDeletePath)
 
 func envLoad() {
 	err := godotenv.Load()
@@ -24,7 +26,7 @@ func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]s
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
 		return
 	}
 	suffix := r.URL.Path[lenPathDelete:]
@@ -45,5 +47,5 @@ func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]s
 		return
 	}
 	defer rows.Close()
-	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
+	http.Redirect(w, r, routes.AdminKnowledgesPath, http.StatusFound)
 }

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"./routes"
-
 	"./handlers"
+	"./routes"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )

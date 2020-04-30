@@ -9,7 +9,6 @@ import (
 
 // StatusNotFoundHandler に対するハンドラ
 func StatusNotFoundHandler(w http.ResponseWriter, r *http.Request, auth bool) {
-
 	header := newHeader(false)
 	if auth {
 		header.IsLogin = true

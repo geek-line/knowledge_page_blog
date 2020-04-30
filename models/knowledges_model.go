@@ -97,7 +97,6 @@ func Get20SortedElems(sortKey string, startIndex int, length int) ([]structs.Ind
 	rows, err := db.Query(qtext, startIndex, length)
 	defer rows.Close()
 	var indexElems []structs.IndexElem
-
 	for rows.Next() {
 		var indexElem structs.IndexElem
 		err = rows.Scan(&indexElem.Knowledge.ID, &indexElem.Knowledge.Title, &indexElem.Knowledge.UpdatedAt, &indexElem.Knowledge.Likes, &indexElem.Knowledge.EyecatchSrc)

@@ -92,14 +92,12 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 			StatusInternalServerError(w, r, auth)
 			return
 		}
-
 		indexPage := structs.UserIndexPage{
 			PageNation:  pageNation,
 			IndexElems:  indexElems,
 			CurrentSort: currentSort,
 			TagRanking:  tagRankingElem,
 		}
-
 		t := template.Must(template.ParseFiles("template/user_tags.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
 			Header      structs.Header

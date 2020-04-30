@@ -79,21 +79,18 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 		pageNation.PageNum = pageNum
 		pageNation.NextPageNum = pageNum + 1
 		pageNation.PrevPageNum = pageNum - 1
-
 		indexElems, err := models.Get20SortedElems(sortKey, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
 			StatusInternalServerError(w, r, auth)
 			return
 		}
-
 		indexPage := structs.UserIndexPage{
 			PageNation:  pageNation,
 			IndexElems:  indexElems,
 			CurrentSort: currentSort,
 			TagRanking:  tagRankingElem,
 		}
-
 		t := template.Must(template.ParseFiles("template/user_knowledges.html", "template/_header.html", "template/_footer.html"))
 		if err = t.Execute(w, struct {
 			Header    structs.Header

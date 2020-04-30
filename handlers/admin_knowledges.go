@@ -36,20 +36,11 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) 
 				log.Print(err.Error())
 				return
 			}
-			// var selectedTagsID []int
 			selectedTagsID, err := models.GetTagIDsFromKnowledgeID(knowledgeID)
-
-			// rows, _ := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", knowledgeID)
-			// for rows.Next() {
-			// 	var selectedTagID int
-			// 	err := rows.Scan(&selectedTagID)
 			if err != nil {
 				log.Print(err.Error())
 				return
 			}
-			// 	selectedTagsID = append(selectedTagsID, selectedTagID)
-			// }
-
 			t := template.Must(template.ParseFiles("template/admin_edit.html", "template/_header.html"))
 			if err := t.Execute(w, struct {
 				Header         structs.Header
@@ -68,26 +59,11 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) 
 			}
 		}
 	} else {
-		// var indexPage IndexPage
-		// var err error
 		knowledges, err := models.GetAllKnowledges()
-		// // rows, err := db.Query("SELECT id, title, created_at, updated_at FROM knowledges")
 		if err != nil {
 			log.Print(err.Error())
 			return
 		}
-		// defer rows.Close()
-
-		// for rows.Next() {
-		// 	var indexElem IndexElem
-		// 	err := rows.Scan(&indexElem.Knowledge.ID, &indexElem.Knowledge.Title, &indexElem.Knowledge.CreatedAt, &indexElem.Knowledge.UpdatedAt)
-		// 	if err != nil {
-		// 		log.Print(err.Error())
-		// 		return
-		// 	}
-		// 	indexPage = append(indexPage, indexElem)
-		// }
-
 		t := template.Must(template.ParseFiles("template/admin_knowledges.html", "template/_header.html"))
 		header := newHeader(true)
 		if err = t.Execute(w, struct {

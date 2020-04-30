@@ -5,17 +5,16 @@ import (
 	"html/template"
 	"net/http"
 
+	"../config"
 	"../routes"
-
 	"github.com/gorilla/sessions"
 )
 
 //AdminLoginHandler /admin/loginに対するハンドラ
-func AdminLoginHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
+func AdminLoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
+	store := sessions.NewCookieStore([]byte(config.SessionKey))
 	if r.Method == "GET" {
-		session, _ := store.Get(r, "cookie-name")
-		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		if !auth {
 			t := template.Must(template.ParseFiles("template/admin_login.html", "template/_header.html"))
 			header := newHeader(false)
 			if err := t.Execute(w, struct {
@@ -26,6 +25,7 @@ func AdminLoginHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		} else {
+			session, _ := store.Get(r, "cookie-name")
 			session.Values["authenticated"] = true
 			session.Save(r, w)
 			http.Redirect(w, r, routes.AdminKnowledgesPath, http.StatusFound)

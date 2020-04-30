@@ -10,18 +10,14 @@ import (
 	"strconv"
 
 	"../routes"
-
-	"github.com/gorilla/sessions"
 )
 
 const lenPathTags = len(routes.UserTagsPath)
 
 //TagsHandler /tags/に対するハンドラ
-func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
-	session, _ := store.Get(r, "cookie-name")
+func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
 	header := newHeader(false)
-	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
+	if auth {
 		header.IsLogin = true
 	}
 	suffix := r.URL.Path[lenPathTags:]
@@ -32,7 +28,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		query := r.URL.Query()
 		if query["page"] != nil {
 			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
-				StatusNotFoundHandler(w, r, env)
+				StatusNotFoundHandler(w, r, auth)
 				return
 			}
 		}
@@ -48,7 +44,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 				indexPage.CurrentSort = "like"
 				break
 			default:
-				StatusNotFoundHandler(w, r, env)
+				StatusNotFoundHandler(w, r, auth)
 				break
 			}
 		} else {
@@ -57,13 +53,13 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		var filteredTag Tag
 		filteredTag.ID, err = strconv.Atoi(suffix)
 		if err != nil {
-			StatusNotFoundHandler(w, r, env)
+			StatusNotFoundHandler(w, r, auth)
 			return
 		}
 		rows, err := db.Query("SELECT tags.id, tags.name, count(knowledges_tags.id) AS count FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id GROUP BY knowledges_tags.tag_id ORDER BY count DESC LIMIT 10;")
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 			return
 		}
 		defer rows.Close()
@@ -73,7 +69,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			err := rows.Scan(&tag.ID, &tag.Name, &tag.CountOfUse)
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 				return
 			}
 			tags = append(tags, tag)
@@ -82,7 +78,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		db.QueryRow("SELECT count(knowledges.id) FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ?", filteredTag.ID).Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
 		if pageNums < pageNum {
-			StatusNotFoundHandler(w, r, env)
+			StatusNotFoundHandler(w, r, auth)
 			return
 		}
 		var pageNationElems = make([]Page, pageNums)
@@ -101,7 +97,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 		rows, err = db.Query(qtext, filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 			return
 		}
 		defer rows.Close()
@@ -110,14 +106,14 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 				return
 			}
 			var selectedTags []Tag
 			tagsRows, err := db.Query("SELECT tags.id, tags.name FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id WHERE knowledge_id = ?", indexElem.ID)
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 				return
 			}
 			defer tagsRows.Close()
@@ -126,7 +122,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 				err := tagsRows.Scan(&selectedTag.ID, &selectedTag.Name)
 				if err != nil {
 					log.Print(err.Error())
-					StatusInternalServerError(w, r, env)
+					StatusInternalServerError(w, r, auth)
 					return
 				}
 				selectedTags = append(selectedTags, selectedTag)
@@ -149,6 +145,6 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, env map[string]string, 
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		StatusNotFoundHandler(w, r, env)
+		StatusNotFoundHandler(w, r, auth)
 	}
 }

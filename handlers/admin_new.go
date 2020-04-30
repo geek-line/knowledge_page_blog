@@ -5,10 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-
-	"../routes"
-
-	"github.com/gorilla/sessions"
 )
 
 func newHeader(isLogin bool) Header {
@@ -16,17 +12,10 @@ func newHeader(isLogin bool) Header {
 }
 
 //AdminNewHandler /admin/newに対するハンドラ
-func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
-	session, _ := store.Get(r, "cookie-name")
-	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
-		return
-	}
+func AdminNewHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	rows, err := db.Query("SELECT id, name FROM tags")
 	if err != nil {
 		log.Print(err.Error())
-		StatusInternalServerError(w, r, env)
 		return
 	}
 	defer rows.Close()
@@ -36,7 +25,6 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 		err := rows.Scan(&tag.ID, &tag.Name)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
 			return
 		}
 		tags = append(tags, tag)
@@ -44,7 +32,6 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 	rows, err = db.Query("SELECT name, src FROM eyecatches")
 	if err != nil {
 		log.Print(err.Error())
-		StatusInternalServerError(w, r, env)
 		return
 	}
 	defer rows.Close()
@@ -54,7 +41,6 @@ func AdminNewHandler(w http.ResponseWriter, r *http.Request, env map[string]stri
 		err := rows.Scan(&eyecatch.Name, &eyecatch.Src)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
 			return
 		}
 		eyecatches = append(eyecatches, eyecatch)

@@ -8,24 +8,24 @@ import (
 )
 
 // KnowledgeLikeHandler /knowledge/likeに対するハンドラ
-func KnowledgeLikeHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
+func KnowledgeLikeHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
 	id, err := strconv.Atoi(r.FormValue("id"))
 	if err != nil {
 		log.Print(err.Error())
-		StatusInternalServerError(w, r, env)
+		StatusInternalServerError(w, r, auth)
 		return
 	}
 	if r.Method == "POST" {
 		if rows, err := db.Query("UPDATE knowledges SET likes = likes + 1 WHERE id = ?", id); err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 		} else {
 			defer rows.Close()
 		}
 	} else {
 		if rows, err := db.Query("UPDATE knowledges SET likes = likes - 1 WHERE id = ?", id); err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 		} else {
 			defer rows.Close()
 		}

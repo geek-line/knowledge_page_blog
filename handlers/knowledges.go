@@ -10,18 +10,14 @@ import (
 	"strconv"
 
 	"../routes"
-
-	"github.com/gorilla/sessions"
 )
 
 const lenPathKnowledges = len(routes.UserKnowledgesPath)
 
 //KnowledgesHandler /knowledgesに対するハンドラ
-func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
-	session, _ := store.Get(r, "cookie-name")
+func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
 	header := newHeader(false)
-	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
+	if auth {
 		header.IsLogin = true
 	}
 	suffix := r.URL.Path[lenPathKnowledges:]
@@ -32,7 +28,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		if query["page"] != nil {
 			var err error
 			if pageNum, err = strconv.Atoi(query.Get("page")); err != nil {
-				StatusNotFoundHandler(w, r, env)
+				StatusNotFoundHandler(w, r, auth)
 				return
 			}
 		}
@@ -48,7 +44,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				indexPage.CurrentSort = "like"
 				break
 			default:
-				StatusNotFoundHandler(w, r, env)
+				StatusNotFoundHandler(w, r, auth)
 				break
 			}
 		} else {
@@ -57,7 +53,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		rows, err := db.Query("SELECT tags.id, tags.name, count(knowledges_tags.id) AS count FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id GROUP BY knowledges_tags.tag_id ORDER BY count DESC LIMIT 10;")
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 			return
 		}
 		defer rows.Close()
@@ -68,7 +64,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			if err != nil {
 				log.Print(err.Error())
 
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 				return
 			}
 			tags = append(tags, tag)
@@ -77,7 +73,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		db.QueryRow("SELECT count(id) FROM knowledges").Scan(&knowledgeNums)
 		pageNums := int(math.Ceil(knowledgeNums / 20))
 		if pageNums < pageNum {
-			StatusNotFoundHandler(w, r, env)
+			StatusNotFoundHandler(w, r, auth)
 			return
 		}
 		var pageNationElems = make([]Page, pageNums)
@@ -94,7 +90,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		rows, err = db.Query(qtext, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 			return
 		}
 		defer rows.Close()
@@ -102,14 +98,14 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 			var indexElem IndexElem
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.UpdatedAt, &indexElem.Likes, &indexElem.EyeCatchSrc)
 			if err != nil {
-				StatusNotFoundHandler(w, r, env)
+				StatusNotFoundHandler(w, r, auth)
 				return
 			}
 			var selectedTags []Tag
 			tagsRows, err := db.Query("SELECT tag_id FROM knowledges_tags WHERE knowledge_id = ?", indexElem.ID)
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 				return
 			}
 			defer tagsRows.Close()
@@ -118,7 +114,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				err := tagsRows.Scan(&selectedTag.ID)
 				if err != nil {
 					log.Print(err.Error())
-					StatusInternalServerError(w, r, env)
+					StatusInternalServerError(w, r, auth)
 					return
 				}
 				db.QueryRow("SELECT name FROM tags WHERE id = ?", selectedTag.ID).Scan(&selectedTag.Name)
@@ -146,24 +142,24 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 		var err error
 		if id, err = strconv.Atoi(suffix); err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 			return
 		}
 		err = db.QueryRow("SELECT id, title, content, updated_at, likes, eyecatch_src FROM knowledges WHERE id = ?", id).Scan(&detailPage.ID, &detailPage.Title, &detailPage.Content, &detailPage.UpdatedAt, &detailPage.Likes, &detailPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:
 			log.Println("レコードが存在しません")
-			StatusNotFoundHandler(w, r, env)
+			StatusNotFoundHandler(w, r, auth)
 		case err != nil:
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
+			StatusInternalServerError(w, r, auth)
 			return
 		default:
 			var selectedTags []Tag
 			tagsRows, err := db.Query("SELECT tags.id, tags.name FROM tags INNER JOIN knowledges_tags ON knowledges_tags.tag_id = tags.id WHERE knowledge_id = ?", detailPage.ID)
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 				return
 			}
 			defer tagsRows.Close()
@@ -172,7 +168,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				err := tagsRows.Scan(&selectedTag.ID, &selectedTag.Name)
 				if err != nil {
 					log.Print(err.Error())
-					StatusInternalServerError(w, r, env)
+					StatusInternalServerError(w, r, auth)
 					return
 				}
 				selectedTags = append(selectedTags, selectedTag)
@@ -187,7 +183,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]st
 				DetailPage: detailPage,
 			}); err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
+				StatusInternalServerError(w, r, auth)
 			}
 		}
 	}

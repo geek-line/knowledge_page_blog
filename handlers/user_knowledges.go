@@ -100,7 +100,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 			IndexPage: indexPage,
 		}); err != nil {
 			log.Print(err.Error())
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			StatusInternalServerError(w, r, auth)
 		}
 	} else {
 		var userDetailPage structs.UserDetailPage
@@ -108,7 +108,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 		var err error
 		if id, err = strconv.Atoi(suffix); err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, auth)
+			StatusNotFoundHandler(w, r, auth)
 			return
 		}
 		userDetailPage.Knowledge, err = models.GetKnowledge(id)

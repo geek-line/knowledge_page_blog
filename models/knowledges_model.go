@@ -121,7 +121,9 @@ func Get20SortedElemFilteredTagID(sortKey string, tagID int, startIndex int, len
 	db, err := sql.Open("mysql", config.SQLEnv)
 	defer db.Close()
 	var tagName string
-	err = db.QueryRow("SELECT name FROM tags WHERE id = ?", tagID).Scan(&tagName)
+	if err = db.QueryRow("SELECT name FROM tags WHERE id = ?", tagID).Scan(&tagName); err != nil {
+		return nil, "", err
+	}
 	qtext := fmt.Sprintf("SELECT knowledges.id, title, knowledges.updated_at, likes, eyecatch_src FROM knowledges INNER JOIN knowledges_tags ON knowledges_tags.knowledge_id = knowledges.id WHERE tag_id = ? ORDER BY %s DESC LIMIT ?, ?", sortKey)
 	rows, err := db.Query(qtext, tagID, startIndex, length)
 	defer rows.Close()

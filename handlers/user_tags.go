@@ -89,7 +89,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 		indexElems, filteredTag.Name, err = models.Get20SortedElemFilteredTagID(sortKey, filteredTag.ID, (pageNum-1)*20, 20)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, auth)
+			StatusNotFoundHandler(w, r, auth)
 			return
 		}
 		indexPage := structs.UserIndexPage{

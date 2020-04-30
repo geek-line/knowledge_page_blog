@@ -4,6 +4,7 @@ package routes
 const (
 	RootPath               = "/"
 	AdminLoginPath         = "/admin/login/"
+	AdminLogoutPath        = "/admin/logout/"
 	AdminKnowledgesPath    = "/admin/knowledges/"
 	AdminTagsPath          = "/admin/tags/"
 	AdminNewPath           = "/admin/new/"

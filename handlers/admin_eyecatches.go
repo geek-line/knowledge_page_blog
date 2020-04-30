@@ -6,36 +6,23 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
-	"../routes"
-
-	"github.com/gorilla/sessions"
 )
 
 //AdminEyeCatchesHandler /admin/eyecatchesに対するハンドラ
-func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
-	session, _ := store.Get(r, "cookie-name")
-	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
-		return
-	}
-	header := newHeader(false)
-	if auth, ok := session.Values["authenticated"].(bool); ok && auth {
-		header.IsLogin = true
-	}
+func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	header := newHeader(true)
 	switch {
 	case r.Method == "GET":
 		rows, err := db.Query("SELECT id, name, src FROM eyecatches")
 		if err != nil {
-			StatusNotFoundHandler(w, r, env)
+			log.Print(err.Error())
 		}
 		defer rows.Close()
 		var eyecatches []EyeCatch
 		for rows.Next() {
 			var eyecatch EyeCatch
 			if err := rows.Scan(&eyecatch.ID, &eyecatch.Name, &eyecatch.Src); err != nil {
-				StatusNotFoundHandler(w, r, env)
+				log.Print(err.Error())
 			}
 			eyecatches = append(eyecatches, eyecatch)
 		}
@@ -55,7 +42,6 @@ func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		rows, err := db.Query("INSERT INTO eyecatches(name, src) VALUES(?, ?)", name, src)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
 			return
 		}
 		defer rows.Close()
@@ -67,7 +53,6 @@ func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		rows, err := db.Query("UPDATE eyecatches SET name = ?, src = ? WHERE id = ?", name, src, id)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
 			return
 		}
 		defer rows.Close()
@@ -76,7 +61,6 @@ func AdminEyeCatchesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		rows, err := db.Query("DELETE FROM eyecatches WHERE id = ?", id)
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
 			return
 		}
 		defer rows.Close()

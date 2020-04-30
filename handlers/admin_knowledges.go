@@ -7,20 +7,19 @@ import (
 	"net/http"
 	"strconv"
 
+	"../config"
 	"../routes"
-
 	"github.com/gorilla/sessions"
 )
 
 const lenPathAdminKnowledges = len(routes.AdminKnowledgesPath)
 
 //AdminKnowledgesHandler admin/knowledgesに対するハンドラ
-func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
+func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	store := sessions.NewCookieStore([]byte(config.SessionKey))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
-
 		return
 	}
 	header := newHeader(true)
@@ -31,13 +30,11 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		err := db.QueryRow("SELECT id, title, content, eyecatch_src FROM knowledges WHERE id = ?", knowledgeID).Scan(&editPage.ID, &editPage.Title, &editPage.Content, &editPage.EyeCatchSrc)
 		switch {
 		case err == sql.ErrNoRows:
-			log.Println("レコードが存在しません")
-			StatusNotFoundHandler(w, r, env)
+			log.Print(err.Error())
 		default:
 			rows, err := db.Query("SELECT id, name FROM tags")
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
 				return
 			}
 			defer rows.Close()
@@ -48,7 +45,6 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 				err := rows.Scan(&tag.ID, &tag.Name)
 				if err != nil {
 					log.Print(err.Error())
-					StatusInternalServerError(w, r, env)
 					return
 				}
 				tags = append(tags, tag)
@@ -56,7 +52,6 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 			rows, err = db.Query("SELECT name, src FROM eyecatches")
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
 				return
 			}
 			defer rows.Close()
@@ -67,7 +62,6 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 				err := rows.Scan(&eyecatch.Name, &eyecatch.Src)
 				if err != nil {
 					log.Print(err.Error())
-					StatusInternalServerError(w, r, env)
 					return
 				}
 				eyecatches = append(eyecatches, eyecatch)
@@ -80,7 +74,6 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 				err := rows.Scan(&selectedTagID)
 				if err != nil {
 					log.Print(err.Error())
-					StatusInternalServerError(w, r, env)
 					return
 				}
 				selectedTagsID = append(selectedTagsID, selectedTagID)
@@ -107,8 +100,6 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 		rows, err := db.Query("SELECT id, title, created_at, updated_at FROM knowledges")
 		if err != nil {
 			log.Print(err.Error())
-			StatusInternalServerError(w, r, env)
-
 			return
 		}
 		defer rows.Close()
@@ -119,8 +110,6 @@ func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[stri
 			err := rows.Scan(&indexElem.ID, &indexElem.Title, &indexElem.CreatedAt, &indexElem.UpdatedAt)
 			if err != nil {
 				log.Print(err.Error())
-				StatusInternalServerError(w, r, env)
-
 				return
 			}
 			indexPage = append(indexPage, indexElem)

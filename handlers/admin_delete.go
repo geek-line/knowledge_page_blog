@@ -7,28 +7,13 @@ import (
 	"strconv"
 
 	"../routes"
-
-	"github.com/gorilla/sessions"
-	"github.com/joho/godotenv"
 )
 
 const lenPathDelete = len(routes.AdminDeletePath)
 
-func envLoad() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
-
 //AdminDeleteHandler admin/deleteに対するハンドラ
-func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
-	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
-	session, _ := store.Get(r, "cookie-name")
-	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
-		return
-	}
+func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
 	suffix := r.URL.Path[lenPathDelete:]
 	defer db.Close()
 	var id int
@@ -36,14 +21,12 @@ func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, env map[string]s
 	rows, err := db.Query("DELETE FROM knowledges WHERE id = ?", id)
 	if err != nil {
 		log.Print(err.Error())
-		StatusInternalServerError(w, r, env)
 		return
 	}
 	defer rows.Close()
 	rows, err = db.Query("DELETE FROM knowledges_tags WHERE knowledge_id = ?", id)
 	if err != nil {
 		log.Print(err.Error())
-		StatusInternalServerError(w, r, env)
 		return
 	}
 	defer rows.Close()

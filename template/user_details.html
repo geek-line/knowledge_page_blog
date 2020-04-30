@@ -3,15 +3,15 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <meta name="description" content="{{ .DetailPage.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！">
+    <meta name="description" content="{{ .DetailPage.Knowledge.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！">
     <meta property="og:site_name" content="Code Database" />
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://code-database.com/knowledges/{{.DetailPage.ID}}" />
+    <meta property="og:url" content="https://code-database.com/knowledges/{{.DetailPage.Knowledge.ID}}" />
     <meta property="og:title" content="Code Database" />
     <meta property="og:description"
-        content="{{ .DetailPage.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
+        content="{{ .DetailPage.Knowledge.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
     <meta property="og:image"
-        content="{{ .DetailPage.EyeCatchSrc }}" />
+        content="{{ .DetailPage.Knowledge.EyecatchSrc }}" />
     <meta name="robots" content="index, follow">
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
@@ -43,12 +43,12 @@
     <div class="p_items_wrapper row">
         <div class= "p_action_item col s0 m0 l1 hide-on-med-and-down">
             <div class='display_like'>
-                <div class='balloon'><span id='likes_baloon' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                <div class='balloon'><span id='likes_baloon' class='like_number'>{{ .DetailPage.Knowledge.Likes }}</span></div>
                 <form id="like_form_baloon" class="like">
-                    <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                    <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.Knowledge.ID }}">
                     <button class="like-button" id ="like_button_baloon" type='button' value="like" onclick="sendLikeFromBaloon()">LIKE</button>
                 </form>
-                <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+                <input id="input" type='hidden' value="{{ .DetailPage.Knowledge.Content }}">
             </div>
         </div>
         <div class= "p_main_item col s12 m12 l8">
@@ -57,16 +57,16 @@
                 <li><a href='/tags/{{.ID}}'>{{ .Name }}</a></li>
                 {{ end }}
             </ul>
-            <div class= "title">{{ .DetailPage.Title }}</div>
+            <div class= "title">{{ .DetailPage.Knowledge.Title }}</div>
             <div class='like-date-wrapper'>
-                <div class="update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
+                <div class="update_time">最終更新日時:{{ .DetailPage.Knowledge.UpdatedAt }}</div>
                 <div class='display_like hide-on-large-only'>
-                    <div class='balloon'><span id='likes_inline' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                    <div class='balloon'><span id='likes_inline' class='like_number'>{{ .DetailPage.Knowledge.Likes }}</span></div>
                     <form id="like_form_inline" class="like">
-                        <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                        <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.Knowledge.ID }}">
                         <button class="like-button" id="like_button_inline" type='button' value="like" onclick="sendLikeFromInline()">LIKE</button>
                     </form>
-                    <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+                    <input id="input" type='hidden' value="{{ .DetailPage.Knowledge.Content }}">
                 </div>
             </div>
             <br>

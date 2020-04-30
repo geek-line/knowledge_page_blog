@@ -33,10 +33,10 @@
                     </div>
                     <div class='col m6'>
                         <h5>アイキャッチの編集</h5>
-                        <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyeCatchSrc }}" width="100px">
+                        <img id="file_preview" class="responsive-img" src="{{ .EditPage.EyecatchSrc }}" width="100px">
                         <select id="select_eyecatch" name='eyecatch_src'>
-                            {{ $src := .EditPage.EyeCatchSrc }}
-                            {{ range .EyeCatches }}
+                            {{ $src := .EditPage.EyecatchSrc }}
+                            {{ range .Eyecatches }}
                             {{ if eq $src .Src }}
                             <option selected value='{{ .Src }}'>{{ .Name }}</option>
                             {{ else }}

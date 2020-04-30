@@ -45,15 +45,3 @@ func UserAuth(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB, auth b
 		fn(w, r, db, auth)
 	}
 }
-
-// func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB)) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		db, err := sql.Open("mysql", config.SQLEnv)
-// 		if err != nil {
-// 			panic(err.Error())
-// 		}
-// 		defer db.Close()
-// 		middleware.AdminAuth(w, r)
-// 		fn(w, r, db)
-// 	}
-// }

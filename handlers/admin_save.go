@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"../routes"
+
 	"github.com/gorilla/sessions"
 )
 
@@ -16,7 +18,7 @@ func AdminSaveHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
 		return
 	}
 	title := r.FormValue("title")
@@ -93,5 +95,5 @@ func AdminSaveHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 	default:
 		break
 	}
-	http.Redirect(w, r, "/admin/knowledges/", http.StatusFound)
+	http.Redirect(w, r, routes.AdminKnowledgesPath, http.StatusFound)
 }

@@ -8,6 +8,8 @@ import (
 	"text/template"
 	"time"
 
+	"../routes"
+
 	"github.com/gorilla/sessions"
 )
 
@@ -16,7 +18,7 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
 		return
 	}
 	header := newHeader(false)
@@ -65,7 +67,7 @@ func AdminTagsHandler(w http.ResponseWriter, r *http.Request, env map[string]str
 			return
 		}
 		defer rows.Close()
-		http.Redirect(w, r, "/admin/tags/", http.StatusFound)
+		http.Redirect(w, r, routes.AdminTagsPath, http.StatusFound)
 	case r.Method == "PUT":
 		id, _ := strconv.Atoi(r.FormValue("id"))
 		name := r.FormValue("name")

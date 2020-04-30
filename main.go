@@ -33,7 +33,7 @@ func makeHandlerUsingEnv(fn func(w http.ResponseWriter, r *http.Request, env map
 }
 
 func redirectHandler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/knowledges/", http.StatusFound)
+	http.Redirect(w, r, userKnowledgesPath, http.StatusFound)
 }
 
 func init() {
@@ -44,20 +44,20 @@ func init() {
 
 func main() {
 	dir, _ := os.Getwd()
-	http.HandleFunc("/", redirectHandler)
-	http.HandleFunc("/admin/login/", makeHandlerUsingEnv(handlers.AdminLoginHandler))
-	http.HandleFunc("/admin/logout/", makeHandlerUsingEnv(handlers.AdminLogoutHandler))
-	http.HandleFunc("/admin/knowledges/", makeHandlerUsingEnv(handlers.AdminKnowledgesHandler))
-	http.HandleFunc("/admin/tags/", makeHandlerUsingEnv(handlers.AdminTagsHandler))
-	http.HandleFunc("/admin/new/", makeHandlerUsingEnv(handlers.AdminNewHandler))
-	http.HandleFunc("/admin/save/", makeHandlerUsingEnv(handlers.AdminSaveHandler))
-	http.HandleFunc("/admin/delete/", makeHandlerUsingEnv(handlers.AdminDeleteHandler))
-	http.HandleFunc("/admin/eyecatches/", makeHandlerUsingEnv(handlers.AdminEyeCatchesHandler))
-	http.HandleFunc("/knowledges/", makeHandlerUsingEnv(handlers.KnowledgesHandler))
-	http.HandleFunc("/knowledges/like", makeHandlerUsingEnv(handlers.KnowledgeLikeHandler))
-	http.HandleFunc("/tags/", makeHandlerUsingEnv(handlers.TagsHandler))
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(dir+"/static/"))))
-	http.Handle("/node_modules/", http.StripPrefix("/node_modules/", http.FileServer(http.Dir(dir+"/node_modules/"))))
-	http.Handle("/google_sitemap/", http.StripPrefix("/google_sitemap/", http.FileServer(http.Dir(dir+"/google_sitemap/"))))
+	http.HandleFunc(rootPath, redirectHandler)
+	http.HandleFunc(adminLoginPath, makeHandlerUsingEnv(handlers.AdminLoginHandler))
+	http.HandleFunc(amdinLogoutPath, makeHandlerUsingEnv(handlers.AdminLogoutHandler))
+	http.HandleFunc(adminKnowledgesPath, makeHandlerUsingEnv(handlers.AdminKnowledgesHandler))
+	http.HandleFunc(adminTagsPath, makeHandlerUsingEnv(handlers.AdminTagsHandler))
+	http.HandleFunc(adminNewPath, makeHandlerUsingEnv(handlers.AdminNewHandler))
+	http.HandleFunc(adminSavePath, makeHandlerUsingEnv(handlers.AdminSaveHandler))
+	http.HandleFunc(adminDeletePath, makeHandlerUsingEnv(handlers.AdminDeleteHandler))
+	http.HandleFunc(adminEyecatchesPath, makeHandlerUsingEnv(handlers.AdminEyeCatchesHandler))
+	http.HandleFunc(userKnowledgesPath, makeHandlerUsingEnv(handlers.KnowledgesHandler))
+	http.HandleFunc(userKnowledgesLikePath, makeHandlerUsingEnv(handlers.KnowledgeLikeHandler))
+	http.HandleFunc(userTagsPath, makeHandlerUsingEnv(handlers.TagsHandler))
+	http.Handle(staticPath, http.StripPrefix(staticPath, http.FileServer(http.Dir(dir+staticPath))))
+	http.Handle(nodeModulesPath, http.StripPrefix(nodeModulesPath, http.FileServer(http.Dir(dir+nodeModulesPath))))
+	http.Handle(googleSitemapPath, http.StripPrefix(googleSitemapPath, http.FileServer(http.Dir(dir+googleSitemapPath))))
 	http.ListenAndServe(":3000", nil)
 }

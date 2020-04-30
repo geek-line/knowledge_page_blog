@@ -7,17 +7,19 @@ import (
 	"net/http"
 	"strconv"
 
+	"../routes"
+
 	"github.com/gorilla/sessions"
 )
 
-const lenPathAdminKnowledges = len("/admin/knowledges/")
+const lenPathAdminKnowledges = len(routes.AdminKnowledgesPath)
 
 //AdminKnowledgesHandler admin/knowledgesに対するハンドラ
 func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, env map[string]string, db *sql.DB) {
 	store := sessions.NewCookieStore([]byte(env["SESSION_KEY"]))
 	session, _ := store.Get(r, "cookie-name")
 	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		http.Redirect(w, r, "/admin/login/", http.StatusFound)
+		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
 
 		return
 	}

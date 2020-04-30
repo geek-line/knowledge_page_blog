@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"net/http/fcgi"
 	"os"
 
 	"./handlers"
@@ -32,4 +33,9 @@ func main() {
 	http.Handle(routes.NodeModulesPath, http.StripPrefix(routes.NodeModulesPath, http.FileServer(http.Dir(dir+routes.NodeModulesPath))))
 	http.Handle(routes.GoogleSitemapPath, http.StripPrefix(routes.GoogleSitemapPath, http.FileServer(http.Dir(dir+routes.GoogleSitemapPath))))
 	http.ListenAndServe(":3000", nil)
+	l, err := net.Listen("tcp", "127.0.0.1:9000")
+	if err != nil {
+		return
+	}
+	fcgi.Serve(l, nil)
 }

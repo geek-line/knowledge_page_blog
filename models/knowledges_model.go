@@ -43,21 +43,21 @@ func GetAllKnowledges() ([]structs.Knowledge, error) {
 }
 
 //PostKnowledge knowledgeを新規作成して作成したknowledgeのIDを取得する
-func PostKnowledge(title string, content string, createdAt time.Time, updatedAt time.Time, eyecatchSrc string) (int64, error) {
+func PostKnowledge(title string, content string, rowContent string, createdAt time.Time, updatedAt time.Time, eyecatchSrc string) (int64, error) {
 	db, err := sql.Open("mysql", config.SQLEnv)
 	defer db.Close()
-	stmtInsert, err := db.Prepare("INSERT INTO knowledges(title, content, created_at, updated_at, eyecatch_src) VALUES(?, ?, ?, ?, ?)")
+	stmtInsert, err := db.Prepare("INSERT INTO knowledges(title, content, row_content, created_at, updated_at, eyecatch_src) VALUES(?, ?, ?, ?, ?, ?)")
 	defer stmtInsert.Close()
-	result, err := stmtInsert.Exec(title, content, createdAt, updatedAt, eyecatchSrc)
+	result, err := stmtInsert.Exec(title, content, rowContent, createdAt, updatedAt, eyecatchSrc)
 	knowledgeID, err := result.LastInsertId()
 	return knowledgeID, err
 }
 
 //UpdateKnowledge 指定したidのknowledgeを更新する
-func UpdateKnowledge(knowledgeID int, title string, content string, updatedAt time.Time, eyecatchSrc string) error {
+func UpdateKnowledge(knowledgeID int, title string, content string, rowContent string, updatedAt time.Time, eyecatchSrc string) error {
 	db, err := sql.Open("mysql", config.SQLEnv)
 	defer db.Close()
-	rows, err := db.Query("UPDATE knowledges SET title = ?, content = ?, updated_at = ?, eyecatch_src = ? WHERE id = ?", title, content, updatedAt, eyecatchSrc, knowledgeID)
+	rows, err := db.Query("UPDATE knowledges SET title = ?, content = ?, row_content = ?, updated_at = ?, eyecatch_src = ? WHERE id = ?", title, content, rowContent, updatedAt, eyecatchSrc, knowledgeID)
 	defer rows.Close()
 	return err
 }

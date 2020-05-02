@@ -22,6 +22,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 		header.IsLogin = true
 	}
 	suffix := r.URL.Path[lenPathKnowledges:]
+	log.Print(suffix)
 	if suffix == "" || suffix == "search" {
 		pageNum := 1
 		query := r.URL.Query()
@@ -32,7 +33,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 				return
 			}
 		}
-		sortKey := "updated_at"
+		sortKey := "created_at"
 		var currentSort string
 		if query["sort"] != nil {
 			switch {

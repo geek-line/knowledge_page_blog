@@ -14,6 +14,7 @@ const (
 	UserKnowledgesPath     = "/knowledges/"
 	UserKnowledgesLikePath = "/knowledges/like"
 	UserTagsPath           = "/tags/"
+	UserSearchPath         = "/search/"
 	StaticPath             = "/static/"
 	NodeModulesPath        = "/node_modules/"
 	GoogleSitemapPath      = "/google_sitemap/"

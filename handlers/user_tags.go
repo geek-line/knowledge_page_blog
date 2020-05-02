@@ -35,7 +35,6 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 		sortKey := "created_at"
 		var currentSort string
 		if query["sort"] != nil {
-			log.Print("hi")
 			switch {
 			case query.Get("sort") == "create":
 				sortKey = "created_at"

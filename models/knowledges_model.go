@@ -89,6 +89,15 @@ func GetNumOfKnowledges() (float64, error) {
 	return numOfKnowledges, err
 }
 
+//GetNumOfKnowledgesFilteredTagID 指定されたtag_idに該当するknowledgeの数を取得する
+func GetNumOfKnowledgesFilteredTagID(id int) (float64, error) {
+	db, err := sql.Open("mysql", config.SQLEnv)
+	defer db.Close()
+	var numOfKnowledges float64
+	db.QueryRow("SELECT count(knowledge_id) FROM knowledges_tags WHERE tag_id = ?", id).Scan(&numOfKnowledges)
+	return numOfKnowledges, err
+}
+
 //Get20SortedElems 指定のsortKeyでソートされた20のknowledgeの要素を取得する
 func Get20SortedElems(sortKey string, startIndex int, length int) ([]structs.IndexElem, error) {
 	db, err := sql.Open("mysql", config.SQLEnv)

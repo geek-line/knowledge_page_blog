@@ -48,7 +48,12 @@
                     <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.Knowledge.ID }}">
                     <button class="like-button" id ="like_button_baloon" type='button' value="like" onclick="sendLikeFromBaloon()">LIKE</button>
                 </form>
+
+                
+               <div id='sns-area'></div>
+
                 <input id="input" type='hidden' value="{{ .DetailPage.Knowledge.Content }}">
+
             </div>
         </div>
         <div class= "p_main_item col s12 m12 l8">
@@ -57,7 +62,10 @@
                 <li><a href='/tags/{{.ID}}'>{{ .Name }}</a></li>
                 {{ end }}
             </ul>
+
+           
             <div class= "title">{{ .DetailPage.Knowledge.Title }}</div>
+
             <div class='like-date-wrapper'>
                 <div class="update_time">最終更新日時:{{ .DetailPage.Knowledge.UpdatedAt }}</div>
                 <div class='display_like hide-on-large-only'>

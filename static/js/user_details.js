@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
     smoothScroll();
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c0c31b3dc903e9142c7f04a226707bd550947a6
 // SNSボタンを追加するエリア
 var snsArea = document.getElementById('sns-area');
 var title = document.getElementById('title').innerHTML;

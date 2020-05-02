@@ -160,8 +160,8 @@ h3 {
 }
 
 .twitter img{
-    width:65px;
-    margin:1vh;
+    width:40px;
+    margin-top:5vh;
 }
 .twitter img:hover{
     opacity: 0.5;
@@ -178,7 +178,7 @@ h3 {
 
 .line img{
     width:60px;
-    margin:1vh;
+    margin-top:5vh;
 }
 .line img:hover{
     opacity: 0.5;

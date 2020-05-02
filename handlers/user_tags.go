@@ -53,7 +53,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 				break
 			}
 		} else {
-			currentSort = "update"
+			currentSort = "create"
 		}
 		var filteredTag structs.Tag
 		filteredTag.ID, err = strconv.Atoi(suffix)

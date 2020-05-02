@@ -53,7 +53,7 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 				break
 			}
 		} else {
-			currentSort = "update"
+			currentSort = "create"
 		}
 		tagRankingElem, err := models.GetTop10ReferencedTags()
 		if err != nil {

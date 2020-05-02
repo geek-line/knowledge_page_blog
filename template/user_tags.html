@@ -62,11 +62,17 @@
                 {{ $currentSort := .IndexPage.CurrentSort }}
                 <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
-                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
                     <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
-                    {{ else }}
-                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    {{ else if eq $currentSort "like" }}
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
                     <option selected value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    {{ else }}
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
                     {{ end }}
                 </select>
             </div>

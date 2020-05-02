@@ -94,6 +94,11 @@ h3 {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
+
+.display_like .like .like-button:hover {
+    opacity: 0.5;
+}
+
 @media screen and (max-width: 1000px) and (min-width: 426px) {
     .display_like .like .like-button {
         width: 10rem;
@@ -154,6 +159,30 @@ h3 {
     margin-left: -5px;
 }
 
+.twitter img{
+    width:65px;
+    margin:1vh;
+}
+.twitter img:hover{
+    opacity: 0.5;
+}
+
+
+.facebook img{
+    width:55px;
+    margin:1vh;
+}
+.facebook img:hover{
+    opacity: 0.5;
+}
+
+.line img{
+    width:60px;
+    margin:1vh;
+}
+.line img:hover{
+    opacity: 0.5;
+}
 .p_items_wrapper .p_main_item {
     padding: 1rem 1rem 1rem 1rem;
     position: relative;

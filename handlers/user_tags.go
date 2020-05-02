@@ -67,7 +67,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 			StatusInternalServerError(w, r, auth)
 			return
 		}
-		NumOfKnowledges, err := models.GetNumOfKnowledges()
+		NumOfKnowledges, err := models.GetNumOfKnowledgesFilteredTagID(filteredTag.ID)
 		if err != nil {
 			log.Print(err.Error())
 			StatusNotFoundHandler(w, r, auth)

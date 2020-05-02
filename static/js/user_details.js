@@ -5,6 +5,13 @@ const like_button_baloon = document.getElementById('like_button_baloon')
 const likes_inline = document.getElementById('likes_inline')
 const likes_baloon = document.getElementById('likes_baloon')
 const knowledge_id = document.getElementById('knowledge_id').value
+// SNSボタンを追加するエリア
+var snsArea = document.getElementById('sns-area');
+var title = document.getElementById('title').innerHTML;
+
+// シェア時に使用する値
+var shareUrl = location.href; // 現在のページURLを使用する場合 location.href;
+var shareText = title+'\n#駆け出しエンジニアと繋がりたい\n#プログラミング初心者'; // 現在のページタイトルを使用する場合 document.title;
 
 document.addEventListener('DOMContentLoaded', function () {
    
@@ -75,17 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
     smoothScroll();
 });
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 2c0c31b3dc903e9142c7f04a226707bd550947a6
-// SNSボタンを追加するエリア
-var snsArea = document.getElementById('sns-area');
-var title = document.getElementById('title').innerHTML;
 
-// シェア時に使用する値
-var shareUrl = location.href; // 現在のページURLを使用する場合 location.href;
-var shareText = title+'\n#駆け出しエンジニアと繋がりたい\n#プログラミング初心者'; // 現在のページタイトルを使用する場合 document.title;
  
 generate_share_button(snsArea, shareUrl, shareText,title);
  
@@ -118,10 +116,7 @@ function generate_share_button(area, url, text,title) {
     area.appendChild(fbBtn);
     area.appendChild(liBtn);
 }
- 
-// クリック時にポップアップで表示させる関数
-function popupWindow(url) {
-    window.open(url, '', 'width=580,height=400,menubar=no,toolbar=no,scrollbars=yes');
+
 const smoothScroll = () =>{
     let links = document.querySelectorAll('.item_devise a[href^="#"]');
     const speed = 3000;          // スクロールスピード   

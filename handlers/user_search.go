@@ -8,10 +8,14 @@ import (
 	"strconv"
 
 	"../models"
+	"../routes"
 	"../structs"
 )
 
-//SearchHandler /search/に対するハンドラ
+// const lenPathUserSearch = len(routes.UserSearchPath)
+const lenPathUserSearch = len(routes.UserSearchPath)
+
+//SearchHandler /searchに対するハンドラ
 func SearchHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	header := newHeader(false)
 	if auth {
@@ -31,6 +35,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 		queryKeys = query["q"]
 	} else {
 		StatusNotFoundHandler(w, r, auth)
+		return
 	}
 	sortKey := "created_at"
 	var currentSort string

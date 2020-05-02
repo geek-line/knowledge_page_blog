@@ -52,7 +52,9 @@
                         </tr>
                         {{ end }}
                     </tbody>
-                  </table>
+                </table>
+                <h6>検索</h6>
+                <input id="search_input" type='text'><input id="search_submit" type='button' value="検索">
             </div>
            
         </div>
@@ -77,7 +79,7 @@
                 </select>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.Knowledge.ID |html|}}');">
+            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledge/{{.Knowledge.ID |html|}}');">
                 <div class="cp_card02">
                    
                     <div class ="photo">
@@ -142,6 +144,6 @@
         </div>
     </div>
     {{ template "footer" }}
+    <script src='/static/js/user_knowledges.js'></script>
 </body>
-
 </html>

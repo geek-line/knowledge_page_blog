@@ -48,7 +48,9 @@
                         </tr>
                         {{ end }}
                     </tbody>
-                  </table>
+                </table>
+                <h6>検索</h6>
+                <input id="search_input" type='text'><input id="search_submit" type='button' value="検索">
             </div>
            
         </div>
@@ -58,22 +60,22 @@
                 {{ $currentSort := .IndexPage.CurrentSort }}
                 <select class="select-sort" onchange="location=this.value">       
                     {{ if eq $currentSort "update" }}
-                    <option value="/knowledges/search?sort=create">作成日順</option>
-                    <option value="/knowledges/search?sort=like">いいね数順</option>
-                    <option selected value="/knowledges/search?sort=update">更新日順</option>
+                    <option value="/knowledges?sort=create">作成日順</option>
+                    <option value="/knowledges?sort=like">いいね数順</option>
+                    <option selected value="/knowledges?sort=update">更新日順</option>
                     {{ else if eq $currentSort "like" }}
-                    <option value="/knowledges/search?sort=create">作成日順</option>
-                    <option selected value="/knowledges/search?sort=like">いいね数順</option>
-                    <option value="/knowledges/search?sort=update">更新日順</option>
+                    <option value="/knowledges?sort=create">作成日順</option>
+                    <option selected value="/knowledges?sort=like">いいね数順</option>
+                    <option value="/knowledges?sort=update">更新日順</option>
                     {{ else }}
-                    <option selected value="/knowledges/search?sort=create">作成日順</option>
-                    <option value="/knowledges/search?sort=like">いいね数順</option>
-                    <option value="/knowledges/search?sort=update">更新日順</option>
+                    <option selected value="/knowledges?sort=create">作成日順</option>
+                    <option value="/knowledges?sort=like">いいね数順</option>
+                    <option value="/knowledges?sort=update">更新日順</option>
                     {{ end }}
                 </select>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledges/{{.Knowledge.ID |html|}}');">
+            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledge/{{.Knowledge.ID |html|}}');">
                 <div  class="cp_card02">
                     <div class ="photo">
                         <img class="photo1 responsive-img" src="{{ .Knowledge.EyecatchSrc }}">
@@ -98,20 +100,20 @@
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect">
-                    <a href="/knowledges/search?page={{.IndexPage.PageNation.PrevPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_left</i></a>
+                    <a href="/knowledges?page={{.IndexPage.PageNation.PrevPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_left</i></a>
                 </li>
                 {{ end }}
                 {{ range .IndexPage.PageNation.PageElems }}
                 {{ if .IsSelect }}
                 <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
                 {{ else }}
-                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges/search?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
+                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
                 {{ end }}
                 {{ end }}
                 {{ $length := len .IndexPage.PageNation.PageElems }}
                 {{ if ne .IndexPage.PageNation.PageNum $length  }}
                 <li class="waves-effect">
-                    <a href="/knowledges/search?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_right</i></a>
+                    <a href="/knowledges?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_right</i></a>
                 </li>
                 {{ end }}
             </ul>
@@ -137,5 +139,6 @@
         </div>
     </div>
     {{ template "footer" }}
+    <script src='/static/js/user_knowledges.js'></script>
 </body>
 </html>

@@ -36,6 +36,10 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 		var currentSort string
 		if query["sort"] != nil {
 			switch {
+			case query.Get("sort") == "create":
+				sortKey = "created_at"
+				currentSort = "create"
+				break
 			case query.Get("sort") == "update":
 				sortKey = "updated_at"
 				currentSort = "update"
@@ -49,7 +53,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 				break
 			}
 		} else {
-			currentSort = "update"
+			currentSort = "create"
 		}
 		var filteredTag structs.Tag
 		filteredTag.ID, err = strconv.Atoi(suffix)

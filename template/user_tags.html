@@ -62,11 +62,17 @@
                 {{ $currentSort := .IndexPage.CurrentSort }}
                 <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
-                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
                     <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
-                    {{ else }}
-                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    {{ else if eq $currentSort "like" }}
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
                     <option selected value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    {{ else }}
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
                     {{ end }}
                 </select>
             </div>
@@ -86,7 +92,7 @@
                         </div>
                         <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
-                            <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
+                            <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                         <div class="like">いいね:{{ .Knowledge.Likes }}</div>
@@ -103,7 +109,7 @@
                 {{ $filteredTagID := .FilteredTag.ID }}
                 {{ range .IndexPage.PageNation.PageElems }}
                 {{ if .IsSelect }}
-                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
+                <li class="active cyan darken-1"><a>{{ .PageNum }}</a></li>
                 {{ else }}
                 <li class="waves-effect grey lighten-1"><a class="white-text" href="/tags/{{$filteredTagID}}?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
                 {{ end }}

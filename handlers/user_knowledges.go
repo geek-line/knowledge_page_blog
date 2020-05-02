@@ -36,6 +36,10 @@ func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth 
 		var currentSort string
 		if query["sort"] != nil {
 			switch {
+			case query.Get("sort") == "create":
+				sortKey = "created_at"
+				currentSort = "create"
+				break
 			case query.Get("sort") == "update":
 				sortKey = "updated_at"
 				currentSort = "update"

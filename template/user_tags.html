@@ -86,7 +86,7 @@
                         </div>
                         <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
-                            <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
+                            <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
                         <div class="like">いいね:{{ .Knowledge.Likes }}</div>
@@ -103,7 +103,7 @@
                 {{ $filteredTagID := .FilteredTag.ID }}
                 {{ range .IndexPage.PageNation.PageElems }}
                 {{ if .IsSelect }}
-                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
+                <li class="active cyan darken-1"><a>{{ .PageNum }}</a></li>
                 {{ else }}
                 <li class="waves-effect grey lighten-1"><a class="white-text" href="/tags/{{$filteredTagID}}?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
                 {{ end }}

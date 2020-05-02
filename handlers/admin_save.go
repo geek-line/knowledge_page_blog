@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 )
 
 //AdminSaveHandler /admin/saveに対するハンドラ
-func AdminSaveHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func AdminSaveHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 	rowContent := r.FormValue("row_content")

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
@@ -15,7 +14,7 @@ func newHeader(isLogin bool) structs.Header {
 }
 
 //AdminNewHandler /admin/newに対するハンドラ
-func AdminNewHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func AdminNewHandler(w http.ResponseWriter, r *http.Request) {
 	tags, err := models.GetAllTags()
 	if err != nil {
 		log.Print(err.Error())

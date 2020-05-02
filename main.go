@@ -27,7 +27,7 @@ func main() {
 	http.HandleFunc(routes.UserKnowledgesPath, middleware.UserAuth(handlers.KnowledgesHandler))
 	http.HandleFunc(routes.UserKnowledgesLikePath, middleware.UserAuth(handlers.KnowledgeLikeHandler))
 	http.HandleFunc(routes.UserTagsPath, middleware.UserAuth(handlers.TagsHandler))
-	http.HandleFunc(routes.UserSearchPath, middleware.UserAuth(handler.SearchHandler))
+	http.HandleFunc(routes.UserSearchPath, middleware.UserAuth(handlers.SearchHandler))
 	http.Handle(routes.StaticPath, http.StripPrefix(routes.StaticPath, http.FileServer(http.Dir(dir+routes.StaticPath))))
 	http.Handle(routes.NodeModulesPath, http.StripPrefix(routes.NodeModulesPath, http.FileServer(http.Dir(dir+routes.NodeModulesPath))))
 	http.Handle(routes.GoogleSitemapPath, http.StripPrefix(routes.GoogleSitemapPath, http.FileServer(http.Dir(dir+routes.GoogleSitemapPath))))

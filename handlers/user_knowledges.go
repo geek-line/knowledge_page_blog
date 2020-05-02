@@ -16,13 +16,12 @@ import (
 const lenPathKnowledges = len(routes.UserKnowledgesPath)
 
 //KnowledgesHandler /knowledgesに対するハンドラ
-func KnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
+func KnowledgesHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	header := newHeader(false)
 	if auth {
 		header.IsLogin = true
 	}
 	suffix := r.URL.Path[lenPathKnowledges:]
-	log.Print(suffix)
 	if suffix == "" || suffix == "search" {
 		pageNum := 1
 		query := r.URL.Query()

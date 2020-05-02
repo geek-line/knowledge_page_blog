@@ -15,7 +15,7 @@ import (
 const lenPathAdminKnowledges = len(routes.AdminKnowledgesPath)
 
 //AdminKnowledgesHandler admin/knowledgesに対するハンドラ
-func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func AdminKnowledgesHandler(w http.ResponseWriter, r *http.Request) {
 	header := newHeader(true)
 	suffix := r.URL.Path[lenPathAdminKnowledges:]
 	if suffix != "" {

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
 	"log"
 	"math"
@@ -16,7 +15,7 @@ import (
 const lenPathTags = len(routes.UserTagsPath)
 
 //TagsHandler /tags/に対するハンドラ
-func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
+func TagsHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	header := newHeader(false)
 	if auth {
 		header.IsLogin = true

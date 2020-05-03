@@ -55,10 +55,20 @@
                 </table>
                 <div class="search_container">
                     <h6>検索</h6>
-                        <input id="search_input" placeholder="キーワードを入力" onkeydown="go();" type='text'><input id="search_submit" type='button' value="検索">
+                        <input 
+                          id="search_input" 
+                          placeholder="キーワードを入力" 
+                          onkeydown="go();" 
+                          type='text' 
+                          value="{{.QueryKeys}}"
+                        >
+                        <input 
+                          id="search_submit" 
+                          type='button' 
+                          value="検索"
+                        >
                 </div>
             </div>
-
         </div>
         <div class="col s12 m12 l9">
             <div class='content_header'>

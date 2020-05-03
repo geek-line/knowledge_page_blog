@@ -162,8 +162,7 @@ select.select-sort {
 .search_container {
     position: relative;
     background-color: white;
-    margin-top: 1rem;
-    padding: 1rem 1rem;
+    margin-top: 2rem;
 }
 
 #search_input {
@@ -182,11 +181,11 @@ select.select-sort {
     width: 20%;
     outline: 0;
     border-radius: 2px;
-    background: #7fbfff;
+    background: #00acc1;
     color: #fff;
     text-align: center;
     border: none;
-    line-height: 3rem;
+    line-height: 2.5rem;
 }
 
 #search_submit:hover {

@@ -111,7 +111,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 			IndexPage:   indexPage,
 			FilteredTag: filteredTag,
 		}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			StatusInternalServerError(w, r, auth)
 		}
 	} else {
 		StatusNotFoundHandler(w, r, auth)

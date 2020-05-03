@@ -7,11 +7,17 @@ search_submit.addEventListener('click', function (e) {
         return
     }
     const XHR = new XMLHttpRequest()
-    XHR.open('GET', '/search?q=' + search_input.value.replace(/\s+/g, '&'))
+    let queries = search_input.value.split(/\s+/g)
+    for (let i = 0; i < queries.length; i++){
+        queries[i] = encodeURIComponent(queries[i])
+    }
+    const qvalue = queries.join('+')
+    console.log(qvalue)
+    XHR.open('GET', '/search?q=' + qvalue)
     XHR.onreadystatechange = function () {
         if (XHR.readyState === 4) {
             if (XHR.status === 200) {
-                location.href = '/search?q=' + search_input.value.replace(/\s+/g, '&')
+                location.href = '/search?q=' + qvalue
             } else {
                 alert('キーワードを正常に送信できませんでした。')
             }

@@ -1,6 +1,12 @@
 const search_input = document.getElementById('search_input')
 const search_submit = document.getElementById('search_submit')
 
+
+function go(){
+    //EnterキーならSubmit
+    if(window.event.keyCode==13)document.getElementById("search_submit").click();
+}
+
 search_submit.addEventListener('click', function (e) {
     if (!search_input.value) {
         e.preventDefault()

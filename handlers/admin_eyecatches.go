@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,7 +12,7 @@ import (
 )
 
 //AdminEyecatchesHandler /admin/eyecatchesに対するハンドラ
-func AdminEyecatchesHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func AdminEyecatchesHandler(w http.ResponseWriter, r *http.Request) {
 	header := newHeader(true)
 	switch {
 	case r.Method == "GET":

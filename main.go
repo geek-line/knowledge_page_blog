@@ -25,6 +25,8 @@ func main() {
 	http.HandleFunc(routes.AdminDeletePath, middleware.AdminAuth(handlers.AdminDeleteHandler))
 	http.HandleFunc(routes.AdminEyecatchesPath, middleware.AdminAuth(handlers.AdminEyecatchesHandler))
 	http.HandleFunc(routes.UserKnowledgesPath, middleware.UserAuth(handlers.KnowledgesHandler))
+	http.HandleFunc(routes.UserSearchPath, middleware.UserAuth(handlers.SearchHandler))
+	http.HandleFunc(routes.UserKnowledgePath, middleware.UserAuth(handlers.KnowledgeHandler))
 	http.HandleFunc(routes.UserKnowledgesLikePath, middleware.UserAuth(handlers.KnowledgeLikeHandler))
 	http.HandleFunc(routes.UserTagsPath, middleware.UserAuth(handlers.TagsHandler))
 	http.Handle(routes.StaticPath, http.StripPrefix(routes.StaticPath, http.FileServer(http.Dir(dir+routes.StaticPath))))

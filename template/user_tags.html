@@ -52,13 +52,17 @@
                         </tr>
                         {{ end }}
                     </tbody>
-                  </table>
+                </table>
+                <div class="search_container">
+                    <h6>検索</h6>
+                        <input id="search_input" placeholder="キーワードを入力" onkeydown="go();" type='text'><input id="search_submit" type='button' value="検索">
+                </div>
             </div>
            
         </div>
         <div class="col s12 m12 l9">
             <div class='content_header'>
-                <h4 class="content_title">"{{ .FilteredTag.Name }}"に関する記事一覧</h4>
+                <h4 class="content_title">"{{ .FilteredTag.Name }}"のタグがついている記事</h4>
                 {{ $currentSort := .IndexPage.CurrentSort }}
                 <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
@@ -77,7 +81,7 @@
                 </select>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.Knowledge.ID |html|}}');">
+            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledge/{{.Knowledge.ID |html|}}');">
                 <div class="cp_card02">
                    
                     <div class ="photo">
@@ -142,6 +146,6 @@
         </div>
     </div>
     {{ template "footer" }}
+    <script src='/static/js/user_knowledges.js'></script>
 </body>
-
 </html>

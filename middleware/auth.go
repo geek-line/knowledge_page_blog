@@ -10,7 +10,7 @@ import (
 )
 
 //AdminAuth アドミン画面への認証用ミドルウェア
-func AdminAuth(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB)) http.HandlerFunc {
+func AdminAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		store := sessions.NewCookieStore([]byte(config.SessionKey))
 		session, _ := store.Get(r, "cookie-name")
@@ -20,7 +20,7 @@ func AdminAuth(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB)) http
 				panic(err.Error())
 			}
 			defer db.Close()
-			fn(w, r, db)
+			fn(w, r)
 			return
 		}
 		http.Redirect(w, r, routes.AdminLoginPath, http.StatusFound)
@@ -29,7 +29,7 @@ func AdminAuth(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB)) http
 }
 
 //UserAuth ユーザー画面への認証用ミドルウェア
-func UserAuth(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool)) http.HandlerFunc {
+func UserAuth(fn func(w http.ResponseWriter, r *http.Request, auth bool)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		store := sessions.NewCookieStore([]byte(config.SessionKey))
 		session, _ := store.Get(r, "cookie-name")
@@ -42,6 +42,6 @@ func UserAuth(fn func(w http.ResponseWriter, r *http.Request, db *sql.DB, auth b
 			panic(err.Error())
 		}
 		defer db.Close()
-		fn(w, r, db, auth)
+		fn(w, r, auth)
 	}
 }

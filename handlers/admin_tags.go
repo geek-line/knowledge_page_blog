@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -14,7 +13,7 @@ import (
 )
 
 //AdminTagsHandler /admin/tagsに対するハンドラ
-func AdminTagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func AdminTagsHandler(w http.ResponseWriter, r *http.Request) {
 	header := newHeader(true)
 	switch {
 	case r.Method == "GET":

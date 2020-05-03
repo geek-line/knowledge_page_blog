@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang='en'>
+
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
@@ -8,8 +9,10 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://code-database.com/knowledges/" />
     <meta property="og:title" content="Code Database" />
-    <meta property="og:description" content="記事一覧ページ | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！"/>
-    <meta property="og:image" content="https://s3-ap-northeast-1.amazonaws.com/code-database.com/images/code-database-ogp.png" />
+    <meta property="og:description"
+        content="記事一覧ページ | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
+    <meta property="og:image"
+        content="https://s3-ap-northeast-1.amazonaws.com/code-database.com/images/code-database-ogp.png" />
     <meta name="robots" content="index, follow">
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
@@ -19,17 +22,18 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164168719-1"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-164168719-1');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-164168719-1');
     </script>
     <script type="text/javascript">
-    function DivFrameClick(id) {
-        document.location.href = `${id}`;
-    }
+        function DivFrameClick(id) {
+            document.location.href = `${id}`;
+        }
     </script>
 </head>
+
 <body>
     {{ template "header" .Header }}
     <div class="display row">
@@ -40,7 +44,7 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range .IndexPage.TagRanking }} 
+                        {{ range .IndexPage.TagRanking }}
                         <tr onclick="DivFrameClick('/tags/{{.TagID |html|}}');">
                             <td class="center"></td>
                             <td><a href="/tags/{{.TagID}}" class="tag">{{ .TagName }}</a></td>
@@ -51,44 +55,56 @@
                 </table>
                 <div class="search_container">
                     <h6>検索</h6>
-                        <input id="search_input" placeholder="キーワードを入力" onkeydown="go();" type='text'><input id="search_submit" type='button' value="検索">
+                        <input 
+                          id="search_input" 
+                          placeholder="キーワードを入力" 
+                          onkeydown="go();" 
+                          type='text' 
+                          value="{{.QueryKeys}}"
+                        >
+                        <input 
+                          id="search_submit" 
+                          type='button' 
+                          value="検索"
+                        >
                 </div>
             </div>
-           
         </div>
         <div class="col s12 m12 l9">
             <div class='content_header'>
-                <h4 class="content_title">記事一覧</h4>
+                <h4 class="content_title">"{{ .QueryKeys }}"の検索結果</h4>
                 {{ $currentSort := .IndexPage.CurrentSort }}
-                <select class="select-sort" onchange="location=this.value">       
+                {{ if .IsHit }}
+                <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
-                    <option value="/knowledges?sort=create">作成日順</option>
-                    <option value="/knowledges?sort=like">いいね数順</option>
-                    <option selected value="/knowledges?sort=update">更新日順</option>
+                    <option value="/knowledges/search?sort=create">作成日順</option>
+                    <option value="/knowledges/search?sort=like">いいね数順</option>
+                    <option selected value="/knowledges/search?sort=update">更新日順</option>
                     {{ else if eq $currentSort "like" }}
-                    <option value="/knowledges?sort=create">作成日順</option>
-                    <option selected value="/knowledges?sort=like">いいね数順</option>
-                    <option value="/knowledges?sort=update">更新日順</option>
+                    <option value="/knowledges/search?sort=create">作成日順</option>
+                    <option selected value="/knowledges/search?sort=like">いいね数順</option>
+                    <option value="/knowledges/search?sort=update">更新日順</option>
                     {{ else }}
-                    <option selected value="/knowledges?sort=create">作成日順</option>
-                    <option value="/knowledges?sort=like">いいね数順</option>
-                    <option value="/knowledges?sort=update">更新日順</option>
+                    <option selected value="/knowledges/search?sort=create">作成日順</option>
+                    <option value="/knowledges/search?sort=like">いいね数順</option>
+                    <option value="/knowledges/search?sort=update">更新日順</option>
                     {{ end }}
                 </select>
+                {{ end }}
             </div>
             {{ range .IndexPage.IndexElems }}
             <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledge/{{.Knowledge.ID |html|}}');">
-                <div  class="cp_card02">
-                    <div class ="photo">
+                <div class="cp_card02">
+                    <div class="photo">
                         <img class="photo1 responsive-img" src="{{ .Knowledge.EyecatchSrc }}">
                     </div>
                     <ul class="details">
                         <li class="date">最終更新日:<br />{{ .Knowledge.UpdatedAt }}</li>
                     </ul>
                     <div class="description">
-                       <div class="knowledge_title">
+                        <div class="knowledge_title">
                             <h1>{{ .Knowledge.Title }}</h1>
-                       </div>
+                        </div>
                         <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
                             <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></li>
@@ -98,26 +114,33 @@
                     </div>
                 </div>
             </div>
-            {{ end }} 
+            {{ end }}
+            {{ if .IsHit }}
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect">
-                    <a href="/knowledges?page={{.IndexPage.PageNation.PrevPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_left</i></a>
+                    <a href="/knowledges/search?page={{.IndexPage.PageNation.PrevPageNum}}&sort={{$currentSort}}"><i
+                            class="material-icons">chevron_left</i></a>
                 </li>
                 {{ end }}
-                {{ range .IndexPage.PageNation.PageElems }}
-                {{ if .IsSelect }}
-                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
-                {{ else }}
-                <li class="waves-effect grey lighten-1"><a class="white-text" href="/knowledges?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
-                {{ end }}
-                {{ end }}
-                {{ $length := len .IndexPage.PageNation.PageElems }}
-                {{ if ne .IndexPage.PageNation.PageNum $length  }}
-                <li class="waves-effect">
-                    <a href="/knowledges?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i class="material-icons">chevron_right</i></a>
-                </li>
-                {{ end }}
+                    {{ range .IndexPage.PageNation.PageElems }}
+                        {{ if .IsSelect }}
+                        <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
+                        {{ else }}
+                        <li class="waves-effect grey lighten-1"><a class="white-text"
+                                href="/knowledges/search?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
+                        {{ end }}
+                    {{ end }}
+                    {{ $length := len .IndexPage.PageNation.PageElems }}
+                    {{ if ne .IndexPage.PageNation.PageNum $length  }}
+                    <li class="waves-effect">
+                        <a href="/knowledges/search?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i
+                                class="material-icons">chevron_right</i></a>
+                    </li>
+                    {{ end }}
+            {{ else }}
+                <p>ヒットする記事はありませんでした。</p>
+            {{ end }}
             </ul>
         </div>
         <div class="col s12 m12 l0 hide-on-large-only">
@@ -132,15 +155,15 @@
                             <td class="center"></td>
                             <td><a href="/tags/{{.TagID}}" class="tag">{{ .TagName }}</a></td>
                             <td class="center">記事数:{{ .CountOfRefferenced }}</td>
-                        </tr>  
+                        </tr>
                         {{ end }}
                     </tbody>
-                  </table>
+                </table>
             </div>
-           
         </div>
     </div>
     {{ template "footer" }}
     <script src='/static/js/user_knowledges.js'></script>
 </body>
+
 </html>

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,7 +9,7 @@ import (
 )
 
 // KnowledgeLikeHandler /knowledge/likeに対するハンドラ
-func KnowledgeLikeHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
+func KnowledgeLikeHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	id, err := strconv.Atoi(r.FormValue("id"))
 	if err != nil {
 		log.Print(err.Error())

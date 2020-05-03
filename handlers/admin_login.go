@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,7 +13,7 @@ import (
 )
 
 //AdminLoginHandler /admin/loginに対するハンドラ
-func AdminLoginHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
+func AdminLoginHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	store := sessions.NewCookieStore([]byte(config.SessionKey))
 	if r.Method == "GET" {
 		if !auth {

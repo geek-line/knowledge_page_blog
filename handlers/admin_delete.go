@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 const lenPathDelete = len(routes.AdminDeletePath)
 
 //AdminDeleteHandler admin/deleteに対するハンドラ
-func AdminDeleteHandler(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func AdminDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	suffix := r.URL.Path[lenPathDelete:]
 	var id int

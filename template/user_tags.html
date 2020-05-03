@@ -44,50 +44,73 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range .Tags }}
-                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                        {{ range .IndexPage.TagRanking }}
+                        <tr onclick="DivFrameClick('/tags/{{.TagID |html|}}');">
                             <td class="center"></td>
-                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                            <td><a href="/tags/{{.TagID}}" class="tag">{{ .TagName }}</a></td>
+                            <td class="center">記事数:{{ .CountOfRefferenced }}</td>
                         </tr>
                         {{ end }}
                     </tbody>
-                  </table>
+                </table>
+                <div class="search_container">
+                    <h6>キーワード検索</h6>
+                        <input 
+                          id="search_input" 
+                          placeholder="キーワードを入力" 
+                          onkeydown="go();" 
+                          type='text'
+                          value=""
+                        >
+                        <input 
+                          id="search_submit" 
+                          type='button' 
+                          value="検索"
+                        >
+                </div>
             </div>
            
         </div>
         <div class="col s12 m12 l9">
             <div class='content_header'>
-                <h4 class="content_title">"{{ .FilteredTag.Name }}"に関する記事一覧</h4>
+                <h4 class="content_title">"{{ .FilteredTag.Name }}"のタグがついている記事</h4>
                 {{ $currentSort := .IndexPage.CurrentSort }}
                 <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
-                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
                     <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
-                    {{ else }}
-                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    {{ else if eq $currentSort "like" }}
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
                     <option selected value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
+                    {{ else }}
+                    <option selected value="/tags/{{.FilteredTag.ID}}?sort=create">作成日順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=like">いいね数順</option>
+                    <option value="/tags/{{.FilteredTag.ID}}?sort=update">更新日順</option>
                     {{ end }}
                 </select>
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledges/{{.ID |html|}}');">
+            <div class='col s12 m6 card_wrapper' onclick="DivFrameClick('/knowledge/{{.Knowledge.ID |html|}}');">
                 <div class="cp_card02">
                    
-                    <img class="photo photo1" src="{{ .EyeCatchSrc }}">
+                    <div class ="photo">
+                        <img class="photo1 responsive-img" src="{{ .Knowledge.EyecatchSrc }}">
+                    </div>
                     <ul class="details">
-                        <li class="date">最終更新日:<br />{{ .UpdatedAt }}</li>
+                        <li class="date">最終更新日:<br />{{ .Knowledge.UpdatedAt }}</li>
                     </ul>
                     <div class="description">
                         <div  class="knowledge_title">
-                            <h1>{{ .Title }}</h1>
+                            <h1>{{ .Knowledge.Title }}</h1>
                         </div>
                         <ul class="tag_list hide-on-med-and-down">
                             {{ range .SelectedTags }}
-                            <li><a href="/tags/{{.ID}}" class="tag ">{{ .Name }}</a></li>
+                            <li><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></li>
                             {{ end }}
                         </ul>
-                        <div class="like">いいね:{{ .Likes }}</div>
+                        <div class="like">いいね:{{ .Knowledge.Likes }}</div>
                     </div>
                 </div>
             </div>
@@ -101,7 +124,7 @@
                 {{ $filteredTagID := .FilteredTag.ID }}
                 {{ range .IndexPage.PageNation.PageElems }}
                 {{ if .IsSelect }}
-                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
+                <li class="active cyan darken-1"><a>{{ .PageNum }}</a></li>
                 {{ else }}
                 <li class="waves-effect grey lighten-1"><a class="white-text" href="/tags/{{$filteredTagID}}?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
                 {{ end }}
@@ -120,11 +143,11 @@
                         <h6 class='tag_title'>タグランキング</h6>
                     </thead>
                     <tbody>
-                        {{ range  .Tags }}                       
-                        <tr onclick="DivFrameClick('/tags/{{.ID |html|}}');">
+                        {{ range  .IndexPage.TagRanking }}                       
+                        <tr onclick="DivFrameClick('/tags/{{.TagID |html|}}');">
                             <td class="center"></td>
-                            <td><a href="/tags/{{.ID}}" class="tag">{{ .Name }}</a></td>
-                            <td class="center">記事数:{{ .CountOfUse }}</td>
+                            <td><a href="/tags/{{.TagID}}" class="tag">{{ .TagName }}</a></td>
+                            <td class="center">記事数:{{ .CountOfRefferenced }}</td>
                         </tr>
                         {{ end }}
                     </tbody>
@@ -134,6 +157,6 @@
         </div>
     </div>
     {{ template "footer" }}
+    <script src='/static/js/user_knowledges.js'></script>
 </body>
-
 </html>

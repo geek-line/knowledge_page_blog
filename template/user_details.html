@@ -3,20 +3,23 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <meta name="description" content="{{ .DetailPage.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！">
+    <meta name="description" content="{{ .DetailPage.Knowledge.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！">
     <meta property="og:site_name" content="Code Database" />
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://code-database.com/knowledges/{{.DetailPage.ID}}" />
+    <meta property="og:url" content="https://code-database.com/knowledges/{{.DetailPage.Knowledge.ID}}" />
     <meta property="og:title" content="Code Database" />
     <meta property="og:description"
-        content="{{ .DetailPage.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
+        content="{{ .DetailPage.Knowledge.Title }} | Code Databaseはプログラミングに関する情報を発信しているサイトです。毎週記事をアップしているので是非チェックしてみてください！" />
     <meta property="og:image"
-        content="https://s3-ap-northeast-1.amazonaws.com/code-database.com/images/code-database-ogp.png" />
+        content="{{ .DetailPage.Knowledge.EyecatchSrc }}" />
     <meta name="robots" content="index, follow">
     <link rel='icon' href='/static/public/favicon.ico'>
     <title>Code Database</title>
     <link rel='stylesheet' href='/node_modules/tinymce/skins/ui/oxide/content.min.css'>
+    <link rel='stylesheet' href='/node_modules/tinymce/skins/content/default/content.min.css'>
     <link rel='stylesheet' href='/node_modules/materialize-css/dist/css/materialize.min.css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script  src="/node_modules/materialize-css/dist/js/materialize.min.js"></script>
     <link rel='stylesheet' href='/static/css/user_details.css/'>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164168719-1"></script>
@@ -26,20 +29,27 @@
     gtag('js', new Date());
     gtag('config', 'UA-164168719-1');
     </script>
+
 </head>
 
 <body>
     {{ template "header" .Header }}
+    <a data-target="slide-out" class="menu sidenav-trigger right hide-on-large-only"><i class="material-icons black-text">format_list_bulleted</i></a>
+  
+
+
+
 
     <div class="p_items_wrapper row">
         <div class= "p_action_item col s0 m0 l1 hide-on-med-and-down">
             <div class='display_like'>
-                <div class='balloon'><span id='likes_baloon' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                <div class='balloon'><span id='likes_baloon' class='like_number'>{{ .DetailPage.Knowledge.Likes }}</span></div>
                 <form id="like_form_baloon" class="like">
-                    <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                    <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.Knowledge.ID }}">
                     <button class="like-button" id ="like_button_baloon" type='button' value="like" onclick="sendLikeFromBaloon()">LIKE</button>
                 </form>
-                <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+                <input id="input" type='hidden' value="{{ .DetailPage.Knowledge.Content }}">
+                <div id='sns-area'></div>
             </div>
         </div>
         <div class= "p_main_item col s12 m12 l8">
@@ -48,17 +58,18 @@
                 <li><a href='/tags/{{.ID}}'>{{ .Name }}</a></li>
                 {{ end }}
             </ul>
-            <div class= "title">{{ .DetailPage.Title }}</div>
+            <div class= "title" id ='title'>{{ .DetailPage.Knowledge.Title }}</div>
             <div class='like-date-wrapper'>
-                <div class="update_time">最終更新日時:{{ .DetailPage.UpdatedAt }}</div>
+                <div class="update_time">最終更新日時:{{ .DetailPage.Knowledge.UpdatedAt }}</div>
                 <div class='display_like hide-on-large-only'>
-                    <div class='balloon'><span id='likes_inline' class='like_number'>{{ .DetailPage.Likes }}</span></div>
+                    <div class='balloon'><span id='likes_inline' class='like_number'>{{ .DetailPage.Knowledge.Likes }}</span></div>
                     <form id="like_form_inline" class="like">
-                        <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.ID }}">
+                        <input id="knowledge_id" type='hidden' name="id" value="{{ .DetailPage.Knowledge.ID }}">
                         <button class="like-button" id="like_button_inline" type='button' value="like" onclick="sendLikeFromInline()">LIKE</button>
                     </form>
-                    <input id="input" type='hidden' value="{{ .DetailPage.Content }}">
+                    <input id="input" type='hidden' value="{{ .DetailPage.Knowledge.Content }}">
                 </div>
+                
             </div>
             <br>
             <hr>
@@ -66,9 +77,15 @@
             <p></p>
             
         </div>
+    
         <div class= "p_table_items col s0 m0 l3 hide-on-med-and-down">
             <div id="p_table_items" class= "item"></div>
         </div>
+
+        <div class= "p_table_items_devise hide-on-large-only sidenav-close sidenav " id="slide-out">
+            <div id="p_table_items_devise" class="item_devise"></div>
+        </div>
+      
     </div>
     {{ template "footer" }}
     <script src='/static/js/user_details.js'></script>

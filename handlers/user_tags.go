@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
 	"log"
 	"math"
@@ -16,7 +15,7 @@ import (
 const lenPathTags = len(routes.UserTagsPath)
 
 //TagsHandler /tags/に対するハンドラ
-func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) {
+func TagsHandler(w http.ResponseWriter, r *http.Request, auth bool) {
 	header := newHeader(false)
 	if auth {
 		header.IsLogin = true
@@ -32,10 +31,14 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 				return
 			}
 		}
-		sortKey := "updated_at"
+		sortKey := "created_at"
 		var currentSort string
 		if query["sort"] != nil {
 			switch {
+			case query.Get("sort") == "create":
+				sortKey = "created_at"
+				currentSort = "create"
+				break
 			case query.Get("sort") == "update":
 				sortKey = "updated_at"
 				currentSort = "update"
@@ -49,7 +52,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 				break
 			}
 		} else {
-			currentSort = "update"
+			currentSort = "create"
 		}
 		var filteredTag structs.Tag
 		filteredTag.ID, err = strconv.Atoi(suffix)
@@ -63,7 +66,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 			StatusInternalServerError(w, r, auth)
 			return
 		}
-		NumOfKnowledges, err := models.GetNumOfKnowledges()
+		NumOfKnowledges, err := models.GetNumOfKnowledgesFilteredTagID(filteredTag.ID)
 		if err != nil {
 			log.Print(err.Error())
 			StatusNotFoundHandler(w, r, auth)
@@ -108,7 +111,7 @@ func TagsHandler(w http.ResponseWriter, r *http.Request, db *sql.DB, auth bool) 
 			IndexPage:   indexPage,
 			FilteredTag: filteredTag,
 		}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			StatusInternalServerError(w, r, auth)
 		}
 	} else {
 		StatusNotFoundHandler(w, r, auth)

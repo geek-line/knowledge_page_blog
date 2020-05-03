@@ -57,14 +57,14 @@
                     <h6>検索</h6>
                         <input id="search_input" placeholder="キーワードを入力" onkeydown="go();" type='text'><input id="search_submit" type='button' value="検索">
                 </div>
-               
             </div>
 
         </div>
         <div class="col s12 m12 l9">
             <div class='content_header'>
-                <h4 class="content_title">検索結果</h4>
+                <h4 class="content_title">"{{ .QueryKeys }}"の検索結果</h4>
                 {{ $currentSort := .IndexPage.CurrentSort }}
+                {{ if .IsHit }}
                 <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
                     <option value="/knowledges/search?sort=create">作成日順</option>
@@ -80,9 +80,10 @@
                     <option value="/knowledges/search?sort=update">更新日順</option>
                     {{ end }}
                 </select>
+                {{ end }}
             </div>
             {{ range .IndexPage.IndexElems }}
-            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledges/{{.Knowledge.ID |html|}}');">
+            <div class="col s12 m6 card_wrapper" onclick="DivFrameClick('/knowledge/{{.Knowledge.ID |html|}}');">
                 <div class="cp_card02">
                     <div class="photo">
                         <img class="photo1 responsive-img" src="{{ .Knowledge.EyecatchSrc }}">
@@ -104,6 +105,7 @@
                 </div>
             </div>
             {{ end }}
+            {{ if .IsHit }}
             <ul class="pagination col s12 center">
                 {{ if ne .IndexPage.PageNation.PageNum 1 }}
                 <li class="waves-effect">
@@ -111,21 +113,24 @@
                             class="material-icons">chevron_left</i></a>
                 </li>
                 {{ end }}
-                {{ range .IndexPage.PageNation.PageElems }}
-                {{ if .IsSelect }}
-                <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
-                {{ else }}
-                <li class="waves-effect grey lighten-1"><a class="white-text"
-                        href="/knowledges/search?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
-                {{ end }}
-                {{ end }}
-                {{ $length := len .IndexPage.PageNation.PageElems }}
-                {{ if ne .IndexPage.PageNation.PageNum $length  }}
-                <li class="waves-effect">
-                    <a href="/knowledges/search?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i
-                            class="material-icons">chevron_right</i></a>
-                </li>
-                {{ end }}
+                    {{ range .IndexPage.PageNation.PageElems }}
+                        {{ if .IsSelect }}
+                        <li class="active cyan darken-1"><a href="">{{ .PageNum }}</a></li>
+                        {{ else }}
+                        <li class="waves-effect grey lighten-1"><a class="white-text"
+                                href="/knowledges/search?page={{.PageNum}}&sort={{$currentSort}}">{{ .PageNum }}</a></li>
+                        {{ end }}
+                    {{ end }}
+                    {{ $length := len .IndexPage.PageNation.PageElems }}
+                    {{ if ne .IndexPage.PageNation.PageNum $length  }}
+                    <li class="waves-effect">
+                        <a href="/knowledges/search?page={{.IndexPage.PageNation.NextPageNum}}&sort={{$currentSort}}"><i
+                                class="material-icons">chevron_right</i></a>
+                    </li>
+                    {{ end }}
+            {{ else }}
+                <p>ヒットする記事はありませんでした。</p>
+            {{ end }}
             </ul>
         </div>
         <div class="col s12 m12 l0 hide-on-large-only">

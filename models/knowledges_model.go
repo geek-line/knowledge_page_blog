@@ -100,13 +100,12 @@ func GetNumOfKnowledgesFilteredTagID(id int) (float64, error) {
 }
 
 //GetNumOfKnowledgesHitByQuery 指定されたクエリの配列がコンテンツに含まれるナレッジの数を返す
-func GetNumOfKnowledgesHitByQuery(queryKeys []string) (float64, error) {
+func GetNumOfKnowledgesHitByQuery(queryKeys string) (float64, error) {
 	db, err := sql.Open("mysql", config.SQLEnv)
 	defer db.Close()
-	conditionText := strings.Join(queryKeys, "%")
-	conditionText = "%" + conditionText + "%"
+	conditionText := "%" + strings.ReplaceAll(queryKeys, " ", "%") + "%"
 	var numOfKnowledges float64
-	err = db.QueryRow("SELECT count(id) FROM knowledges WHERE row_content LIKE ?", conditionText).Scan(&numOfKnowledges)
+	_ = db.QueryRow("SELECT count(id) FROM knowledges WHERE row_content LIKE ?", conditionText).Scan(&numOfKnowledges)
 	return numOfKnowledges, err
 }
 
@@ -168,15 +167,17 @@ func Get20SortedElemFilteredTagID(sortKey string, tagID int, startIndex int, len
 }
 
 //Get20SortedElemHitByQuery 指定されたクエリを含むコンテンツにヒットしたナレッジのなかで上位20を返す
-func Get20SortedElemHitByQuery(sortKey string, queryKeys []string, startIndex int, length int) ([]structs.IndexElem, error) {
+func Get20SortedElemHitByQuery(sortKey string, queryKeys string, startIndex int, length int) ([]structs.IndexElem, error) {
 	db, err := sql.Open("mysql", config.SQLEnv)
 	defer db.Close()
 	qtext := fmt.Sprintf("SELECT id, title, updated_at, likes, eyecatch_src FROM knowledges WHERE row_content LIKE ? ORDER BY %s DESC LIMIT ?, ?", sortKey)
-	conditionText := strings.Join(queryKeys, "%")
-	conditionText = "%" + conditionText + "%"
-	rows, err := db.Query(qtext, conditionText, startIndex, length)
+	conditionText := "%" + strings.ReplaceAll(queryKeys, " ", "%") + "%"
+	rows, _ := db.Query(qtext, conditionText, startIndex, length)
 	defer rows.Close()
 	var indexElems []structs.IndexElem
+	if rows == nil {
+		return indexElems, err
+	}
 	for rows.Next() {
 		var indexElem structs.IndexElem
 		err = rows.Scan(&indexElem.Knowledge.ID, &indexElem.Knowledge.Title, &indexElem.Knowledge.UpdatedAt, &indexElem.Knowledge.Likes, &indexElem.Knowledge.EyecatchSrc)

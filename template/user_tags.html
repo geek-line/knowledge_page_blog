@@ -62,7 +62,7 @@
         </div>
         <div class="col s12 m12 l9">
             <div class='content_header'>
-                <h4 class="content_title">"{{ .FilteredTag.Name }}"に関する記事一覧</h4>
+                <h4 class="content_title">"{{ .FilteredTag.Name }}"のタグがついている記事</h4>
                 {{ $currentSort := .IndexPage.CurrentSort }}
                 <select class="select-sort" onchange="location=this.value">
                     {{ if eq $currentSort "update" }}
